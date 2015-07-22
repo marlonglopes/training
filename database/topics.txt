@@ -1,0 +1,35 @@
+
+database:
+* http://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis
+
+* Query language design
+* Query optimization
+* Query rewriting
+* Data types
+* Storage organization
+* Transaction management
+* Communications protocols
+* Encryption
+* Authentication and identification
+* Schema design
+* Replication
+* Backup and restore
+* Two-phase commits
+* Optimistic concurrency control
+* Locking and pessimistic concurrency control
+* Authorization
+* Label-based access control
+* Set theory
+* Relational theory
+* Distributed query
+* Boolean logic
+* User-defined types and functions
+* Catalog management
+* Buffer management
+* Sorting
+* Internationalization (I18N), Localization (L10N), Globalization (G11N)
+* Quantifiers
+* Auditing
+* Triggers
+* Stored procedures
+

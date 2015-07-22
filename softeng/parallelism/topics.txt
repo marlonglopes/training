@@ -1,0 +1,14 @@
+
+multiprog:
+* http://en.wikipedia.org/wiki/Openmp
+* threads
+* processes
+* mutexes
+* semaphores
+* pthreads
+* boost::interprocess
+* boost::thread
+* http://en.wikibooks.org/wiki/C%2B%2B_Programming/Threading
+* find some specialised book on threaded programming
+* dining philosophers
+

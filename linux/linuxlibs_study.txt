@@ -1,0 +1,59 @@
+
+SYMBOL NAME MANGLING
+c++ mangles symbol names. this is done to allow overloading. when you have a module compiled in C, and you want to link to that module from a cpp binary, you need to wrap the C module's headers
+with #ifdef __cplusplus extern "C" so your cpp binary will be expecting C linkage for those names (and they will be found in such fashion inside the C module). the #ifdef __cplusplus part is there to make sure that pure C compilers will still understand the code; the #ifdef will fail and it wont use the extern "C" black magic.
+
+it is also possible to use c linkage inside cpp headers, to allow client C modules to link against that cpp code.
+it is not possible to use c linkage on a cpp header when using templates and other cpp things.
+be careful when using function pointers. make sure both functions are using the same linkage.
+
+WHEN LINKING PARAMETER ORDER MATTERS
+its just a matter of graph flow. if your libraries's symbols form a cyclic graph, you may need to either rearrange your code/linking line, or brutally repeat your library names.
+
+the difference between an app and a dso is that the dso has no fixed load address. when starting an app that has been linked dynamically to a dso, the dynamic linker will also start and
+complete the final binary by linking symbols with the DSO.
+
+when loading a binary and resolving its symbols, theres the global lookup scope and the local lookup scope -> akin to variable's scope in programming languages, the symbols also have scope. there
+are afew ways to work around scope issues e.g dlopen's RTLD_DEEPBIND will cause the local scope to get more priority than the global scope
+
+relocations are the biggest cost for the dynamic linker when starting up a program (e.g. extern variables)
+
+-fpic (alt: -fPIC) is still relevant and should be always used when creating DSOs.
+
+it is possible to hide variables, classes, class members, templates and others with macros and other tricks. by hiding i mean not exporting away from the dso. hiding an entire class can bring some problems. for example hiding a class that will be thrown. if such class gets thrown it wont be able to be caught outside this dso. (symbol visibility)
+
+it is possible to define symbol visibility with code (macros et al)  at compile time and also at link time with an export map
+
+the most 'desirable' method of defining symbol visibility is via code, because the code gets optimised.
+
+to keep a variable in the local scope, declare/define it as static
+
+dso's have some versioning mechanisms. e.g SONAME et al.
+
+there is /etc/ld.so.conf where its possible to specify more seach paths for libraries
+
+it is possible to add path information to libraries (so they dont have to be explicitly pointed out with LD_LIBRARY_PATH), see -rpath
+
+with ldd -u lib.so it is possible to query an exe/lib for its unused dependencies (i.e libs that have been linked to the program but are not used)
+
+INTER DLL / DSO EXCEPTIONS (C++):
+
+it is possible to throw exceptions from a lib and catch it on an app. memory-management-wise, many rules are exacly the same when dealing with inside-app exceptions (maybe all; havent tested all cases yet).
+
+SONAME:
+* in other words: the soname is a string you hardwire inside your libs. everyone linking to your lib (g++ .... -lyourlib) will become dependand of its SONAME instead of its filename; when something does g++ .... -lyourlib, the compiler will read your lib and make whatever it was assembling (an app or another lib) dependand on your lib's SONAME. then, this newly created artifact (the assembled app/lib) will have to link to your lib via a symbolic link with the same filename as your libs internal SONAME.
+
+* put another way, the soname is a string that a lib's author put into the lib to identify a branch, or LTS of the lib. it alllows clients to link to the soname instead of the lib's filename. sonames are a way to de-couple the name a client wiill use, with the actual filename: the client will link with the soname, instead of the filename. this way, the filename can vary, for example, to add numbers in the end that refers to patches and etc.
+
+important points, separated for clarity:
+
+* when you are compiling an app, if you link to somelib (as in: g++ .... -lsomelib), the compiler will read somelib's SONAME and make your app dependand on that SONAME.
+* this dependency happens by means of a symbolic link with a filename matching the somelib's SONAME.
+
+LDCONFIG:
+
+creates a library cache. see /etc/ld/so.conf
+
+DEPLOYING:
+it might be desirable/wise to deploy your application alongside its target c runtime (preferably by linking to it dynamically, and using Wl,RPATh during linking)
+

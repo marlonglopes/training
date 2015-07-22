@@ -1,0 +1,139 @@
+
+ASSYMMETRIC KEYS:
+generate a private key, and then extract the public key from it.
+both keys can be used for both operations (encryption and decryption). however, whenever you encrypt something with one key, the other must be used to decrypt, and vice versa.
+* it is possible to attack an assymetric key scheme if you can convince someone to use a forged pubkey that you control; basically, this means that all you need to do to initiate a MITM attack against someone (within an assymetric key system) is to trick someone into trusting your pubkey. X.509 certificates defend against MITM attacks by using digital signatures to validate a certificate - to certify it hasnt been tampered with.
+* the whole basis of assymetric key security is to trust someone's pubkey. if you cant reliably decide the pubkey you are being handed over really belongs to who you think it does, your best shot is to either see the person in person or use X.509 certs signed by a CA you trust.
+
+DIGITAL SIGNATURE:
+get some content (a string, the body of an email, whatever), hash it, then encrypt it with your private key. thats your digital signature. anyone can read it, provided theyve got a copy of your public key. digital signatures provide integrity check (because of the hash). it also provides non-repudiation, which means the signer cant deny signing something - the signature was certainly encrypted with his private key, which only they know/have access to.
+
+DB PASSWORD STORAGE, SALTS:
+the safe way to store passwords in a database is storing its salted hash. its necessary to also store the salt used. the salt is not a secret, its just a mechanism to mitigate dictionary attacks; i.e. when salts are used, its not possible to go along the lines of:
+
+foreach (attempt in dictionary_of_attempts):
+    attempt_hashed = hash(attempt)
+    foreach (pwd in passwords)
+        if (pwd == attempt_hashed)
+            // cracked
+----------------------------------------------
+
+salts are an improvement.
+
+* in other words: salted hashes diffiicult cryptanalysis. think having thousands of morons using "password" for they password - all of these would get the same hash, and youre getting into hot water.
+* note that salted hashes dont help mitigate attacks against just one password. they only help against cryptanalysis of many hashed passwords.
+
+* CBC mode and salting share the same basic principle: producing different output with the same input.
+
+* one interesting benefit of salting hashes (and CBC encryption too for that matter): if, on a linux machine, two users share the same password, and they are stored unsalted-hash style, either of them could log with the other's account -  by knowing they have the same password - if they look at the /etc/shadow file
+
+PKI:
+digital certificates signed by Certificate Authorities. PKI refers to the hierarchy of CA's in place.
+
+CA:
+Certificate authority. this institution has policies, hardware, perharps law liability, personell in charge etc. they issue digital certificates, signed with their private key.
+
+WEB OF TRUST:
+self signed certificates.
+
+DIGITAL CERTIFICATE:
+electronic document containing an entity's public key, its name/identification, and digital signatures (a CA's or its own, or some third party's signatures may be present as well). it might also have a serial number, which is used for tracking by the issuer (the issuer may want to revoke the certificate under some circumstances). there are different classes of dig.certs. class 1 for individuals, class 2 for software e.g. a banking system, class 3 if you want to roll your own CA.
+* basically, the whole point is to certificate a public key with a name (bind a pubkey with a name).
+
+BASICS:
+* kerckhoff's principle: all algorithms must be public, only the keys are secret. this basically says that it's stupid to try to hide the encryption and decryption functions - trying to do that is what's called security by obscurity, and ast says it never works. its much better to open up and have other crytologists try to break the function - if it remains stable for years, then its probably pretty solid. its kind of like public testing of software - it always has bugs.
+
+ONE TIME PADS:
+* having a key as lenghty as the data, basically.
+
+TWO PRINCIPLES OF CRYPTO
+* redundancy: the basic idea is to have some redundant info embedded on the cryptograms, like crc's, checksums and the like - the objective is to thwart an active intruder from just filling his guesses with junk data for the portions of the cryptogram he doesnt know about. it does have a tradeoff though: it makes cryptanalysis easier - so no obvious stuff like a number of zeroes in the beginning of the message! a good hashing function is the good choice here.
+* freshness: defending against replay attacks.
+
+SYMMETRIC ALGOS, GENERALITIES
+
+* EBC: electronic block cypher: inadequate for real commercial use. each cypher block is enc/dec as an island. therefore, cryptanalysis becomes facilitated, since each block with the same text will result in the same cryptogram - think deploying a HUGE website with thousands of thousands of registered users. if the login database is leaked, and the passwords were encrypted using ECB, its just a matter of finding the ones that repeat the most - these are likely to be "1234". moreover, if you KNOW what a particular block is, you can copy it without decrypting it/knowing the key, and placing somewhere that benefits you - think a database with each employee's salaries in there. you could just copy the boss's encrypted salary figure and place it on your own  databse row - no need to decrypt or anything.
+
+* CBC: cypher block chaining: for each cypher block that gets encrypted, it is also used to feed the next one, with a XOR. as such, to apply the algorithms in it (either enc/dec) one must provide an initialisation vector: the initial chain feed.
+
+CFM: cypher feedback mode: apparently its an improvement over CBC. ive never seen it used in practice though. as in CBC, an initialisation vector is also required.
+
+SCM: stream cypher mode: creates a keystream in a one-time-pad fashion to go with an IV (initialisation vector). apparently this scheme was devised to improve behaviour upon transmission errors - for CFM, for example, a one-bit error might trash a whole cypher block.
+
+different modes and access: EBC is the only mode that allows random access.
+
+counter mode: to allow random access to encrypted data, counter mode can be used - think hard disk encryption. it also uses an encrypted IV, plus a constant. it's an improvement over EBC.
+
+DES:
+* data encryption standard. symmetric key scheme.
+* the triple DES scheme that sometimes pops in: each cipher block gets encrypted with key1, then decrypted with key2, then encrypted again with key1. that's right: there's two keys being used there. you could also use three keys, but ast notes that, that would be too little gain for the extra burden of having to transport another key. (ast specifically notes that having three keys is considered overkill even by the most paranoid cryptographers out there).
+
+AES
+* advanced encryption standard: a very openly designed and reviewed standard.
+* uses keys of 128 bits, 196 bits and 256 bits.
+
+THE BEST CHOICES, SYMMETRIC:
+* ast notes on his networks book that AES is the current best choice, and also bruce schneier's twofish is also very good.
+
+SHA1
+* hashing algorithm. requires the data to be a multiple of 512 bits.
+* produces a 20 byte hash.
+* the complete C code for it is available at RFC 3174
+
+MD5
+* produces a 16 byte hash.
+* is currently considered unsafe, as collisions have been found.
+
+HASH ATTACKS
+* the birthday attack: trying reverse-finding a collision that the attacker would tamper with.
+* ast says it's feasible for md5 and having alot of computing power.
+
+PUBKEY CRYPTO, MITM ATTACKS
+* being a man-in-the-middle and subverting pubkey crypto is very feasible. all it takes is to intercept a communication link and spoof the pubkey exchange. you can impersonate another PC in this way.
+* the defense is Certificate Authorities - PKI.
+
+X.509
+* this is the name of the standard that defines the popular digital certificates in widespread use
+
+PGP (PRETTY GOOD PRIVACY)
+* compression, encryption and digital signatures plus extensive key management all in one open source package
+* deliberately uses preexisting crypto algos that have already been extensively peer reviewed.
+* ast notes that it is "like a preprocessor that takes plaintext as input and produces signed ciphertext in base64 output"
+* like i thought, its like pre-encrypting your email body text then sending it on the email for someone who is able to decrypt it - but it does not use symmetric preshared keys.
+* uses md5 for hashing - what a pitty.
+* step by step: say you want to send a message to someone you already have a preconfigured public key. PGP hashes the message, encrypts the hash using your privkey thus producing a digital signature. the digital signature (the encrypted hash) plus the original message are concatenated and zipped using Ziv-Lempel (another too bad). then, PGP prompts (??) the user for random input in order to get some random noise (ast says that the typing speed is used to add entropy). then, with this random noise plus the original message, PGP generate a symmetric session key (ast notes that calling this key a "session key" is a misnomer because there is no session. he's right - email is not session oriented. nonetheless in PGP literature that key is called a session key. whatever...) and then proceeds to encrypt the zipped data in cypher feedback mode. in addition, the (incorrectly named) session key is then encrypted using the recipient's pubkey. then, these two components (the encrypted-with-the-session-key-zipped-contents plus the encrypted-with-the-recipients-pubkey-misnomer-session-key) are converted to base64 to be email body friendly.
+* the recipient, upon receiving the base64 encoded thing, will first unencode the thing back to (ascii, likely) original text, then split the two components: the signed-encrypted-zipped contents, and the encrypted session key. he then decrypts the session key with his private key, then uses the session key to unencrypt the original zipped message. he then uncompresses it. he then unencrypts the digital signature (using the sender's pubkey) to check for integrity - by recaulculating the hash. if it's valid, the rest of the message is valid.
+* most PGP implementations nowadays support X.509 certs.
+
+RSA
+* ast notes how strong it is today:
+* 384 bit keys: can be easily broken as early as 2010 (ast's networking book, fifth edition)
+* 512 bit keys: can be broken by very powerful governmental agencies
+* 1024 bit keys: cant be broken by anyone on earth
+* 2048 bit keys: cant be broken due to lack of energy on the universe
+
+TRUSTED COMPUTING
+* highly controversial. ast notes that some computers (as of 2007~2010, not sure about 2014) already come with a TPM
+* TPM stands for trusted platform modules. they are basically hardware cryptomodules to perform crypto operations AND to also store keys.
+* ast astutiously notes that TPM's are actually not about defending against computer attacks - it is actually about preventing the users from doing anything not approved by whoever controls the TPM.
+* one basic approach to TPM is to have the OS control it - think Windows refusing to run mp3's bought with iTunes.
+
+PKCS
+* means public key cryptography standard. its just a term to refer to pubkey schemes. different ones will use different key exchange algos, hashing algos etc etc
+
+DIFFIE HELLMAN
+* right off the bat: it is only secure if you're sure your communications channel wont be intercepted, because it's rather trivial to do a man-in-the-middle attack during a diffie-hellman key exchange.
+* it works by publishing two numbers, n and g (by publishing i mean they really are public). then, each host chooses a private number. one host will have a X number and the other will have a Y number. by doing some exponential maths both hosts can sequentially compute and together produce a session key derived from these stats. ast notes that for a regular size key (about 128 bits and bigger) it's really way too hard (computationally) to brute force.
+* it is however trivial to just do a classical MITM attack: just capture both endpoints, and for each captured endpoint, choose a private Y (the Y as i'm using here, means the private number of the second host) and take it from there.
+
+SSL/TLS
+You connect to your bank's site. it sends you its digital certificate (or you likely already have it installed locally - shipped with the browser). it is signed by a CA your browser trusts. it doesnt nag you about the certificate...
+so your browser extracts the public key in the certificate, generates a symmetric one-time session key, encrypts it with the bank's public key, sends it over to the bank. now both you and your bank have the same symmetric key to use.
+
+* assymetric based auth, then both parties establish a symmetric session key.
+* can be used for more than just HTTP applications
+* for banking applications, the bank client usually already has the bank's public key - obtained by PKI certs that are usually pre-installed in the browser.
+* additionally, for banking applications, the banks themselves will likely not have each of the client's pubkeys, so after the client auth's the bank, on the bank's side, SSL/TLS will delegate the auth to a login+password scheme that's outside the scope of SSL/TLS.
+* includes compression
+* TLS is the successor. pure SSL is easy to cryptanalize. they are both incompatible. TLS supports AES for the session key, and SHA-1 for integrity. SSL used MD5 only.
+

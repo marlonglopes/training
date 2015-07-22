@@ -1,0 +1,50 @@
+
+GENERAL
+* javaee is a rather lenthy spec, used for building the so-called enterprise applications - these usually involve more than one machine.
+
+* javaee apps are usually multitier - or multilayer. one typical subdivision (of tiers/layers) is: 1) the frontend, likely a webpage, 2) the middlepoint, providing security and transactions semantics, and 3) providing database and bridging to a legacy system of sorts.
+
+* javaee apps are always run inside a container. a servlet is an example - run by a servlet container such as tomcat.
+* javaee apps's layers dont ever talk directly to eachother - it is its container's responsibility to move around the tier/layer levels the data/flow.
+
+SERVLETS
+
+* basically, you annotate your class with @WebServlet and extend HttpServlet
+* HttpServlet has many base methods, some of them are not automatically created (better yet, overriden). for example theres a  init() func that might be of interest.
+
+* may be deployed in more than one location: @WebServlet (urlPatterns={"/account", "/cuenta"})
+* you can use @WebInitParam to define initial config values - these can be  overriden within the web.xml file.
+
+* typically, database connections are opened at the init() method and closed at the destroy() method.
+
+* the web.xml file is used to define various properties for the servlet - like deployment descriptor etc. it overrides respective annotations.
+
+* multiple servlets can habitate the same .war package. these mate servlets are all run within something called a servlet context, and each servlet can probe its context like so (this snippet from a doGet() call): ServletContext context = request.getServletContext();
+
+* from a doGet() request (and possibly other types of requests too) one can also obtain a handle to an HttpSession - you can bind objects to this httpsession.
+
+* it is also possible, from within a servlet, to dispatch the http request to another servlet for further processing. sample:
+(doGet(...)): request.getRequestDispatcher("bank").forward(request, response) - here, "bank" is another servlet inside the same context.
+
+* foreign contexts can be accessed inside a servlet, and servlets can be added on the fly to a context.
+
+* the HttpServletResponse object has a .sendRedirect("http://some-url.org") method - self explanatory.
+
+* it is possible to set up event listeners to get called back when resources change/receive events - you'd have to extend a listener interface. these
+listener implementations can be registered in the web.xml descriptor.
+
+* servlets have async support, it needs to be activated with asyncSupported=true in the @WebServlet annotation - or in the web.xml descriptor.
+
+* servlet 3.1 allows for nonblocking IO - see the ReadListener and WriteListener interfaces. these are used as callbacks - when the IO is finished.
+
+* servlet security constraints can be defined, again, with annotations or web.xml. this includes roles, access control, and auth requirements.
+
+* within a servlet, it is possible to access resources bundled with the .war package by with ServletContext.getResource().
+
+* it is possible to map http error codes and exceptios to resources - think redirecting to a custom 404 page or a internal error page when an exception escapes.
+
+* it is possible to process multipart http requests.
+
+* it is possible to "upgrade" the protocol - from http to another, custom, and possibly incompatible protocol. you'd be using HttpUpgradeHandler and passing
+to the request object a class instance to your custom protocol class.
+

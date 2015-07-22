@@ -1,0 +1,6 @@
+
+* Design patterns (http://www.vincehuston.org/dp/)
+* MVC
+* http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod
+* case studies of acclaimed opensource oop designs (read up the code)
+

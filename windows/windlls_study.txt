@@ -1,0 +1,6 @@
+
+USING /MT AND /MD BUILD OPTIONS IN VS
+/MT means statically include against the language runtime (cstdlib?). that means the client wont need to have a copy of your language runtime.
+/MD means dynamically link with the language runtime. in this case, the client will need the language DLL to run your app (MSVCT71.DLL for example). not a problem if youre wrapping your app in an
+installer.
+

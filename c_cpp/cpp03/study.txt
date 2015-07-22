@@ -1,0 +1,356 @@
+
+ONE DEFINITION RULE:
+an object / subject can only be "defined" once. you can declare it a number of times (as in #including a header file to get access to an object's declaration, or extern'ing a variable), but you can only define it once.
+
+RULE OF THREE:
+when creating a class that is meant to be used just like a primitive type (as one would with int for example), likely as a type to be used for composing other classes, rule of three is advisable.
+for example if you're creating a class that would act just like std::string. you might want to return that type as a function return type and such. you'll need a copy constructor, and likely
+also an attribution operator. a destructor if youre allocating memory, to reinforce RAII might be adequate too.
+
+EXPLICIT CONSTRUCTORS:
+suppose you defined a copy constructor and an attribution operator for your newly created class. then you go like myclass func(){ return 21 }
+you'll need a constructor that received one int to do that - the compiler will implicitly convert the 'return 21' to the int constructor. if thats undesirable, declare the int constructor
+with the explicit keyword in the beginning.
+
+EXCEPTION SAFETY:
+means you have some formal level of exception safety, namely: basic (wont leak when throwing/catching), strong (wont corrupt any data in any way), failure transparency (wont let an exception make its way to the client)
+* its important to strive for exception safety; treat exceptions where they can happen, especially when resources or mutexes are within range. an untreated exception may corrupt some resource or leave a mutex locked forever.
+
+ATTRIBUTION OPERATORS:
+Always check for self assignment (operator == c++ classes. when attributing, a class may try to delete its own memory before attributing. when it's attributing itself, it will self destruct before allocaing )
+
+* when creating a derived class that derives from: a base class that overloaded its attribution operator, make sure you call the base's attrib operator at the derived's attrib uperator function.
+
+EXCEPTIONS:
+when throwing a pointer (throw new excep("...")), you must delete what you caught, lest you leak some memory.
+its possible to throw stack-allocated exceptions, that can/must be caught by reference or even by copy. beware that, if doing a two-step stack-allocated throw (first instantiate on the stack, and then throw), your exception class might need to ascribe to the rule of three (define a copy ctor, copy op, dtor) because two objects are actually going to be created, and if you say allocate some heap memory during construction and then free it up later on the dtor, you might end up freeing the same pointer twice if you havent defined your own copy ctor (the compiler will simply attribute the pointer around blindly).
+if throwing a pointer to an exception is necessary (there are cases, but not many - notably for type consistency), its better to do it using a smart pointer. it will be deleted inside the originating module - so you dont risk using the wrong deallocators.
+"There is no ubiquitous binary standard for C++ exception handling." this means its not safe to assume/expect full, everywhere ABI compatibility amongst modules. so dont allow exceptions to propagate inter-modules.
+
+EXCEPTIONS ON CTORS
+* throwing an exception from inside a ctor is fine, but you must make sure you delete whatever you've just allocated, because by throwing from a ctor will prevent its own matching dtor from being called.
+* corollary: throwing from dtors is verboten.
+
+COPY CTOR
+* if you go: "thread th;" youre calling the default (blank) ctor
+* if you go: "thread th = thread();" youre calling the copy ctor
+
+CONST-CORRECTNESS (AND CONST FUNCTIONS)
+* if you declare an object as const myclass &the_instance, you can only access functions of the_instance if they are also const.
+* functions declared const cannot change the members of the object they belong to. they cannot call non-const functions either because that would be like escalating priviledges. they can delcare their own local scope variables no problem, and they can also READ the object's internal members. its just WRITE that's forbidden - causes a compile error.
+
+MEMORY ALLOCATION AND SCOPE
+memory leak means when you loose a handle to a heap allocated piece of memory. you cant leak memory allocated on the stack.
+returning a reference or a pointer to an object allocated on the function's stack (as in: myclass &func(){ myclass mc; return mc } ) will cause a segmentation fault, because that object will
+expire as soon as it goes out of scope. it is possible, though, to return a reference or pointer to an object instance that is a member of a class, from inside said class, but one has to make sure the returning ref/ptr is used only while the class instance is valid (it is a bad design practice though). its just best to return a object copy on such cases. but make sure you define a copy constructor for that object. 
+
+the double pointer allocation drama:
+
+void alloc(char *notright){
+    ...
+}
+
+notright will be a LOCAL COPY of the pointer from the caller. you can allocate onto it, but the caller wont know anything about it. thats why using doublepointers is necessary.
+
+OBJECT CONSTRUCTION:
+considering a class that abides to the rule of three, when instantiating such class:
+
+class myclass {
+    ...
+}
+
+myclass mc = myclass();
+myclass mc2 = mc;
+
+the copy constructor will be called when doing myclass mc2 = mc, NOT the equals operator.
+ 
+* ctors may/should/ought/must throw exceptions if they werent properly fed. this is not valid for exception classe's ctor ofcourse.
+
+CASTS:
+static_cast is good for basic types - avoid using on pointers.
+with dynamic_cast, you can descend one oop level. it disallows going up though. its almost exclusive for traversing polymorphic oop levels. beware of the dreaded diamond (multiple inheritance)
+const_cast adds or remove const-ness. thats it.
+reinterpret_cast is dangerous.
+c-style casts are dangerous because they might fallback to reinterpret_cast if all else fails. using explicit cpp-style casts is better.
+
+CALLBACKS:
+C style, using function pointers
+C++ style, using slots and signals (hints: templatised types, hold reference for signal receiver/target. or derive from a base interface with a virtual receive_signal() function)
+if you ever need a callback system, just use libsigc++ (or stl stuff).
+
+OPERATOR OVERLOADING:
+preserve semantics; when overloading "*", make sure to also overload "*=" and other ops as well.
+extra care when overloading double increment/decrement. 
+when creating a class that accepts primitive types in its constructor, youre enabling implicit conversion. if you ever do: if (anyvar == 5){ ... } if your class accepts an int as its ctor param, youre setting up a trap for yourself. the solution is to define the comparison operators to also accept the primitive types.
+overloading "&&", "||" and "," is not a good idea.
+
+always by default make ctors explicit. also, avoid providing c-style cast operators (like score does). make an explicit function for that instead. infact, c-style cast overloaded operators are truly deplorable! (with them, very silly things will start compiling and resulting in undefined behaviour)
+
+* when creating derived classes, make sure you observe the attribution operators. if the base defines, one, you likely need to call the base's from the derived's overloaded attribution operator.
+
+FUNC MEMBERSHIP:
+there might be cases where a functions can be nonmbeber and nonfriend of a class. a Util class with static members for example; the functions could well be nonmembers and nonfriends (C-style functions scattered on the code)
+
+* it is actually preferrable to decouple things by favoring nonmember nonfriend functions when they can be used.
+
+FRIENDLINESS:
+* it is also possible to have just one onmember function be declared friend (sigh)
+* have full priviledge (can mess with private stuff and whatnot)
+* friendship isn't inherited, transitive, or reciprocal;
+
+* friend priviledges cant be used polymorphically. if an interface is declared to be friend by another subject class, then derived classes residing on a base pointer of that itnerface's type wont be able to enjoy friend priviledge.
+
+* declaring your class's friends in public space or private space has no difference.
+
+OTHER:
+C++03 doesnt have lazy evaluation of function parameters
+
+OVERLOADING NEW:
+there are a number of cares one must take when going about overloading new. most notably, if you're overloading new, you're likely to be wanting to overload delete as well. additionally, there is a rule-of-three for new/delete overloading of sorts, akin to the ctor/dtor/eq op rule-of-three. make sure to enforce it.
+
+* when unable to allocate memory, its possible to specify a new-handler (a function that handles allocation problems)
+
+* There are many valid reasons for writing custom versions of new and delete, including improving performance, debugging heap usage errors, and collecting heap usage information; (code instrumentation)
+
+* operator new should contain an infinite loop trying to allocate memory, should call the new-handler if it can't satisfy a memory request, and should handle requests for zero bytes. Class-specific versions should handle requests for larger blocks than expected.
+
+* operator delete should do nothing if passed a pointer that is null. Class-specific versions should handle blocks that are larger than expected.
+
+risk of memory leak upon heap instantiation:
+* widget *wid = new widget(); if the ctor throws an exception (for w/e reason), then the cpp runtime calls the matching delete to undo the new operation; i.e. there are two function calls right there: the new operator (which implementation is usually automade by the compiler) and then the ctor itself.
+* when overloading/riding the new operator, if you make a placement version (a version that takes more than the usual size_t parameter, say, a ostream to log some debugging info (!!)) you need to also provide a placement version of delete; otherwise the compiler wont be able to automatically find the matching delete to undo a ctor's throwing.
+
+CTOR LIST:
+beware the param init list. the good practice is to init in the same order as you define.
+where applicable, do provide init by init list, the ones you dont, are implicitly initted anyway.
+
+CTOR INIT / VIRTUAL DISPATCH / CALLING VIRTUALS DURING INITIALISATION:
+dont call a virtual function in a constructor. if youre trying to achieve construct-time polymorphism, use other methods of construction; some possibilities are: pass the buck init (document the class requires a call to a init() function subsequent to its construction); lazy evaluation: use a flag inside your class that controls ancillary init(). or just use a factory, so you can append design policy code to the objects creation.
+
+* auto function descent (virtuality of functions) dont apply/hold for ctors; if youre calling virtual functions inside a base class ctor (and youre handling a derived instance thru a base pointer) then the function wont descend into the class hierarchy. its necessary to explicitly call them by means of a init() func or NVI or else.
+
+* another possibility is to use the template method gofdp.
+
+NO FAIL OPS:
+dtors, swap, deallocs (operator delete) should be no-fail; that is, should never throw. if you must, log, but dont throw. proof of concept: youve got an array of objects. upon destruction, if any of the array's members throws, the others will be left on limbo.
+
+OOP DESIGN RULES
+dont forget to enforce your design decisions for classes. for example, you dont want some object in particular to be copied via assignment. set it private then. and such. might aswell also disable copy construction, or other cases; the most important is to make sure you dont leave the default ctors/assignment ops out in the open.
+
+* The purpose of declaring a non-virtual function is to have derived classes inherit a function interface as well as a mandatory implementation.
+
+OBJ CLONING.
+cloning a nonhierarchical object is pretty trivial; as in:
+myclass *myclass::clone(){
+    return new myclass(*this); // requires a copy constructor (pass by ref in this case), preferably protected
+}
+
+when providing clone operations, the trick is to apply NVI to the base class; provide a nonvirtual clone() interface, at it, call a protected virtual doclone(), and at its return, assert the returning typeid.
+
+ARGUMENT DEPENDENT LOOKUP (KOENIG LOOKUP):
+ADL, or Koenig lookup, is something new to me and very useful. you can overload operators for classes as nonmembers.
+it should be used sparingly though. using adl operator overloads might confuse the adl, rather easily actually if youre tieing it to templatized types, so beware. (infact dont use template types with adl ever). ADL is used to define the << and >> stream operators commonly used with std::cout and thruout the STL.
+* one very important thing about ADL is that it must reside in the same namespace as the serviced class.
+
+INTERMODULE INTERFACE:
+C++ does not specify an ABI whatsoever. its still safer to use primitive types on module boundaries. stl stuff are notoriously unsafe to use - all code must be using the same source image. its very easy for one piece of code to get an incompatible version of the stl (different compiler cflags, etc)
+* the stl's std::vector is C++'s gateway to C and other languages.
+* since the ABI is not standardized in any way (name mangling possibly being also still un-standardised), even trying to link together modules compiled with different compilers is usually unsafe.
+
+DEPENDENCE INVERSION PRINCIPLE (DIP)
+push policy up, implementation down. hierarchies should depend on abstract interfaces, not concrete classes.
+
+VIRTUAL FUNCTIONS and DEFAULT PARAMS
+its not a good idea to use default params on virtual functions. someone down the road might change the default, resulting in an inconsistent interface hierarchy.
+* functions, once virtual are always virtual. you cant un-virtualise a function, even if you never again declare the descending ocurrences of said function as virtual; even if a third level derived derives from a second level derived, and neither (second and third) say anything about a given function being virtual. (EDIT: this property might not be entirely true for dtors. be careful!)
+
+VIRTUALITY (generalities)
+* virtual functions must be used judiciously because they might introduce object slicing
+
+IMPLICIT CTOR/OPERATORS
+stay away from them. they are a step back. every ctor that accepts a primitive type, declare it as explicit. and dont overload primitive/cast operators. provide explicit (a-la stl) operators, like c_str() etc.
+
+POLYMORPHISM TYPES
+static polymorphism: templates, compile time polymorphism
+dynamic polymorphism: class inheritance, runtime polymorphism
+
+STATIC LINKAGE
+* when used with class functions, this has the effect of providing functions that can be accessed without an actual instance of that class.
+* when used with class variables, these variables are only declared inside the class, but must be defined (only once) inside the class's cpp file, like so: int myclass::counter = 0; notice the opportunistic initialisation right there as well. this makes that counter variable shared amongst all instances of myclass.
+
+* global variables (on the loose on the compilation unit) are always statically linked, but are kept private for this compilation unit. being statically linked, they are also initialised to zero.
+
+when functions/variables are let loose on source/header files with static linkage, the compiler recognizes this as a request for an internal copy. this is legal. these symbols wont be accessible outside this compilation unit.
+
+* static variables are always initialised to zero
+
+ABSTRACT CLASS INTERFACE
+if using templates for base class interfaces, you are basically defining "implicit" interfaces. i dont think that is a good idea at all.
+
+ERROR CHECKING
+programming errors must be trated with assertions.  input/user errors must be treated with exceptions.
+
+ERROR GUARANTEES
+no-fail: some ops should not fail (dtors, swap and deallocs).
+strong: if there is an error/exception, then it doesnt change state at all. (atomic property)
+basic:  if there is an error/exception, then it doesnt corrupt state (i.e. it is somewhat recoverable)
+
+THROW and RETHROW
+always throw by copy and catch by const reference.
+to re-throw, just do a plain `throw;` <- this will rethrow what was just caught.
+if you do `throw;`  when not catching an exception, you terminate the program immediately.
+
+STL DATASTRUCTURES
+* vectors are the de facto preferrable default containers to use.
+* when adding multiple members to a datastructure, prefer using a range addition instead of manually looping and adding. each new manual addition will probably result in an expensive realloc. when a ranged addition is used, the algorithm takes a hint of how many new members are going to be added and can pre-alloc it all at once.
+
+STL ALGORITHMS
+* stl has many algorithms; prefer using them instead of hand-writting every wheel you can. also, when thinking of algorithms, think of "transforming a range" instead of "processing every element"
+
+FUNCTION OBJECTS (FUNCTIONOIDS) / FUNCTORS
+* function objects (aka functionoids) is wrapping a function within a class. i.e. the class has one major method, and it preferably laid out in a class hierarchy for dynamic binding.
+* functors are functionoids where the major method is the overloaded operator() which enables rather nice syntax coupling
+* these are better than using plain function pointers - the class may mantain state, be thread safe etc.
+
+PREDICATES
+predicates are function objects that return a yes/no answer. pure predicates are those that dont mess with internal state (stateless).
+
+USE CPP's STATIC TYPING TO MAKE INTERFACES HARDER TO MISUSE
+struct Day { explicit Day(int day) } struct Month { explicit Month(int month) } struct Year { explicit Year(int year) } 
+Date(const Day &d, const Month &m, const Year &y){ ... }
+
+here we create new types to avoid having the user get the order of the parameters wrong (ex. an american would likely want to use month first.)
+
+PURE VIRTUAL
+* in essence, pure virtual just relieves a class from having to provide an implementation for a given function. whenever theyre used, the class becomes an abstract class (cant be instantiated)
+
+this makes a class abstract; pure virtual functions are the only functions that dont need to be implemented on the declaring class. normal virtual functions (non pure virtual) must be implemented/defined (even if left empty)
+* it is not possible to allocate/instantiate a class that has one or more pure virtual functions;
+* pure virtual functions are about providing an inheritable interface without a default implementation
+* it is possible to circumvent pure virtual's abstract class nature and provide a default implementation:
+base *bas = new derived(); // it is never possible to direcly allocate the abstract class
+bas->base::draw(); // will call the "default" implementation i.e. draw() as defined at base.cpp
+
+VIRTUAL and PURE VIRTUAL FUNCTIONS SUMMARY
+
+standard virtual (nonpure):
+* must be implemented. its possible to "re-route" the derived's implementation back to using the default provided (the base's) by going: base::draw() at derived::draw()
+* the derived's version gets called when youre handling a base pointer that actually holds an instance to a derived:
+* base *base = new derived(); bas->draw() // if derived defined its own version of draw(), then derived::draw() gets called here. if derived didnt define its own version, then base's
+version will be called (since we are talking about nonpure virtuals, atleast the base in this case will have an implementation)
+* used to define interfaces with a default implementation
+
+pure virtual:
+* implementation is optional.
+* the class that has them (atleast one), becomes abstract i.e. cannot be instantiated.
+* used to define interfaces without a default implementation (there can be a default implementation by means of gambiarration)
+
+NAMED CTOR
+this is a cpp idiom: you create a static function inside of your class that returns a copy of its own type (like a factory)
+
+REFERENCE SEMANTICS
+* is actually slower than using copy semantics (these semantics usually appear inside attribution operators), because having an actual object is faster to access, and statistically objects are more often accessed.
+
+C COMPATIBILITY
+* there are ways to use classes (restrictions apply) within pure C code.
+
+FUNCTION POINTERS
+pointing to a member function is a bad idea; its best to use nonmember (c-style) functions that can get a handle to some object instead.
+* its illegal to cast a pointer-to-member-function to void* - it is also illegal to try to do the same thing with normal function pointers (to nonmember functions)
+
+SMART POINTERS
+std::auto_ptr is a thin wrapper to implement RAII. it does not have reference counting. the attribution operator changes the source object !
+boost::shared_ptr does implement reference counting. only boost::shared_ptr can be used inside std::vector (for example; other containers also apply)
+
+CIRCULAR DEPENDENCIES
+* use a forward declaration; when two classes use eachother
+
+TEMPLATES
+
+* template specialisation: it is possible to specify more than one templatised version of a function - kind of like overloading a function; each version will be specialised towards one static type:
+
+template <typename T>
+void func(T param){}
+
+template <>
+void func<int>(int param){}
+
+template <>
+void func<std::string>(std::string param){}
+
+the first is the default/standard version. the two followups are specialised versions.
+
+* to specify which version of a specialised templatised function you want to call, you do:
+
+func<int>(50); or func<std::string>("hello");
+
+DELETE
+* you can only safely call delete for a complete type; its unsafe (undefined behaviour im afraid) to try to delete a forward declaration for example.
+
+COMPILER KBASE
+
+* the global data segment is initialised to zero (in C, atleast)
+
+* compiling in debug mode, the compiler might be nice and set the stack memory always to zero. so:
+void func(){
+    int a;
+    a++;
+}
+
+a might always be 1, in debug mode.
+
+* the cost of setting auto (local) variables to zero would increase the cost of functon calls. that might be the reason C does not do it - and therefore the reason you get garbage values with uninitialised auto (local) variables. for static vars though, it is a one-time cost, of setting the global data segment.
+
+* in c++, static stuff is not exacly initialised to zero, they are initialised to their default value, which is indeed zero for primitive types.
+
+* global variables, even if not explicitly declared static, will be initialised to zero, as they reside in the global data segment. if they are not declared static,  they will be visible to other compilation units, but wont otherwise.
+
+* a = a++; // this code violates the one variable update per instruction point rule. this results in undefined behaviour.
+
+* the order of evaluation of most expressions are unspecified in c and cpp.
+
+* sizeof() structs are "usually" rounded to multiples of 4. on gcc, you may ask the compiler to -fpack-struct. compilers usually aligns structs (by adding some padding) because most archs are optimised for moving words of data between the memory and the cpu.
+
+* declaring func(void) is for C. it is not necessary for C++ as it is the default.
+
+* sizeof'ing a struct or class only yields the size of the member variables. functions dont go into the tally. classes dont know about its functions (at the compiler level), the functions know about the objects. bottom line: functions dont increase the size of the type of an object.
+
+* vtables is not a cpp standard, but its a common technique employed by compilers. when a class has any virtual functions, it will receive a vtable, which is just a jump table for function calls (for overriding functions).  when a class has virtual functions (and therefore a vtable), the size of the class type does increase, so as to accomodate the vtable. only one table is usually created, so N > 1 virtual functions will usually only increase the size of thee type once.
+
+* when using initialisers list, never forget to have the order of params match the order they are defined inside the class
+
+SEQUENCE POINTS
+
+"A sequence point defines any point in a computer program's execution at which it is guaranteed that all side effects of previous evaluations will have been performed, and no side effects from subsequent evaluations have yet been performed."
+
+* for short, c and cpp (before cpp11 atleast) dont support lazy evaluation
+
+* rule 1: inbetween sequence points and object shall have its stored value modified at most once by the evaluation of an expression
+* rule 2: inbetween sequence points and object shall have its stored value read only to determine the value to be stored
+
+CALLING CONVENTION
+how function calls are actually implemented (low level details). for example, on x86, parameters are usually passed on the stack, and the return value on a register.
+
+FUNCTION NAME OVERRIDING IN BASE CLASS
+
+references:
+* http://www.parashift.com/c++-faq/hiding-rule.html
+* "Warning: Derived::f(char) hides Base::f(double)"
+
+if you recklessly override names in a derived class you might actually end up HIDING base class names; that means virtuality will not take effect either.
+you need to go "using base::symbolname" when you run into that.
+
+RTTI
+the dynamic_cast<...> is the infamous RTTI thing. if it returns NULL, then your conversion failed - and the type you were guessing is wrong. this is how you achieve RunTime Type Inspection.
+
+INTERFACE DEFINITION
+if you define the  ctor of an interface as private, then none of the deriving classes will be able to implement an equivalent ctor. sigh.
+infact just dont define a ctor on interfaces whatsoever. they dont get inherited anyway. (as of cpp03)
+
+GENERAL
+* Never test a pointer for null-ness before deleting it
+
+STATIC
+* you cannot call a non static function from a static function. this is only fair/reasonable
+
+

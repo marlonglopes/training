@@ -1,0 +1,26 @@
+
+REGISTERS
+* are usually reserved for ops. for example ECX is usually used for counting stuff (think LOOP instruction). others are usually used for source memory and destination memory and etc.
+
+JMP
+* simply jumps to another address location. just like a C goto. it basically changes the EIP (instruction pointer) to that location
+
+CALL
+* for calling "functions" - actually in the assembler level, we use CALL to implement function semantics - it's not there ready-made.
+* call also pushes onto the stack the instruction of the next instruction after the call - so we can return to it after the function is done with - thus providing for a function semantic.
+* when inside a function, to return form it you just issue a RET instruction - the EIP will then point to the address pushed onto stack for returning.
+* the parameters are also passed onto the stack.
+
+FOR LOOP SAMPLE
+
+* uses the ECX register to implement a for loop (decreases on each iteration till it goes zero)
+
+movl $10, %ecx
+LoopLabel:
+    <code>
+    <code>
+    loop LoopLabel
+
+STACK FRAME
+* means a function's scope.
+

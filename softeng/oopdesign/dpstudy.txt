@@ -1,0 +1,203 @@
+
+INHERITANCE vs. COMPOSITION (private inheritance)
+* inheriting privately to reuse code is OK if youre building an object that is meant to be used by means of composition. example: baseobj { /* has some boilerplate stuff, logging or whatnot */ } derived_bytearray : private baseobj { /* inherits some stuff from baseobj, whatever it is, to avoid rework */ } -> derived_bytearray is an utility class meant to be used by others object with composition. no-one will know about that inheritance. (box opinion)
+* a key concept about private inheritance is that the subclass does not become a subtype.
+
+DELEGATION
+* is achieved by meeans of composition. you compose a base type that will have polymorphic implementations. by definition, true delegation happens when you call another function/object passing the this pointer in c++, or self on smalltalk, so the callee changes stuff on the caller - in c++, the delegate might aswell be a friend class.
+
+ABSTRACT FACTORY
+* the factory itself can be polymorphic for extra flexibility. that's the abstract factory pattern - you get a configurable family of products form a factory that itself might belong to a family of slightly different factories.
+
+* note that abstract factory shines when you look at it as a factory for a *family of objects*. not for just a single object. you have an interface for a factory (the abstract factory itself) and you instantiate it with a concrete factory of your liking (C_QT_Factory, C_GTK_Factory for example; these would return concrete CWidgets of all kinds)
+
+FACTORY METHOD
+* a safe solution for implementing virtual ctor functionality. (obs. virtual ctors in cpp are nonexistant, and actually you cant call virtual functions inside ctors)
+
+BUILDER
+* builds products (populates classes). c++ friend qualification is a common way to pull it. one interesting way would be to have a product class that has private members which are virtual. my favourite example would be the irrlicht's IMesh/IAnimatedMesh product interface (not sure how it stands today - might no longer be a valid example). you could populate it with .md2, .md3, .dae or others. that would be a good example of a builder. i personally think its only worth using a builder when your product is actually a hierarchy of objects - like the IMesh thing does. you could define a base interface product for a game entity, and then down its hierarchy youll find many sorts of specializations such as an animatedmesh, meshbones, animations, maybe even triggers (hooks to other resources, say a firearm discharge for a weapon->shoot anim of sorts.
+* basically you would use bridge to fill up a composite hierarchy IF you know specifically what youre trying to build - which may be the case, sometimes.
+
+PROTOTYPE
+* a competting pattern with the factory pattern. prototypes are about implementing a clone() operation on an object (non-static in C++) and use an actual instance to proivide a prototype for other objects. as in: newinstance = protoinstance->clone();
+* as per gofdp book: a factory could store a set of prototypes inside itself to provide object creation than can be changed in runtime.
+
+SINGLETON
+* one thing to keep in mind when making singletons is what they depend on. two singletons depending on eachother is sure to give problems.
+* can be (sometimes should be) complemented with registrars.
+
+PROXY VS SINGLETON:
+singleton alternative: instead create a proxy class that is friends with the target/subject class
+
+ADAPTER
+* adapts two incompatible interfaces. its necessity is more common when youre getting third party classes that you dont control.
+
+BRIDGE
+* when creating a bridge between a set of modules/interfaces and implementations, its necessary to decide whether to use an intersect or union approach of the subsystems you intend to unify. (throw exceptions when an impl. for a given operation is not available on certain subsystems is an option)
+* can be used for implementing cheshire cats (opaque pointers, in C parlance), or pimpl as it is also called sometimes.
+* decouples interfaces and implementations for runtime dynamicity. basically you have an interface, which keeps a private pointer for an implementation, and you route/bridge your requests to that pointer.
+
+COMPOSITE
+* using recursive composition to uniformily reprersent an object hierarchy. basic example: a 3d editor, a-la k3d (back in the day), where you can compose the whole scene by means of hierarchical meshes.
+* second take: its actualy the common drawable->rect->etc sample hierarchy, with the accompanying usual polymorphical draw(). the key concept of the composite pattern is that it is not only the base interface, its also a container - that is, effectively the whole tree datastructure.
+
+DECORATOR
+* using an object to add extra responsability to another object
+* an additinal layer of responsability for an object. it "covers" the original object with additional responsability, using a compatible interface. it composes the original object inside of itself, providing a new skin. it effectively "tricks" clients into using it before the original object -> it will attach itself to the original object's abstract class, and access the decorated object.
+* the key idea of decorators is that theyre supposed to change the "skin" of an object. for changing the guts, a strategy is more appropriate.
+* you likely wont want ot have data stored inside the decorator. looking at the scrollbar example, the text/screen position would likely be stored in the parent class, and the decorator would twiddle with them.
+
+PEER
+* strategy?
+* define an interace, then have a client object compose (use object composition) a interface type. then you can externally hotplug peers inside the client object. does sound like strategy to me.
+
+FACADE
+* provide a unified interface for a subsystem. my planned windowing project fits the description. very useful when you dont control/have access/cant rely on a susbsytem - say, a third party GUI toolkit or something of the like.
+* might be also interesting to a given context to make an abstract facade, so you can hot-plug an implementation that calls a totally different subsystem. like a subsystem factory.
+
+FLYWEIGHT
+* a collection of lightweight objects, grouped by a context that holds some memory/resource common to all of them inside the collection, so as to share these common stuff. the gof example: a character stream context inside a text editor. one common thing for a stream of characters is a loaded font. so you keep the font object inside the flyweight context, and make a collection containing each individual character.
+
+PROXY
+* a checkpoint for an object. you might define a proxy locally for an object that's actually running in another process in another machine in another network for example (remote proxy) or...:
+* protection proxy: when you want to add a security layer to an object, you can implement a proxy to accept/deny some requests to an object. smart pointers are a kind of protection proxy.
+* cache proxy: for performance, an object pre-loads some stuff ahead of time. (called virtual proxy by the gofdp)
+
+* proxies can be used o implement COW (copy-on-write) mechanisms on objects.
+* RAII is a form of proxy
+
+CHAIN OF RESPONSABILITY
+* define a chain of objects that are all candidates for handling a request. each object may or may not handle the request, on which case it will pass on the request to the next candidate.
+* you may want to use existing links, say from a composite hierarchy of objects, instead of making a redundant list of objects.
+
+COMMAND
+* encapsulate a request for state-change inside an object, intended to be received by another object that has state, and that also knows how to handle these encapsulated requests (ie. these commands).
+* commands can be kept in a hierarchy for undo/redo caps, for example.
+* receiving a command: when implementing the target class (the one that mantains state and will receive commands), you can specify a method that receives an interface that defines the basic type of commands (say, MyEditor::Commandeer(ICommand *theCommand);) and then call the operation form there, as in:
+MyEditor::Commandeer(ICommand *theCommand){
+theCommand->doOps(this);
+}
+this approach is only feasible if MyEditor's class type exposes its state, or if you make each and every concrete command a friend with MyEditor's class type.
+
+* one interesting use is to combine command with composite, (MacroCommand as gofdp calls it), so as to assemble multiple commands into one ctrl+z operation instead of allowing reversing each and every single op ever issued.
+
+INTERPRETER
+* when you need to roll your own (micro)lexer.
+
+ITERATOR
+* extendable navigation caps for your pod/smart container/etc. with iterators you can attach different traversal mechanisms to your container, so you dont have to change the container's interface whenever you want to offer a new way to access its data.
+* separating traversal mechanisms from containers. makes possible to choose different traversal policies when possible.
+* gofdp notes that iterators alleviate an aggregate's interface. sure, because that way you wont have to publish an interface for iterating internally.
+* an iterator is said to be robust (by the gofdp) when removals and insertions dont get in the way of traversing.
+* a very simplistic iterator could be implemented by having a given class befriend of another, a designated iterator. then, the iterator class would mantain internally the current item it is at, provide a next() operation, a peek() current item, a isdone() method, etc etc.
+
+MEDIATOR
+* a mitigating solution for when youre running towards object spaghetti - that is, if youve got multiple instruction objects interacting with eachother in reasonably complex ways, you can add a level of indirection called a mediator to mediate the whole ordeal. notifications inside a GUI system is a typical case - many things want to be notified when there are mouseclicks and etc. a mediator could be the object responsible for registering callbacks in it for all these gui components.
+
+* from another perspective, it replaces many-to-many relationships between unrelated objects (unrelated as in: not in the same object hierarchy, and not responsible for the same kinds of tasks, but nonetheless colleagues inside the system/process ofcourse) with a one-to-many relationship - where the *one* is the mediator.
+
+* mediators can be an alternative for subclassing/creating new class types. one could define a mediator that will contain (will be a container for) widgets in a gui system for example. so instead of subclassing and handling allocation and etc etc you could have a mediator to allocate, instantiate the widgets or else etc
+
+* mediators are sometimes called directors. it makes sense, they coordinate interactions between objects. its specially nice to have a mediator when three or more instruction objects need to interact with each other, and keeping the cordination centralised represents a huge benefit for separation of concerns, because multiple objcets interacting might not be trivial.
+
+* another particular interesting feature of mediators is implementing updates. when (functionally) related objects also have state that depend on the object's colleagues, the mediator can coordinate the updates
+
+MEMENTO
+* if i was to propose a name, it would be "afterimage", or "flashback"; its basically serialization. gofdp emphasizes that the object must not break its own encapsulation, so the whole functionality might aswell reside inside the object. from the gofdp perspective, this pattern also includes memento-ing, or capturing internal state for undoing purposes, or similar stuff. that is, for capturing and mantaining a snapshot inside the process's RAM, and not just serialize it to send over a network connection or to disk.
+* the gofdp notes that mementos are "passive". what they mean is that it may contain instruction aswell, for auxiliary tasks/validations and whatnot, but may not itself initiate a state recover of its originator.
+
+OBSERVER
+* oop callbacks. theres the subject and theres the observer.
+* gofdp notes that theyre useful when an object should notify another, but must not make assumptions as to what/which object.
+* the subject, when raising a notification for its observers, may also publish some information about itself. because observers might be observing more than one subject.
+* one interesting take on implementing the notification mechanism is to have some sort of check_state() function inside the subject. inside this function, it would comb its own internal state for changes, and then raise notifications there.
+* one thing to keep in mind when implementing the observer pattern is to keep the subject/observer list/map synced. that is, if either is deleted, then the list/map must know about it.
+* the gofdp notes its important to document the events a subject notifies.
+* as far as the actual notification go, the gofdp notes theres the push and the pull model: in the push model, the subject sends info to the observer, so it makes afew assumptions about the observer. the observer might not need all the info it gets sent to. in the pull model, the subject only sends a minimal notification, and the observer pulls more info after.
+* its also possible to add a second class for typing of the notification to the subscribing method. gofdp calls that class an Aspect. that way it is possible to discriminate some notifications - in the form of what kinds of events an observer is interested in.
+* the gofdp introduces the changemanager, a Mediator pattern, to centralise the subject-observer relationships, and update strategies. it can also make sure an observer gets a notification only once, and may also centralise/manage an Aspect minilibrary - the kinds of events an observer will be interested in.
+
+* gofdp notes that the MVC model uses the observer pattern to reflect changes to its views.
+
+STATE
+* theres the context class (the one to receive a state pattern) and the state pattern implementation itself - these are the two actors inside this pattern.
+* contrary to previous belief, this is not a data packaging class. au contrair, its actually an instruction packaging class. the gofdp example is a tcpconnection (the context class) - it has a set of operations, and all of them depend on the state of the tcpconnection class - open, closed, established, listening or whatever. the state pattern packages the specific behaviour for each state inside a concrete state class. so instead of having a:
+
+tcpconnection::send(){
+  if (state == listening){
+    /* return error cos we are not connected */
+  } // else ...
+}
+
+we have something like:
+
+tcpconnection::send(){
+  state.send();
+}
+
+and state is previously populated with an instance of a concrete state instruction class. if the tcpconnection is currently listening, then it would be a TCPStateListening, of which send() method override would actually return an error.
+
+* very interesting for packing state specific code that can share a common interface, but i think its only worth using it if we are actually talking about a rather lengthy chunk of code for each op.
+
+* if the state objects you are designing/employing do not keep internal state themselves, i.e. if all they have is some code for behaviour, then you might aswell allocate them once and never destroy them.
+
+* the state pattern is basically designing a family of objects for delegating common operations, based on their interface.
+
+* sometimes it is really just another level of indirection, wrapped up by the original context object.
+
+* interesting use case: a drawing app's tool pallete. the base interface could be mouseclick(posx, posy), mousedrag(...), mousedown/up() etc. and depending on the tool selected, something entirelly different will happen: a selection tool will create the selecion rect, a brush will draw around etc etc.
+
+
+STRATEGY
+* two actors: the strategy itself and the context.
+* algorithms/instructions encapsulated. you parameterise an interface with the inputs you desire, then derive different classes implementing algorithms for that.
+* the strategy to be used it composed (object composition) inside the context class.
+* the context class might define some sort of interface to exchange data with its active strategy.
+* the context/strategy relationship might be a delegation, where the context passes itself to its strategy. this way, the strategy may callback the context as needed.
+
+* strategies can be passed as a template parameter to the context if and only if (1) the strategy can be decided upon during compile time and (2) it does not have to be changed during runtime.
+
+* the gofdp notes that its important that clients of a context class be aware that it does use strategies (ie. different behaviour in different situations).
+
+* might be a good idea to make strategies optional. a class's strategy might be exposed on its public interface actually; so by default, it instantiates its default behaviour at the ctor, but also offers afew different strategies that the client themselves can override.
+
+* interesting use case: implementing validation algorithms in strategy objects. then if you have an object that is, say a textbox, you can choose which validation strategy to pass it to.
+test
+* to sum it all up: startegies are basically objectified algorithms; the input parameters are defined in a common interface. this allows clients to hotplug different behaviour into the context class. validators are good examples.
+
+TEMPLATE METHOD
+* encapsulates an algorithm skeleton. each of the algorithms steps are broken down into overridable methods. subclasses may or may not redefine the template algorithm for each particular step (alt.sp.for step: operation).
+* starts off by the motivation of avoiding code duplication by breaking down steps into objects.
+
+* define a base interface, likely pure virtuals in c++. then derive off of it abase algorithm, with all the steps for the algorithm being virtual but not pure virtual - so with a default implementation. then third level derivative objects may override the algorithm steps it is interested in.
+
+* the BASE/ESSENTIAL mechanism of template method is applying the hollywood principle: dont call us, we'll call you. this means that you *must* call all the steps in the template method itself - the entry point of the algorithm in the base algorithm class - likely the ctor, probably.
+
+* the gofdp notes that it might be interesting to use naming conventions for template method steps, such as DoStep1(), DoStep2() etc.
+
+* the key feature of template method is allowing clients to override methods that will be called in the correct order atuomatically.
+
+* the factory method is a specialization of template method.
+
+VISITOR
+* encapsulating operations to be uniformly and polymorphically applied to a datastructure - a composite pattern is a candidate.
+* the standard example is a compiler. first, lets consider you already parsed a language onto a tree. then, you invoke the compiling phase, which will instantiate a visitor for a given cpu/machine arch and then pass/traverse the tree the/with the visitor. when each tree element "recebe a visita", it then delegates/passes its data (eg. a IntVariableNode) to the visitor.
+
+* another example is implementing completely different operations for datastructures. so again, considering an already built datastructure, you could define a visitor hierarchy for compiling that datastructure, or for just printing it on the screen.
+
+* it keeps the datastructure clean, and this is a big benefit: you dont have to implement specific compiling for each machine on the datastructure container itself. visitors are a very good way to keep concerns separated.
+
+* the visitor itself is responsible for keeping and accumulating the state of the traversal operation - in the compiler example, the generating bytecode.
+* when implementing a compiler visitor, one might want to implement common compiler tech onto the visitor like variables lookup tables and such - because down the road (down the traversing tree more like it) the visitor will be visiting something that, in order to be correcly compiled, need to fetch some info from another previous language operation - a previous class definition, or something of the like.
+
+* in a nutshell: two actors, the datastructure and the visitor. the datastructure, at its interface, must dfine a pure virtual AcceptVisitor()/ReceberVisita() that every element down its hierarchy must implement. then, a client instantiate a concrete visitor it wants and pass it to the base of the datastructure hierarchy (which could very well be also responsible for providing automatic traversal), and each and every element delegates itself to the visiting visitor. the concrete visitor accumulates the operation product.
+
+* the gofdp notes: the datastructure elements will have to provide access to the visitors somehow. friendship likely wont cut it.
+* the gofdp also notes: the client itself may want to implement the traversal. i personally think it makes alot more sense to implement automatic traversal on a base layer of the datastructure.
+
+* the gofdp notes: its best to use the visitor pattern only after the datastructure is already stable.
+
+* visitor allows for double dispatch in c++: the dispatch destination (the actual piece of code that will be called in the end) depends on the type of the element in the datastructure AND the visitor's.
+
+* one key benefit of visitor is that you can implement multiple visitor operations inside a visitor by overloading its Visit() function with different element types for full double dispatch madness. (eg: Visitor::Visit(ElementA *theTarget) and Visitor::Visit(ElementB *theTarget)
+

@@ -1,0 +1,72 @@
+
+cppexperience
+
+projects sources inspection:
+* http://www.beyond3d.com/content/articles/8/
+* http://en.wikipedia.org/wiki/C_Run-Time_Library#Common_support_libraries
+* https://developer.valvesoftware.com/wiki/Latency_Compensating_Methods_in_Client/Server_In-game_Protocol_Design_and_Optimization
+* http://fabiensanglard.net/c/
+* http://fabiensanglard.net/timer_and_framerate/index.php
+* http://fabiensanglard.net/duke3d/index.php
+* http://fabiensanglard.net/doomIphone/doomClassicRenderer.php
+* http://fabiensanglard.net/quakeSource/index.php
+* http://fabiensanglard.net/quake2/index.php
+* http://fabiensanglard.net/quake3/index.php
+* http://fabiensanglard.net/doom3/
+* read up doom3 source code
+* research usecases of software architecture employed on real world scenarios (e.g: what does mmorpg typically uses(its db, concurrency, etc), others)
+
+sandboxes:
+* sandbox: operator= pcbyte ? boxbytearray bar = "\x70\x70" ?
+* sandbox: calling non static func from a static func. From instance and w/o instance
+* sandbox: basic templates 
+* sandbox: do a function object
+* sandbox: overload attrib op and implement reference semantics / It has less speed btw (receive and keep a reference instead of copying upon attribution)
+* How to correctly select implementation from a factory? Enum?
+
+processes:
+* sandbox: create small app that opens a file. then fork(). then on both processes try messing with the file via file descriptor
+* sandbox: file locks created with 000000000 access mode (only one process should be able to touch it)
+* sandbox: try forking and then loading a new app image
+* http://stackoverflow.com/questions/4259629/what-is-the-difference-between-fork-and-vfork
+* zombie process: "if a process exits and its parent has not waited for it, the process enters a kind of suspended animation called zombie state. when the parent finally waits for it, the process terminates". test this. and is this why you should double-fork and kill parents to make a daemon?
+* link: http://en.wikipedia.org/wiki/Zombie_process
+* link: http://en.wikipedia.org/wiki/Fork_bomb
+* http://stackoverflow.com/questions/3095566/linux-daemonize
+* http://stackoverflow.com/questions/10932592/why-fork-twice
+* sandbox: tentar usar exe(...) posix pra rodar algum programa, e usar waitpid(...) pra recolher o sinal de retorno do programa, efetivamente imitando um shell
+* sandbox: try using posix's pipe()
+* sandbox: return function pointer (see posix signal(...) function signature
+* sandbox: try to implement interprocess communication via sockets (no need to fork)
+* daemonization (http://0pointer.de/lennart/projects/libdaemon/)
+
+threads:
+* List all mutex necessary ops (files, globvars etc)
+* threads get a stack/heap of their own? what about processes?
+* sandbox: what about threads, do they carry file descriptors that can be used around? ANSWER: YES
+* sandbox: have two functions run threaded then try to invade eachother's stack space
+* sandbox: Try to replicate race condicions via files, globalvars and else
+* sandbox: mutexes
+* sandbox: semaphores
+* sandbox: implement a producer/consumer
+* sandbox: dining philosophers
+
+both:
+* sandbox: try to read the terminal's echo via stack inspection/invasion
+* sandbox: create a signal from a parent process. then create threads. then raise signal. then see if the threads get signal.
+* sandbox: does a forked process also inherits the parent's threads?
+* sandbox: Signal receivers (functions) become threads?
+
+testdrives:
+* poco lib (multiprog sync)
+* boost::property tree
+* boost::smart ptr
+* boost: interprocess
+* boost's thread/proc syncing stuff
+* boost signals2
+* boost.python: python + c/c++ integration
+
+other:
+* do create a kickass python classmaker ( or rather, a netbeans template will suffice)
+* THE miniproj for putting it all to test / Threaded input, threaded netcode, python scripting, shared ptrs perharps, design patterns, liskov, others. Finish cppexp this weekend
+

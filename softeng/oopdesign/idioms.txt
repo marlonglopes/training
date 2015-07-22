@@ -1,0 +1,10 @@
+
+ADRESSOF
+* c++ allows the overloading of the single ampersand operator, thus making the class non-addressable. there's a workaround for that: addressof, check boost
+
+CLIENT-ATTORNEY (reduce access to a class by their friends)
+* three classes, client, attorney and counterparty.
+* client is friends with attorney, and has only private methods (and therefore only itself and attorney can access)
+* attorney is friends with counterparty, and also has private members that interface with client
+* counterparty can only access client through the attorney
+

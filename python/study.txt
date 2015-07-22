@@ -1,0 +1,19 @@
+
+GIL
+* noted by jeff knupp as python's hardest technical challenge, the Global Interpreter Lock.
+* within the CPython context, basically due to the GIL, one should not use threads inside python scripts at all. you are supposed to use processes instead (running multiple interpreters) and have they comm via some sort of ICP.
+
+PDB, THE PYTHON DEBUGGER
+* very alike with gdb
+
+pdb sheet:
+> b 83, key == "PLUGIN"                                 sets a conditional breakpoint at line 83, its onlt hit if the key string equals "PLUGIN"
+> l                                                     lists current source code position
+> n                                                     next instruction
+> s                                                     step. will enter functions, even python library functions
+> c                                                     continue till next breakpoint
+> r                                                     run free
+
+RELATIVE IMPORT
+* to do a relative import in python, simply add the relative path to the python VM search path: sys.path.append(".." + os.sep + ".."). after this, you can normally import a module by name like any other.
+

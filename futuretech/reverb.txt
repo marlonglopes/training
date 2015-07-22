@@ -1,0 +1,34 @@
+
+nonnetwork:
+* https://www.youtube.com/watch?v=XiQweemn2_A
+* http://ask.slashdot.org/story/07/03/21/2139219/is-assembly-programming-still-relevant-today
+* https://www.youtube.com/watch?v=ahUBv0Nvk1Y
+* http://blog.codinghorror.com/there-aint-no-such-thing-as-the-fastest-code/
+* http://linux.slashdot.org/story/14/04/04/1523231/linus-torvalds-suspends-key-linux-developer
+* http://ask.slashdot.org/story/14/03/26/0116227/ask-slashdot-what-do-you-consider-elegant-code
+* http://games.slashdot.org/story/99/10/15/1012230/john-carmack-answers
+* http://tech.slashdot.org/story/14/03/25/186232/microsoft-posts-source-code-for-ms-dos-and-word-for-windows
+* http://developers.slashdot.org/story/14/03/28/2110226/toward-better-programming
+* http://interviews.slashdot.org/story/14/04/06/2344201/interview-john-mcafee-answers-your-questions
+* http://ask.slashdot.org/story/14/04/09/0341246/ask-slashdot-which-nosql-database-for-new-project
+* http://linux.slashdot.org/story/14/04/10/1737218/ask-slashdot-how-to-start-with-linux-in-the-workplace
+* http://it.slashdot.org/story/14/04/10/1343236/theo-de-raadts-small-rant-on-openssl
+* http://blog.wolfram.com/2014/02/24/starting-to-demo-the-wolfram-language/
+* http://www.aosabook.org/en/gpsd.html
+* http://developers.slashdot.org/story/14/04/15/2257228/how-devops-is-killing-the-developer
+* https://www.jeffknupp.com/blog/2012/03/31/pythons-hardest-problem/
+* https://www.jeffknupp.com/blog/2013/06/30/pythons-hardest-problem-revisited/
+* http://www.drdobbs.com/cpp/the-nightmare-of-binary-compatibility/240166914
+* http://www.drdobbs.com/architecture-and-design/addressing-the-corruption-of-agile/240166890
+* http://www.drdobbs.com/architecture-and-design/lightweight-virtual-environments-in-pyth/240167069
+* http://www.drdobbs.com/architecture-and-design/how-i-came-to-write-d/240165322
+* ask stackoverflow: are linux and android binaries compatible?
+* http://stackoverflow.com/questions/6334830/php-possible-to-automatically-get-all-posted-data
+* How are OSes compiled?
+* Static lib depending on another dso? do you inherit the dependence when you link with the static one? answer: a resounding YES.
+* re-read pragprog chapter: temporal decoupling. p193.
+* Re read the ood/oop entries cppfaq
+* Can you offer more public stuff on subclasses? yes you "can". i really dont like the idea though (me, box) -> dependency inversion principle.
+* "substitution" is about behaviour.. what was that again? (cppfaq?)
+* Re read principles of ood uncle bob
+

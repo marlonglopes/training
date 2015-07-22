@@ -1,0 +1,157 @@
+
+BASH OVERVIEW, second take
+* stdin = 0, stdout = 1, stderr = 2. the ampersand '&' is an alias for both stdout and stderr
+* the pipe '|' is used to connect the stdout of leftwards executable into stdin of rightwards executable
+* the '>' replaces file contents, '>>' appends.
+* to put some commands in serial mode (execution order) use a ';' to separate them.
+* to join two commands, but requiring the first to succeed for the second to execute, use '&&': rm idontexist && touch idontexist will not create the file
+* conversely, to join two commands, but requiring the first to FAIL for the second to execute, use '||'
+* strings enclosed with double quotes are subjct to globbing: the expansion of variables and wildcard stuff. single quotes are not. backward quotes are executed as bash commands, and the contents of the command's stdout are replaced there.
+
+* variables: you can set variables as simple as : 'myvar=val'. then you an reference them with a $.
+* you dont have to add support for bash variables for your app: doing a C++ app where you cout << argv[1]; will work with bash variables if you do "myapp $myvar".
+* "myvar=val" sets a shell variable. "export myvar=val" sets an environment variable. on my slackware box+bash i didnt notice much difference between the two though.
+
+OVERRIDING COMMANDS WITH FUNCTIONS (INSTEAD OF ALIASES)
+* say you wanted to make sure ssh only gets used with a custom port, in this machine - perharps port 9999. you could add to your "~/.bash_profile" (it's "~/.bashrc" on my slackware box) the following bash snippet:
+
+function ssh {
+    /usr/ssh -p 9999 $*
+}
+
+it's like setting a bash alias.
+
+
+CEE basics (command execution environment):
+if your cpp app reads envvars, this is what happens under the good: you open a bash session (console). then you go `export MYVAR=helloes`. then you go `myapp -options blabla`. "myapp" is able to read the MYVAR envvar because: when you export an envvar, it becomes part of the console's process environment. then, when you run the command, the console forks itself, then switches to then myapp text image, but retains the environment, thus also getting a copy of the envvar MYVAR that on the first instance belonged to the console only.
+
+std/default/common envvars:
+
+IFS: This variable lists the characters that the shell considers to be whitespace characters.
+PATH: paths that the environment recognizes. by adding some path to this envvar, everything inside of it can be run by its name. good for adding folders with custom scripts (ie. extensions to the bash, kind of, like my planned delfile command, or the python classmaker)
+HOME: the user's home
+PWD: the current working directory
+UID: user id. root is always zero.
+
+useful for console emulators:
+$#    The number of command-line arguments to the current command (changes after a use of the shift command!).
+$-    The shell options currently in effect (see the 'set' command).
+$?    The exit status of the last command executed (0 if it succeeded, non-zero if there was an error). (do `echo $?` to check the exit code for the last run shell script or app)
+$$    The process id of the current process.
+$!    The process id of the last background command.
+$*    All the command-line arguments. When quoted, expands to all command-line arguments as a single word (i.e. "$*" = "$1 $2 $3 ...").
+$@    All the command-line arguments. When quoted, expands to all command-line arguments quoted individually (i.e. "$@" = "$1" "$2" "$3" ...).
+
+redirection:
+0  stdin
+1  stdout
+2  stderr
+&  copies the file descriptor
+
+therefore:
+2>1                 redirects stderr (2) to a file fnamed 1 (which is probably not what anyone would want)
+2>errors.txt        redirects stderr (2) to a file fnamed errors.txt
+2>&1                will print stderr through stdout. since stdout is connected to the monitor, this will basically print both stderr and stdout to the screen and nothing else, just making stderr go through stdout's file.
+dmesg >> kernelout.txt      the double '>>' appends contents to the end of a file.
+
+
+operations:
+* more complex variable manipulation must be done using the let command. like so: `let "counter=counter+1"`
+* lots of operations are available. +=, modulo, bitwise operators, etc etc
+* variables can also be declared as hex, using 0x like cpp.
+
+named pipes:
+mkfifo mypipe
+on terminal A: `cat < mypipe`
+on terminal B: `echo "surprise!!" > mypipe`
+
+verbose (debugging mode)
+run a script like so `sh -xv myscript.sh`
+this will print line by line
+
+internal variables:
+
+$BASH        path to the bash binary itself (eg. /bin/bash)
+$BASHPID      process id of the running bash instance
+$EDITOR        preferred editor
+$MACHTYPE      machine type
+$HOME        user home
+$USER        user name
+$HOSTNAME      pc hostname
+$PWD        pwd's dir (current dir)
+$OLDPWD        last pwd's dir
+$OSTYPE        will print linux-gnu on linux
+$PIPESTATUS      Array variable holding exit status(es) of last executed foreground pipe.
+$RANDOM        internal function: returns random number in the range 0 - 32767.
+
+declaring/typing variables
+* using the declare command, its possible to make readonly (const, final) variables, array-typed variables, integer-typed variables, and functions.
+
+declare -r var    readonly (const)
+declare -f func    function
+declare -i num    integer
+declare -x symb    symbol to be exported outside this script
+
+string manip:
+* many ways to work with default value substitution for parameters/vars, like ${VARNAME-"defaultvalue"} and more.
+* ${#VARNAME}     tells the string length in characters
+* ${var#Pattern}   Remove from $var the shortest part of $Pattern that matches the front end of $var.
+* ${var##Pattern}   Remove from $var the longest part of $Pattern that matches the front end of $var.
+* ${var%Pattern}   Remove from $var the shortest part of $Pattern that matches the back end of $var.
+* ${var%%Pattern}   Remove from $var the longest part of $Pattern that matches the back end of $var.
+
+restricted shell:
+* by issuing set -r you begin restricted mode. you cant do afew things while in it, like cd-ing away, changing some envvars, and more.
+
+JOBS
+the jobs command will list running jobs...
+by running something with the ampersand at the end "./bootstrap.sh &" it goes to the background. it can be brought to the foreground with fg.
+a job running on the foreground can be sent to the background with ctrl+z
+to run a script automatically after some heavy job finished:
+
+1. run/start the job/process in the background (ex: "./heavyjob.sh &")
+2. then set a waitpid on the job pid: "bash$ wait 1234; postanalysis.sh"
+
+to simply run many scripts/jobs in serial mode (one after the other, but waiting till the previous one completes):
+
+1. just run the all separated by semicolon: "bash$ testfoecho.sh ; ./secondscript.sh ; yetanother.sh"
+
+BASH BUILT IN FUNCTIONS
+* bash often comes with several predefined helper functions (not sure where they are defined). they can be probed with "set | less"
+* one interesting example: _parse_help strace: this will run strace ($1 in reality) with --help as parameter, then parse it and list it. there are many more handy functions for system info and string manip and the like.
+
+CONDITIONALS
+
+basic:
+if [ -f file ]; then
+fi
+
+conditions:
+
+file-related:
+-f                                  file exists?
+-e                                  file exists?
+-a                                  file exists, and is a regular file?
+-b                                  file exists and is a block special file?
+-c                                  file exists and is a character special file?
+-d                                  exists and is a directory?
+-g                                  exists and has setgid?
+-h                                  exists and is symbolic link?
+-r                                  file exists and is readable?
+-s                                  file exists and size is greater than zero?
+-t                                  is open, is a File Descriptor, and refers to a terminal?
+-w                                  file exists and is writable?
+-x                                  file exists and is executable?
+-L                                  exists and is symbolic link?
+-S                                  file exists and is a socket?
+
+string-related:
+
+-z                                  lenght of string is zero?
+-n                                  lenght of string is non zero?
+
+TEXT EDITING:
+<C-h>                               delete character (backspace)
+<C-w>                               delete word
+<C-u>                               delete back to start of line
+

@@ -1,0 +1,164 @@
+
+NOSQL:
+more frequently used in combination with tradicional RDBMSs that are ACID compliant. used when you need to optimise your solution (say you have tons of read/writes in just one table)
+there are some efforts to add scalability to mysql for example, so nothing needs to be done in the user-side.
+google's bigtable is interesting. and so is voltdb. mongodb is getting traction as well.
+
+DATA vs INFO
+* its important to differ between the both - its a matter of good terminology.
+* data are just the bytes residing in memory.
+* information would be  also the name of the variable that holds the bytes - and therefore you (supposedly) know what it is.
+* differing axiom: data is what you store (the bytes), information is what you retrieve (the variable names).
+
+NULL vs. "NA"
+* use NULL for missing information - a zip code for example, when your customer doesnt know his zip code. it's a missing information; that is, it exists, but you are just unable to know it at the moment you were populating the database.
+* use "NA" or "Not Applicable"  when the information does not belong to the record altogether, for example: a PATIENTS table with a HAIR COLOR column, and youre inserting a bald person in there. in OOP, that would be a liskov breakage - youre "implementing" a record to an unfitting intterface. IMPORTANT: in this example, "NA" means "Not Applicable", instead of "Not Available" - this is important to note because my previous mental definition of "NA" was not available, however, not available would be the job of the NULL - used when the information is unknown/unavailable.
+* null values inside your table can be troublesome: if you have a table where you store numbers and you do some math on them, the results will be invalid. and likely the RDBMS wont tell you about it.
+* nulls also have a negative effect on agreggate functions. if you allow nulls in a column, you cant use COUNT(YOUR_COLUMN) for example.
+
+TABLE TYPES
+* data tables: what I sometimes call a POJO or DC (data container) - your typical OOP object container that you fill up with getters and setters.
+* lookup table (also called validation tables sometimes, thouh i dislike this use because it sort of implies a instruction-natured thing, which it is not): this would be the equivalent of a ENUM, pretty much. contents in these tables change less often. example of lookup table: Cities. you might have another table called Address, and in the Address table, you have a City column, which referennces a record in the City table.
+* lookup tables can be also called validation tables in the sense that you might use them to validate some data youre trying to put in another table - instead of just putting a lookup table record reference in your other table. i like the use-a-reference option more.
+* virtual tables: also called views. these are also tables but they themselves dont store any data at all, they just fetch data from other "base" tables. thinking of them as tables (whether you want to use  the qualifier "real" or not - might be alittle confusing since theyre called virtual tables eh?) will allow you to see some interesting possibilities for flexibility - you can create a virtual table off some base tables, and the virtual table will be saved in the RDBMS. then, on your application, you can do SQL queries into the virtual table instead of the base tables, this allows for simplified queries in the application - and requires less knowledge of the database schema too.
+* linking table (aka. associative table): tables that express/defines relationships.
+* there might be also calculated tables: a special kind of data table. these are populated by the database engine (usually with functions) instead of by the user.
+
+LINKING TABLES
+* tables used to express many-to-many relationships.
+* say youre expressing a M:N relationship between Orders and Products. the linking table should be aptly named OrdersProducts - sort of a rule of thumb.
+* you do them by taking table A's primary key and table B's primary key and putting them side by side, where they will be both: 1) a composite primary key and 2) separately, foreign keys to their originating tables.
+* it is sometimes accetable to stuff linking tables with "refactoring leftovers" - namely, when doing some db design refactoring, you might end up with orphaned fields that were misfits of an improper relationship. these may end up on the linking table.
+
+KEYS
+* keys can be compound/composite keys: when theyre composed of more than one field.
+* primary key, the stored data (the value stored!): uniquely identifies a record in the entire database.
+* primary key, the field name (agent_id, school_id): uniquely identifies a table in the entire database.
+* every table should have a primary key field.
+* foreign key: a pointer to another table's primary key field. this is how you establish relations between records: have a record hold the primary key of another record (that resides in another table, usually) in a foreign key field.
+
+INDEX
+* hernandez notes that keys and index are sometimes mistaken - these terms are misued, often one is taken for the other. this is wrong.
+* index is a vendor-specific "physical" mechanism/implementation to help speed up processing. hernandez notes that it has NOTHING to do with the logic structure of your database.
+
+RELATIONSHIP TYPES
+* also known as cardinality, there's three of them.
+* the "one" side (as in, one-to-one, one-to-many, etc) typically points to primary keys, and the "many" side typically points to foreign keys
+
+* one-to-one: a record in a table is linked to only one other record in another table. one way to implement this is by making them parent and child. the parent does not need to do anything special - all it needs is its primary key. the child table will make its own primary key the same as the parent table's primary: the child's primary key is actually a foreign key referencing the parent's primary key.
+
+alt-wording: one-to-one is when you create another table with the same primary key as another. the child table's primary key is actually a foreign key to the parent table's primary key.
+
+* one-to-many: when a record in a first table can relate to many records in a second table, but a record in the second table can only relate to one record in the first table. the parent-child model can also be used here to illustrate the idea. to implement this type of relationship, basically you just create a special field in the second table to house the parent's primary key - effectively becoming a foreign key there. let it be very clear that the child table will have its own primary keys.
+
+alt-wording: one-to-many is when you create a foreign key field inside some table (being this field NOT this table's primary key - that would be a one-to-one) and make it point to some other table's primary key. the table receiving the foreign key is on the "many" side of the relationship.
+
+* many-to-many: when a record in a table can be related to many records in a second table, and vice versa. this is implemented with a linking table. in the linking table, you'll have two fields: the first table's primary key and the second table's primary key. within the linking table context, both these primary keys are foreign keys, obviously. these two fields serve two roles: together, they both form the composite primary key of the linking table, and separately, they are just foreign keys.
+
+alt-wording: many-to-many is when you create a linking table to represent the relationship between two tables. this linking table carries each of the table's primary keys - as foreign keys. together, they can be considered as a composite primary key.
+
+TABLE PARTICIPATION
+* refers to the relationships tables have - mandatory participation or optional participation. theres also the degree of participation, which refers to just how much the tables's records can link to eachother - that is, minimum and maximum number of relations between certain two tables's records.
+
+FIELD SPECIFICATION (sometimes also called DOMAIN)
+* general: the field's name, description, and the table it belongs
+* physical: the primitive datatype (int, char, etc)
+* logical: required value, range of values, default value etc.
+
+DATABASE DESIGN PROCESS
+* hernandez proposes a very interesting cookbook-style list of items for his database design process - it is surprisingly similar to my own when designing software, as it is iterative in nature. keep checking it out every so often because it's gold.
+* of particular interest is the fact that one of the steps is to devise views for more convenient use: you interview your users, see what they need: some of them will be more interested in summaries and such - others in specific smaller, more localised things.
+* needless to say, as you go, you keep reviewing your design to make sure youre enforcing data integrity thruout your db.
+* one very important thing to keep in mind when interviewing participants for gathering requirements for a new database design, is to know whether this user uses data that he himself manipulates alone - in some cases, people will be accessing a part of the database that is influenced by other users - example: a report assistant will be reading from a orders table and a customers table, perharps.
+* as I do with software, its also interesting to try to plan for the future when designing a database - dont make "constirpated" database designs, decouple it in components as much as possible, so you can extend it later. remember to try to assess participants during interviews for future requirements.
+* hernandez notes that after you produce your initial design (I would use a UML-like approach to do that), you go on and separate your designs in what he calls a Prelimirary Field List and a Calculated Field List. the PFL is for user-inserted data, and the CFL is for database-generated data - the fields that will be written by the database (likely) with the vendor's functions (again, likely) such as sum() and date_diff() whatever - the key point is that it's interesting to spearate user originated data and database-generated data, examples of CFL fields are: totalsum, amount, etc.
+
+* when defining tables, you'll basically want to first define the POJO/DC-like tables, then the relationship tables, and then calculated tables.
+
+* when modelling databases, one of your central objectives is to model only unchangeable traits into tables. this reminds me of the origins of VLANs - when it became necessary to decouple IP addresses from physical machines, when people started moving around the office (and as such, started using different switches to access the network). following this example, a table named Southwest Region Employees is a bad table - it would be necessary to move around records to other tables if an employee in that department moved to another one. worse, someone would have to mantain knowledge of the database structure whenever changing it, to keep such tanbles synced. as such, aim for applying the  OOP Open Closed Principle, make your database decoupled, and extensible - but not needing to be modified.
+
+* the same Single Responsibility Principle applies to tables: they should only represent one subject/have only one responsability.
+
+* hernandez notes that it is a good idea to name your tables in the plural form. well, that does make sense because within databases, when defining a table, youre like defining a POJO/DC (by means of definign its fields) and also a collection proxy/vector/arraylist for your newly defined pojo/dc.
+
+* when modelling tables, remember to draw it: its fields, include a meaningufl table name, and also a proper descrition of the table. the description must make clear WHY is that table important, and how it supports the database's purpose (mission statement).
+
+* conducting iterative interviews (in different stages of database design) is like further refining object interfaces. for example, you could have, in the final stages of database design, a table named Students, and you'd be tempted to desc it as a private individual visiting a class. however, this desc would shortcome when trying to introduce a one-time visitor (who is not a student, but perharps a QA/consultant/whatever).
+
+* when defining fields: make sure to make them singular, as opposed to plural when defining table names. if you find yourself wanting to name a field as plural, think about refactoring your db design.
+
+* good field design (fields = columns): contains only a single value, no composite or calculated values. it cannot be partitioned into smaller fields (again, is not composite). it does not depend on other fields (not a concatenated/calculated field). is unique within the entire db structure.
+
+ELEMENTS OF AN IDEAL TABLE
+* it repesents a single subject/event; the table itself constitutes a container/is a collection of that specific subject/event.
+* it has a primary key
+* it does not have multipart/multivalued fields.
+* it does not have calculated/concatenated fields. alt def: it has only one data source, and that would be typically the user
+* it does not have purposeless duplicated fields (I say purposeless because, according to hernandez, sometimes - seldom -  duplicate fields are excusable for afew particular cases, like relating tables together.
+*  it contains, if at all, only an absolute minimum of redundant data.
+
+TABLE KEYS
+* when designing tables, you'll eventually have to elect one field (or create a new one specially for this purpose) to be the primary key. i already knew it had to be something unique, but it never crossed me that you have to be extra careful not to expose sensitive info - think using tax codes (CPF) as a primary key - even though it is unique, it might not be available for foreigners AND it's also a security violation.
+
+ELEMENT OF A PRIMARY KEY (taken from hernandez's book on db design)
+* it cannot be a multipart field
+* it must contain unique values
+* it cannot contain null values
+* its value cannot cause a breach of security - dont use sensitive fields as primary keys! like a salted-hashed password (omg...)
+* its value is not optional in whole or in part
+* it comprises a minimum number of fields necessary to define uniqueness
+* its value must uniquely and exclusively identify each record in the table
+* its value must exclusively identify the value of each field within a given record
+* its value can be modified only in rare or extreme cases
+
+* additionally, primary keys must uniquely the tables they belong across the whole database - no repeated primary keys in different tables should happen. theres an exception to this rule: subset tables (yet to be defined) MUST share primary keys with their parent tables.
+
+SUBSET TABLES
+* tabular inheritance/extension, eh?
+* well, hernandez called these subset tables, but i think this is a misnomer: from a different perspective, its more of a SUPERset.
+* its like public inheritance, where you offer even more public interfaces in the derived classes.
+* in database parlance: the subset (superset?) tables are a way to extend tables - or rather, to "attach" a table to another.
+* this is where you reuse a parent's table's primary key. you create another table, which will store the same primary key as the parent table.
+* think having a Products table, and a Services table. services is a kind-of product. then, you can "attach", Services semantics (data, really) to a Products table's record. this act would be like defining one record in particular as a specialised implementation of Products - the Services table in this case.
+
+SELF REFERENCING RELATIONSHIPS
+* tables can also have "recursive" relationships - that is, its records relate to other records in the same table.
+* like other relationships, these can be one-to-one, one-to-many, and many-to-many.
+
+example: a Members table (taken from hernandez's book)
+fields: member id (pk), firstname, lastname, sponsor id (fk) 
+
+* in this table, the sponsor id is a foreign key that stores primary keys from the Members table (itself). this is a one-to-one recursive relationship.
+* also in this table, this could also be a one-to-many recursive relationship: if you dont implement rdbms constraints in this table, nothing will stop you from having one record be the sponsor for more than one peer record.
+
+* there can also be self referential many-to-many relationships. one valid example would be a Staff Member table. in this table, records could reference eachothers to define who supervises who. any staff member could supervise a number of other staff members, and these in turn could also supervise other staff members. and like "regular" relationships (by regular i mean, non recursive), you would need another table just to express this self referential relationship.
+
+RELATIONSHIP CHARACTERISTICS / RULES
+* when defining a relationship, you should define a few rules regarding it;
+* a deletion rule must be defined to know how record deletions should happen, to avoid orphaned records
+
+DELETION RULES
+* deny: record cant be deleted - they will be put as inactive instead.
+* restrict: wont deletea record if it has a relationship with another record. you'll have to ask the RDMS to delete both explicitly.
+* cascade: related records are automatically deleted.
+* nullify: will delete the record. if it is related to another (ie. another table has a FK to this table) then that FK will be set to null.
+* set default: same as nullify, but instead of using null, will use whatever logical default is defined for this FK.
+
+BUSINESS RULES
+* this basically determines how the data is supposed to be computed - ie. based on what kind of information you should be basing your retrieval/writing data decisions.
+* two kinds: database-enforced and application-enforced. the db ones can be defined by means of SQL code - constraints to define cardinality etc. the app one is defined in your application code.
+* one example of a business rule: a preferred user gets 15% discount. this cannot be just "grafted" into a Customers table, at least not elegantly.
+* when designing a database (the blueprints), you should most certainly also list very carefully what your business rules are.
+* after defining constraints to enforce a business rule, it is necessary to try to prove your design - just as you would with a coding project. test your contraints to see if the business rule will break.
+
+VIEWS (aka VIRTUAL TABLES)
+* might aswell be called "saved queries" - which makes sense.
+
+* they dont have primary keys - but if by any weird chance you want a primary key, then use/compose one from the tables you draw data from.
+* can be of three types (basically):
+* data view: can be used to retrieve and also store data in a custom way - but this depends on your rdbms impl, so check the docs.
+* aggregate view: used for transformations; this is where you can include calculated fields - by drawing data from "real", base tables.
+* validation view: to me it sounded pretty much like a data view, but who knows; hernandez says it is useful to provide access-restricted views for different users who have different UACs (user access controls)
+
+* it is also possible to define filters (in db parlance, hernandez mentions that filters might be called criterions) to filter what your view fields show - think of having a CustomerState field in a view table, and you only want the ones from Quebec.
+

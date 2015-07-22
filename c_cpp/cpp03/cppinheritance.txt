@@ -1,0 +1,76 @@
+
+CPP03 INHERITANCE
+* in cpp03, there is no ctor and dtor inheritance. 
+* in a cpp03 class hierarchy, all ctors and dtors are called. dtors are called in reverse order.
+* when not present, the compiler automatically (atleast is expected to) creates a default empty ctor, copy ctor, eq op and dtor. (4x defaults that one should always provide!)
+
+PUBLIC INHERITANCE
+* liskov says it all
+* a common mistake: trying to privatize/revoke/hide inherited public members from a base class. this is a huge and terrible mistake to make; it basically breaks liskov (substitutability), as in: a client might expect to use a derived class based on the public interface of the base.
+
+SAMPLE1
+class base;
+class derived1: public base
+class derived2: public derived1
+
+derived2 inst = new derived2()
+delete inst
+
+* every ctor will be called, starting by base's. after that, every dtor will be called, starting by derived2's (and all the way back to base's)
+
+SAMPLE2
+class base;
+class derived1: public base
+base inst = new derived1()
+delete inst
+
+* if the dtor in base is nonvirtual, then only base's dtor will be called. if it is, then derived's dtor will also be called. this is only useful if deletion through a base pointer is desirable design-wise.
+
+SAMPLE3 (public virtual dtor OR protected nonvirtual)
+* if deletion through a base pointer is not desirable, the solution is to make the base class's dtor protected AND nonvirtual. its not necessary to make them virtual here because the client will have to (downcast to/directly use) the derived type anyway.
+
+INTERNAL SCOPE (PUBLIC, PROTECTED AND PRIVATE INSIDE A BASE CLASS)
+* use the public: area of a base class to specify interfaces for clients.
+* use the protected: area of a base class to specify interfaces for derived classes.
+
+INHERITANCE LANDING CHART (what happens with members of a derived class when theyre inherited on a derived class)
+private inheritance:
+* only the derived class is aware of the inheritance
+* public members of the base:       become private on the derived class
+* protected members of the base class:      become private on the derived class
+* private members on the base class are not inherited
+
+protected inheritance:
+* the derived and its children are aware of the inheritance
+* public members of the base:       become protected on the derived class
+* protected members of the base class:    become protected on the derived class
+* private members on the base class are not inherited
+
+public inheritance:
+* everyone is aware of the inheritance
+* public members of the base:       become public on the derived class
+* protected members of the base class:    become protected on the derived class
+* private members on the base class are not inherited
+
+virtual something inheritance:
+* atones for the dreaded diamond problem / makes sure only copy of a common ancestor is available
+
+* private inheritance is good for code reuse, because it does not create a "is-a" relationship. it wont allow much code sharing in hierarchies though, because the privately inherited stuff becomes private in the derived. so its like the chinese proverb: the wealth does not survive for three generations.
+
+TOPICS TO STILL COVER
+* peculiarities of multilevel inheritance
+
+PRIVATE INHERITANCE
+* only the deriving class itself is aware of the inheritance
+* is-implemented-in-terms-of relationships
+* used to reuse code (lousy design choice though)
+* a legitimate use would be to access a base class's protected data/override protected interfaces
+
+* sometimes it is used to apply mixins into classes. its a legit use case i believe.
+
+STATIC METHODS
+* are never virtual in C++
+
+PRIVATE VIRTUAL METHODS
+* used for implementing template method steps ("dont call us, we'll call you"). the steps are defined as private because they are not part of the interface of a class - they are a customization point.
+

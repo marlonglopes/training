@@ -1,0 +1,762 @@
+
+UNICASTING
+* one-to-one transmission, may or may not include other machines inbetween (routers for example)
+
+MULTICASTING
+* a one-to-many transmission, but the many is a selected subgroup, instead of all possible recipients.
+
+BROADCASTING
+* one-to-many, unselected.
+
+PAN / BLUETOOTH
+* pc peripherals such as keyboards and mouses that use bluetooth are actually establishing a small network called a PAN (personal area network) with the computer as the master and the peripheral as the slave.
+
+BASIC TERMINOLOGY / PROTOCOLS, LAYERS
+* there are layers in networks (physical, session etc). each layer has some protocols. same basic idea as code modules: one layer provides an interface/services to the upper layer. the interface implements the protocol.
+
+* a set of protocols is a network architecture, may be also called a protocol stack on different pre-phrasings.
+
+* some lower levels protocols maye be/often are implemented in hardware.
+
+* datagrams: unreliable messages (analogy to telegrams) - because there is no acknowledgement handling.
+* streams: connection-oriented, sent messages boundaries are not preserved.
+* ethernet itself is unreliable: it is up to the higher levels to provide reliability.
+
+CONNECTION-FUL vs CONNECTION-LESS:
+* to start off: connection-less is like email. you can get a reply, or maybe not. connection-ful is like a voip call. you do get a reply first, before you can transfer anything (the ACK).
+* suppose you'd like to sent a file to someone. with connection-less, you could start sending emails with pieces of the file (suppose it is very large). remember the ethernet is unreliable. you would have to implement tracking and ACKs to send the correct slices in the correct order, and re-send the ones that were lost (if any). you'd basically end up re-inventing/re-implementing a connection session on an even higher level.
+* connection-less is good for stuff you dont really need an answer, and the message is small enuff.
+* connection-ful is when you want the protocol stack to automatically take care of maintaining the session (resending lost packets etc).
+
+* (the above is older understanding)
+
+GUARANTEES TERMINOLOGY
+* connection-oriented means guarantee of packet order (the receiver will receive packets in the same order you sent them - TCP is an example) connection-less means the order is not guaranteed (UDP is an example)
+* reliable means the packet will arrive, or you will be notified of it (TCP is an example). unreliable means you dont have such guarantee (UDP is an example).
+
+SERVICE vs PROTOCOL
+* the service is the client layer point of view, the protocol is the providing layer internal mechanisms and policies. the client layer cares not about the protocol - it does not see it - the protocol itself is entirely implemented in the providing layer.
+
+* in other words, the service and the protocol are entirely decoupled; one layer can completely replace its protocol, as long as it maintain the same interface (think OOP abstractions).
+
+ISO OSI MODEL
+* it is not a network architecture, but merely a "model". to be a net arch, it would have to provide the protocols for each layer as well, and OSI itself does not. the ISO, though, does provide standards for each layer, but they are "decoupled" from what they call the "OSI model".
+
+* OSI never happened - nowadays it is just used for describing theory. it was crushed by two elephants (came too late, tcp/ip was already seeing widespread usage).
+
+* it was a huge standard (meters of printed papers !!) and inefficient.
+
+* described services, interfaces and protocols very carefully - which is awesome. it was possible to use OSI to describe future kinds of networks.
+
+OSI LAYERS
+
+application layer:
+* http, quake...
+
+presentation:
+* the idea here was to offer APIs for transmitting abstract data types, instead of a more roots aproach of using sockets and reading bytes from it.
+
+session layer:
+* connections
+
+transport layer:
+* more reliability
+
+network layer:
+* routing
+
+data link:
+* some level of reliability - tracking bits sent to the physical layer. splits packets into data frames to send to the physical layer.
+* the troubles of synced communication starts here
+
+physical layer:
+* the wires, or the air (wifi). sending electrical pulses, thats it.
+
+TCP/IP MODEL
+* when it detects congestion, it slows down.
+* this is the name of the model. the name "TCP" alone is the name of a connection-oriented, stream-based reliable protocol that sits on the transport layer of the TCP/IP model. TCP also handles congestion by adjusting the out-flow threshold and such.
+* also sitting on the transport layer is the UDP protocol, the unreliable, connection-less counterpart of TCP (yes, connectionless).
+
+* cant use this module for anything else than its current protocol stack (TCP, UDP, ICMP...)
+
+TCP/IP LAYERS
+
+link layer:
+* tanenbaum says this is not really a layer (maybe it lacks some internal intelligence), but its more of a interface to the hardware.
+
+internet layer:
+* routing, by implementing the Internet Protocol and ICMP for helping control it.
+
+transport layer:
+* TCP and UDP: reliable and unreliable connections, respectively.
+
+application layer:
+* not much here: gives you a socket, you go on and maintain a session, authentication and etc as you see fit. HTTP, SMTP, Quake, etc. all goes here.
+
+ISP
+* the internet service provider. they compete for users, but cooperate for routing (they are said to "peer" eachother).
+* the path a packet takes depends on the peering choices of each ISP.
+* tier 1 isps, such as at&t and Sprint, operate huge backbones and are the top of the food chain of the internet.
+
+IXP
+* internet exchange point: a large room full of routers. each ISP has atleast one.
+
+BANDWIDTH
+* analog bandwidth is measured in hertz
+* digital bandwidth is measured in bits/sec
+
+CABLE TRANSIMISSION TERMINOLOGY
+* full duplex: traffic flows both ways at any time
+* half duplex: traffic flows both ways, but only one way at a time
+* simplex: one way streets
+
+ON RELIABILITY
+* reliability mechanisms is present on most layers - it is, therefore, built from layer to layer.
+
+DATA LINK LAYER
+* splitting packets into frames, sits on top of the physical layer
+* there are afew techniques for framing. using a byte count flag is very unreliable, for obvious reasons (misleading garbled received payload)
+* another framing technique: using two consecutive flag bytes, and using escape bytes before checking for them. (think "\\"). using escaped bytes is called byte stuffing.
+* there is also bit stuffing, which is more economical. Universal Serial Bus uses bit stuffing.
+* when a sender sends out a frame, it also sets up a timer - for timing out when you don get an ACK in due time. when this happens, it will re-send the packet. to avoid the receiver receiving the same packet twice, a sequence number is also implemented.
+
+* "The whole issue of managing the timers and sequence numbers so as to ensure that each frame is ultimately passed to the network layer at the destination exactly once, no more and no less, is an important part of the duties of the data link layer (and higher layers)." - ast networks, 5ed, p201.
+
+* also implements flow control, to avoid a slower receiver be swamped with data. theres feedback-based flow control (the receiver will report on how its doing), and rate based (the sender will try to derive/guess that). at the datalink layer, there's only feedback based. NICs implement buffering to avoid swamping.
+
+* error treatment: this layer implements error detection codes and error correction codes to treat mistransmissions. error correcting codes are rather complicated applied maths. error detecting codes are checksums, crcs and the like. you will want to use ECC (error correction codes) for wireless, which is notoriously noisy and faulty, and EDCs + retransmission on fiber.
+
+* for EDC (error detection codes) the techniques are 1) Parity bits, 2) Checksums and 3) CRCs.
+
+* part of the responsabilities/protocols defined in this layer are actually implemented in hardware, in the NIC. the rest of it sits on the CPU in a device driver.
+
+* ARQ (automatic repeat request) or also called PAR (positive acknowledgement with retransmission): implements a sequence bit to avoid false positives with retransmissions.
+
+* there are a number of mechanics implemented on this layer's protocols to deal with latency and bandwidth. the problems are basically the same with memories: the more memory and the less associativity, the better *for some cases* - for some other cases, more associativity means LESS performance. this same class of problems happen with the mechanical sentinels of this layer. (see sliding window, stop-and-wait, others)
+
+MAC and MAC ADDRESS
+* Media Access Control is the name of a sublayer of layer 2 (the data link layer). the MAC address is the unique identifier used for controlling access to a broadcast medium (where multiple people may be sending stuff). it is a lower level equivalent of the IP address - at this layer's level, there is no IP address yet, so the MAC is used instead.
+
+* here, the protocols are threeway (or more) negotiations, as opposed to simpler two-party mechanisms, like frame ack and such.
+
+CARRIER SENSE
+* when a sender tries to "sense" the receiver - to see if its busy. commonplace for wired connections, not so much for wireless.
+
+PURE ALOHA AND SLOTTED ALOHA
+* the basis of modern wireless
+* pure aloha: you send frames whenever you need; you get a copy of your frame back to know wheter it got thru or not. if there was a collision, you wait a random time and try again.
+* slotted aloha: you refrain from sending just yet if youre not given a slot by the receiving station.
+
+RESERVATION PROTOCOLS
+* this class of protocols employ a bitmap to eliminate collisions altogether - every station agrees who can transmit next. ownership of the channel is reserved beforehand.
+
+CSMA
+* using contentions to transmit and avoid collisions; you'd be sensing the environment first (carrier sensing) to see if its busy, and if its not, transmit.
+
+MACA
+* multiple access with collision avoidance. instead of doing carrier sensing, this one probes the receiver with a RTS (request to send) and gets treated a CTS (clear to send) whenever possible.
+* it allows a sender to tell whether theres bad interfertence between sender and receiver.
+* key point: three stations, A, B and C. A and B sees eachother, B and C sees eachother, but A dos not sees C. whenever B is sending a CTS to A, C might also get this CTS and gets tipped off on the fact that B will be busy for a little while (because it will be talking to A, which C does not see - but learned about the chat).
+
+ETHERNET
+* originally, xerox only helped standardise it - but were not commercially interested in it. bob metcalfe started 3com to sell ethernet nics and became a rich man. xerox screwed up once more.
+* the ethernet standard does specify a maximum cable length.
+* also does specify the size of the data package at 1500 bytes - basically because RAM was very expensive in 1978. a larger data package size would mean more expensive transceivers.
+
+* is connectionless on the MAC sublayer (connection orientation can/is routinely used on higher layers)
+
+* frames can have between 64 and 1500 bytes of size - those are the standard limits. even gigabit ethernet abide to this basic premise, because all ethernet substd's (eth, fast eth, gb eth) are required to be all compatible with eachother.
+
+WIFIS
+* 802.11 specify a power management bit! look up wifi "beacons"
+
+SWITCHES AND HUBS
+* hubs are just electrical T's. switches read the packet's destination addresses and only forward to the destination outgoing port.
+* with hubs, stations must still sense the link to transmit. every station operates on the same collision domain.
+* switches eliminate collisions entirely
+* switches typically implement a prorietary protocol inside of themselves - that only itself knows about.
+* switches implement a "switching table" - usually by means of a hash table - to determine datalink layer-style routing.
+* this switching table is autoconfigured by the switch; it can either keep a log of what comes in and where it goes; or also do a Spanning Tree Bridge/Protocol.
+
+WIRELESS LANS
+* also implement virtual channel sensing by using a NAV (network allocation vector) - also keeps track of which terminals are busy.
+
+DEVICES
+* on the transport layer, the TCP protocol layer adds its header.
+* the router sits on the network layer. on this layer, the IP protocol adds its header to the packets.
+* bridges and switches operate on the datalink layer (they read the MAC address), on this layer, the datalink layer adds its header and CRC also.
+* on the physical layer, there's the hub, and electric signals
+
+PROTOCOLS FEATURES
+* 802.11 (wifis) has encryption on the datalink layer, ethernet does not.
+* 802.11 has QoS features, ethernet does not.
+
+VLANs
+* frequent changes in departments (people being shoved around an office) made necessary constant rewiring a company's devices. this was no longer desirable: vlans came to the rescue
+* vlans are a way to define a network topology in software.
+* its kind of a gambiarra actually - stuffing a networking/routing responsability right down onto the datalink layer - on the switches and bridges.
+* the IEEE changed the frame header for this - actually it just "extended" it - everything was still backwards-compatible. note that PCs dont need to know about this extension, only the VLAN-aware switches.
+
+LAYERS RESPS. SUMMARY (datalink vs network)
+* the datalink layer is responsible for getting frames from one end of the wire to another end of the wire, no more than just this.
+* the network layer is responsible for getting a packet from one destination to another final destination, a route that may include several intermediary hops.
+
+THE INTERNET PROTOCOL
+* is connectionless - it does not guarantee/checks for packet sequencing/ordering and such, it just routes packets around the network.
+* if the connectionless property is still not 100% clear, think tcp and udp packets - theyre both defined at the transport layer, and the transport layer does not do any ordering/sequencing
+for udp packets.
+
+LAYERS LOCATIONS
+* the physical layer and the datalink layer are both in hardware - the NICs. a NIC must be hardware-designed to operate in a given standard, like ethernet, or atm networks, or else.
+* the network layer and the transport layer are both implemented in software - typically in the OS. addendum: the network layer also sits on routers too, possibvly in software there too.
+* the application layer runs into a process provided by the OS.
+
+QOS AND CONNECTIONS
+* qos is easy to implement with connection-oriented links because resources can be reserved up front, during the connection setup phase.
+
+ROUTING ALGOS
+* there's static routing, where manual routing tables are setup, and dynamic routing, where the router employs a number of algos to setup its own routing table.
+
+* flooding: sometimes its necessary to just broadcast stuff around. packets that are broadcast also get a sequence counter - every router that touches it, increases it. this is used to keep track of duplicates.
+
+* routing algos need metrics for judging which route is better. this could be hops (number of routers) or a measured distance, by using ping or something, and then using that metric with pathfinding on a DAG.
+
+* distance vector routing: each router maintains a routing table and asks their neighbors for feedback. has the count-to-infinity problem: since it implements a weighted DAG for routing, when something goes down, it may take a while till other routers adjust to this fact - it basically responds poorly to bad news, it responds poorly to topology changes that are so common. its no longer commonly used.
+
+* link state routing: the commonplace routing algo as of today. basically the whole topology is shared and known by every router. this algo uses flooding to send around info about itself. it keeps a copy of repeated packets bufferized for future comparison - to see if its getting re-visitors. it also implements a packet age - too old packets get discarded. has a drawback: when routers start making mistakes, the topology being spread around will be incorrect - this is a nonnegligible possibility in large networks. this problem can be managed though.
+
+HIERARCHICAL ROUTING
+* not all routers do have pointers for every other router on the network; so they dont have a whole snapshot of the whole network inside themselves - routers are often grouped by zones, regions, and more. think routing from your house to some other remote place on earth - not even your local ISP has the whole routing table for all other ISPs.
+
+N-CASTING
+* broadcasts are OK for small groups, but expensive for larger networks.
+* there's also multicasting; routers may implement spanning trees that can be dynamically prunned by the participaing routers.
+* anycast routes to a group
+
+A ROUTER HARDWARE DESIGN PRIMER
+* too much router memory means a bell curve for performance graphs; it makes congestion worse, because the accumulated packets will timeout - no network router is an island.
+
+CONGESTION/FLOW CONTROL
+* congestion control means making sure a network is able to deliver its advertised performance - by alleviating some overly burdened regions/zones.
+* flow control means managing the transmission load between a sender and a receiver - if either is slower, they must talk and reach an agreement.
+
+CHOKE PACKETS
+* routers, when detecting congestions, may send a choke packet to an eventual too-fast sender. reminds me of the jam signal that is sent back to a transmitting station when there is a collision within the medium, back in the datalink layer.
+
+RED/ECN ROUTERS
+* RED (random early detection) routers randomly drop packets when the router is getting congested (the early detection). faster senders are probabilistically more likely to have their packets dropped and therefore detect the congestion as well and start slowing down (tanenbaum says that detecting a lost packet is a rather good way to tell whether the link is congested).
+* ECN (explicit congestion notification) is the technique used on the internet. ECN basically sets a Congestion Bit on the Internet Procotol packet header, so that whoever reads this packet, knows its coming from a congested link.
+
+JARGONS
+* jitter means lag/ping time variation. if youre playing half-life and getting bursts of lags, then at that moment the jitter is big.
+
+QOS ALGOS
+* the leaky bucket algo: pre-buffering to amortize jitter. also helps shape the traffic, which reduces congestion.
+* WFQ: weighted fair queuing: using round-robin to decide which packets to into the router's bucket. this specialised version creates virtual frames byte-by-byte to decide which packets go; its got a drawback though: every host gets the same basic priority (by premise).
+
+QOS GENERAL
+* implemented/setup in the router. its possible to define classes - like gold, silver and bronze perharps... by client IP or something.
+* involves reserving network resources for special cases - bandwidth, router cpu cycles, router memory.
+
+EXPEDITED FORWARDING
+* treat most network traffic as normal traffic, and afew special applications as special - these should be expetided; they will expect moving thru the link as if there was no other traffic preset at all.
+
+DIFFERENT NETWORKS
+* beware there are different networks out there. a basic example: networking a ethernet network with a wimax network. wimax is connection-oriented from the datalink layer. there can be a number of other problems - max packet size a very nice example. to interconnect two different networks, one would have to employ network gateways to "convert" packets from one network to another.
+
+* the foundation for multiple networks is still the decoupling of TCP and IP protocols - IP is regarded as the universal packet that every router can read and pass onto almost all networks out there.
+
+PUTING THE PIECES TOGETHER
+* you can stuff a UDP packet into a IP packet and send it via ethernet frames
+* you can also stuff a TCP packet into a IP packet and send it via wifi (802.11) frames
+* you can also stuff a TCP packet into a IP packet and send it via MPLS frames.
+
+ROUTERS vs SWITCHES
+* when facing this recurring doubt, remember switches are datalink layer devices - they only switch around - and routers are network layer stuff - they read the IP packet and route around.
+* so basically, to join two LANs, you would use routers for that - and switches internally on each LAN.
+
+WHAT'S NEEDED TO USE IPv6 ?
+* a compatible OS, a compatible (multiprotocol) router, and ISPs doing their homeworks.
+
+TUNNELING
+* connecting two different networks; the "different networks" here mean networks with differing netowork layer packets - an example would be IPv6 networks and IPv4 networks. one possible scenario: a company has two intermetropolitan offices, both uses IPv6 LANs - they can communicate with eachother by setting up routers that stuff the IPv6 packets inside the payload of a IPv4 packet and send them over the Internet - the receiving router just unwraps them.
+* when tunneling is in effect to join two networks (like in the previous example), the resulting network is said to be in overlay.
+* when paired with encryption, the tunnel effectively becomes a VPN.
+
+INTERNET ROUTING
+* afew problems: the different algos (link state and distance vector) mean different things: its clearly impossible to have the whole internet topology inside one router (as of today - 2014). plus, different operators (ISPs) will have different routing policies - what's a shortest path? less hops, less something else?
+
+* there are special routing schemes for internet routers - see BGP (border gateway protocol)
+* gateway - an older term for "router"
+
+PACKET SIZES
+* ethernet packets (frames) have a limit of 1500 bytes
+* wifi packets have a limit of 2272 bytes
+* IP packets have a limit of (almost) 64kb
+
+MTU
+* it is more correct to say "Path MTU" -> path maximum transmission unit, to make it clear that this is a path's limitation, not a protocol's limitation, as it is usually mistaken. the MTU will basically be the smallest common denominator in the protocol stack.
+
+* when trying to sink a too-big packet (bigger than the final MTU), the router (its usually the router) will have to fragment the packet. re-composing fragmented packets is rather complicated.
+
+* when inter-networking, packets may find themselves entering zones with smaller MTUs - this is undesirable.
+
+PACKET FRAGMENTATION
+* IP uses nontransparent fragmentation: the reassembly is only done in the final host, not in any intermediate routers.
+
+PATH MTU DISCOVERY
+* telling beforehand what is the smallest MTU on the path we want to traverse - kind of like pre-traversing a graph to check for the edge's weigths before any real transmission actually takes place - think ford-fulkerson.
+
+* works by sending a probe packet at setup time; when too-big happens, routers drop the packet, returning an error packet - basically.
+
+PROTOCOL DESIGN
+* tanenbaum puts a good list of network protocol design considerations on his networks book, see chapter 5.6
+
+PACKET SIZES IN PRACTICE
+* IP packets max size is almost 64kb but in practice they are almost always send as 1500 bytes max - so as to fit a ethernet frame payload.
+
+THE IP PACKET
+* has a packet limit of about 64kbs
+* is a datagram - at this level, there is no ordering guarantee (connectionless)
+* fixed header at 20 bytes (IPv4)
+* are transmitted big-endian style. little endian machines need to convert the packet in software.
+* a header highlight: the differentiated services field - this is how you'd have your routers setup to account for packet class (gold silver bronze or something else)
+* another header highlight: the protocol field - specifies which transport protocol assembled this packet - so the receiver knows which OS procedure call to hand over the packet to - how did I not anticipate this one before; the IP packet would have to carry info about what higher layers are supposed to treat the packet, ofcourse.
+
+THE IP ADDRESS
+* the four octets
+* if you have a PC with two NICs, you'll have two IPs. routers that connect bigger networks often have multiple IPs. the easiest way to understand this is to see IPs as the address of one network interface (one NIC) - in greater detail, the NIC actually only has a MAC address, and all the network layer processing stays in the OS, but for every NIC, there will be a unique IP address for inside a given network.
+* unlike ethernet addresses, the IP address is hierarchical
+* the hierarchical property is what makes the Internet scallable - routers dont need to remeber all hosts on all networks.
+
+* 255.255.255.255 is a broadcast address to the current (?) network.
+* the loopback address is actually 127.x.x.y, its not fixed at 127.0.0.1 - any address sarting with 127. will not be put on the wire, instead will be treated as an input packet.
+
+DEFAULT-FREEZONE OF THE INTERNET
+* the zone of the Internet where all routers need to know how to forward packets to all others. "advanced routers".
+
+NAT (NETWORK ADDRESS TRANSLATION)
+* usually integrated on the router, atleast for consumer devices.
+* inside the router/nat box, translates an incoming IP packet to an internal IP address (to a LAN IP address, typically) based on the IP packet's header's transport layer field AND port field. could be also interesting to actually do some applayer filtering too.
+* NAT wouldnt be necessary if the IP packet's header also had something to identify the original sender (its class C address, maybe, or some applayer-defined identification)
+* NAT weaken layer cohesion - layers become coupled. the basic principle of layering is that no layer can make assumptions on what another puts on the payload.
+* NAT disallows users from using other transport protocols than TCP or UDP - on the more popular implementations of NAT, that is.
+
+IPv6
+* has only 7 header fields, instead of the 13 for  IPv4
+* the header has 40  bytes
+* the len field indicates the payload len only, not the total len (including the header) as it is for IPv4.
+* has a field named Next Header, indicating the presence of extension headers, such as QoS (differentiated services), transport layeer protocol and the like.
+* the addresses are fixed at 16 bytes.
+* has no checksum (whereas IPv4 does): they discarded it because: a) the datalink layer already has a checksum b) it was a major expense in IPv4 - computational cost, for all routers everywhere c) applications that really need data integrity will check it themselves, so it was likely redundant.
+
+ICMP
+* ping's protocol
+* has many response messages you can get from routers.
+* time exceeded is when the packet's time-to-live expired (this means too many hops nowadays)
+* parameter problem means invalid value on the header.
+* source quench is the router feedback for too-fast senders - so they're supposed to slow down alittle - its not commonly used nowadays, with congestion being mostly treated at the transport layer by means of packet loss detection and more.
+* redirect means the router is telling the sender this packet was probably not really meant for it - so go find a better router. this is a security concern though, as an attacker could introcude a malicious router on a network and have it and start messing things up.
+* echo/echo reply is the ping thing.
+* timestamp request/timestamp reply self explanatory
+* router advertisement and router solicitation: router's lobbying/networking/neighboring/making friends.
+
+TRACEROUTE
+* traceroute works by sending packets to a destination with incremental time-to-live field, so as to get a TIME EXCEEDED response packet by each router along the path.
+
+ARP (ADDRESS RESOLUTION PROTOCOL)
+* a method to map a network layer address (ex: IP address) on the datalink layer.
+* it is used to deploy multi-access networks.
+* it is possible to send out an ARP request to find what's the MAC address of an IP address.
+* on linux machines, the ARP command can be used to track down offending duplicated-IP machines.
+
+MPLS
+* is often used to go from a router to another (this is datalink layer stuff - it does not read the IP addresses). this can carry IP packets from a ethernet link to a wifi link, or to a ATM link for examples.
+* it is said to be sitting on the "2.5 layer" - somewhere inbetween the datalink layer and the network layer, because it does some primitive routing - but not by reading the IP packet.
+* stuffs its own 4 byte header on the IP packet. does require specialised hardware to datalink and network around.
+
+ENDPOINT TRANSPORTING, LAYERS RESPONSIBILITIES
+* the datalink layer only transports stuff from one point to another (for cabled networks, from one cable tip to another - NIC to NIC)
+* it is the network layer who's responsible for multihop transportation
+
+THE INTERNET, ROUTING
+* basically, an aggregate of ASes - Autonomous Systems; multiple independent networks. universities, companies, and ISPs, all connecting to Tier 1 ISPs via backbones is what defines The Internet.
+
+TRANSPORT LAYER
+* also sits on the OS
+* a nice way to think of it is that it is responsible for getting packets from a process in the source machine to a process in the destination machine.
+
+* network layer's code runs on routers (but not exlusively! the OS also assembles and disassembles IP packets); transport layer code runs on the user's OS kernel. routers are operated by carriers (atleast for wide area networks). its very important to have a transport layer to provide an extra level of indirection that the user controls and can respond to if it's service is inadequate.
+
+* sometimes, network layer code may also be running on the OS kernel - think of those linux boxes used as routers - freebsd/openbsd comes to mind aswell.
+
+* the transport layer is basically just a redundancy guarantee on top of the network layer. we just can't trust all the world's routers to be reliable. the whole point of the transport layer is to increase the quality of service - by means of retransmissions when necessary.
+
+TRANSPORT LAYER TERMINOLOGY
+* transport entity: whatever entity that implements the transport service interface: TCP, UDP, or may be used as the OS's transport layer itself.
+* TPDU (transport protocol data unit) is an older term. expect only on older texts
+* segment: a data segment - what you send from one transport entity to another. put in a different way: in the transport layer, we have segments, in the network layer, we have packets, in the datalink layer, we have frames.
+* TSAP: transport service access point - a generic term for transport layer endpoints - ports.
+
+ONION AGGREGATION
+* the transport layer creates a segment - which has a header (sometimes this "segment" is called a packet - as in, TCP packet - although packet is "more officially" used for network layer protocol data units.). the transport layer entity's segment goes inside a network layer packet's payload. it all goes inside a datalink layer's frame payload.
+
+THE PORT
+* such as 80  for http and 8080 for https, are transport layer endpoints - just like ip addresses are network layer endpoints. ports can be considered transport layer addressing.
+* some OSes implement service proxies: one proxy listens on multiple ports; whenever it gets a connection on some port, based on its, conf, it spawns the appropriate server to process that request. (inetd on unices)
+
+TRANSPORT LAYER CONNECTION SETTING UP AND MAINTENANCE
+* there are lots fo troubles to set up a transport layer connection; you have to avoid duplicates, and more. for details see Tomlinson (1974 i think?)
+
+TRANSPORT LAYER CONNECTION RELEASE
+* is usually asynchronous - you just hang up, preferably issuing a warning, and then just going off. if the other side does not get the warning, it should time-out.
+* synchronous disconnecting is, as of today, virtually impossible to truly safely implement.
+
+KEEP-ALIVES
+* connection oriented transport protocols (such as TCP) may employ a timeout rule - so yes, it is a good idea to send dummy "keep alive" packets once in a while, depending on your application needs.
+
+CRASH RECOVERY
+* when things go bad and either side of a connection crashes, only at layer+1 you can hope to recover. file transfer is a nice example: if a crash occcurs at the transport layer (lost connection), then at the app layer both peers can negotiate at which byte offset we were at, and take off from there.
+
+TRANSPORT LAYER AND CONGESTION
+* raw network congestion is "mostly" handled at the network layers, by routers. but the internet heavily relies on congestion control implemented by TCP at the transport layer.
+
+BANDWIDTH COMPETITION
+* some applications open multiple tcp connections to compete for data more aggressively.
+
+CONGESTION DETECTION METHODS IN TCP
+* there are multiple, such as cubic tcp (based on packet loss), fast tcp (end-to-end delay) and more.
+
+NETWORK DATA USAGE PATTERN
+* is said by ast to be bursty, basically. as such, using our current networking tech for building purely machine (AI) operated networks might not be ideal.
+
+TCP FRIENDLINESS
+* there is always intense community pressure on newer protocols for being tcp-friendly - that is, competing fairly with tcp for bandwidth. there has been, as ast reports, cases of new streaming protocols causing problems because they competed unfairly with tcp.
+
+TCP THROTTLING AND WIRELESS LINKS
+* some tcp implementations (or engines?) use packet loss for competing fairly. the problem is, with wireless links, packet loss occurs all the time - 10% loss is common. there are ways around this problem though: basically, only losses due to insufficient bandwidth should be used for throttling decision.
+
+WIRELESS TRANSPORT ENTITIES
+* since the channel quality of wireless links is so variable (think mobile microwave ovens), transport layers designed for wired links may deliver poor performance on wireless links - because it is not designed to accomodate and promptly respond to these constant changes. there are transport layers (with implementations of tcp) specifically designed for wireless links.
+
+UDP
+* allows multicasting, whereas TCP does not.
+* is faster because it does not implement retransmission and connection setup schemes.
+* has a 8 bytes header + payload. the header consists of the source port, the destination port, the payload length and a checksum.
+* the main value of using UDP segments (segment is also sometimes called a packet, as in: UDP packet. but its not "academically correct") instead of raw IP packets is because of the ports contained in the UDP segment's header; ports are transport layer endpoints. the IP packet does know which transport layer protocol its payload is carrying, but the network layer wouldnt otherwise know to what port to handover the segment.
+* the lenght field in the header includes the 8 bytes header itself. the max UDP len payload that can be specified on it is 65515, because it must fit a IP packet's payload
+* it is possible to embed the IP address on a UDP segment pseudoheader to help detect misdeliveries, but this violates the protocol stack hierarchy.
+* to be explicit, UDP does not do any of these things: it does not do flow control, congestion control, or retransmission upon receipt of bad segment.
+* What it does do is provide an interface to the IP protocol with the added feature of demultiplexing multiple processes using the ports and optional end-to-end error detection. That is all it does.
+* DNS uses UDP packets. typically? always? not sure.
+
+RPC
+* remote procedure call. its basically calling a procedure (function), that is located in another process (can be another computer, via a network) without coding the details of the IPC (inter process communication). its basically providing a service that encapsulates its IPC mechanism - this mechanism can be just a local IPC - to another process running inside the OS, or a process running in another computer, like querying a database. if you ever create a class that stands as a service layer between programmers and a database, youve just coded afew RPCs.
+* in other words: you call a function. internally, this function communicates with another PC in the network, or with another process in the OS, and return your result. this remote communication mechanism is entirely hidden/encapsulated.
+
+RTP
+* header size of 12 bytes
+* realtime transport protocol
+* an application layer protocol for media streaming. mostly uses UDP underneath.
+* does have its own header; and as usual, its header+its payload goes stuffed inside a transport layer segment's payload - typically UDP.
+* the header has a timestamp value, which can be used to decouple the segment/packet arrival from the actual playback.
+
+TCP
+* header size of 20 bytes
+* implemented typically as part of the kernel.
+* accepts user data, then break it in pieces never exceeding 64kb. in practice, it often breaks data into 1460 bytes in order to fit in a single ethernet frame with the headers - the ethenet frame is 1500 bytes, but the IP packet+TCP headers are together 40 bytes, hence the 1460 payload size.
+* tcp connections are always full duplex (both ends can send and receive) and is also point-to-point (have two endings). tcp does not support multicasting or broadcasting.
+* tcp does not preserve messages boundaries. if a sender does four writes of 512 bytes, the receiver may receive four separate 512 bytes chunks, two 1024s, etc. messages boundaries must be implemented as an application level protocol.
+* the tcp layer sometimes buffers data before sending too small payloads. its possible to instruct the tcp layer to send them out immediately - check with the OS - hint: on linux, TCP_NODELAY.
+* every byte sent thru tcp has its own 32 bit sequence number.
+* has optional parameters on its header that are TLV-based.
+* connection establishing: watchout for SYN floods - see SYN cookies.
+* connection releasing: either endpoint may try to wait for a release ACK. basically endpoints send out a release request (FIN) expecting an ACK to follow, or just timeout to avoid waiting forever.
+* the TCP RTO (retransmission timeout) is dynamically adaptative. on the datalink layer, lost frames are rare, on the transport layer, theyre somewhat common. the transport layer measures round trip times to feedback the RTO.
+* tcp has an ack clock, that smoothes traffic to avoid clogging a router.
+* also negotiates window sizes - two endpoints actively negotiate buffer sizes/window sizes and the like.
+* the future of tcp: some people finds annoying that tcp does not maintain messages boundaries and have proposed new protocols that are stream-like (?? isnt tcp stream based?). also, tcp congestion control is not a solved problem by no means; currently, packet loss is the basis used for congestion detection. this works well today, but ast argues that this might not be the case as links get faster and faster. theres even a flavor of TCP that uses round trip time for packet loss detection (the so called FAST TCP)
+* slow-start: multiple consecutive tcp connections take disproportionally longer than  one single longer tcp connection; the single, longer one wins hands down, because of the slow-start tcp technique: it is a period of warm-up that tcp employs to first discover some properties of the network.
+
+SIMPLE NETWORK MANAGEMENT PROTOCOL (SNMP)
+* this is a protocol for monitoring devices on IP networks. a practical example: say you run a small company with some switches, routers, and whatnot. some devices might run a SNMP server (called agents, in snmp parlance) so you could connect to this device and speak SNMP-ese to it to check for its status. the client program is called a SNMP manager, in SNMP-speak.
+
+* in other words, the whole point of SNMP is to establish a documented language that devices will use to communicate failures to a central computer - but this central computer is the one who initiates connections (ie. is the actual "client"). this way, you could monitor all devices on your network inside of the hypothetical company.
+
+PERFORMANCE ISSUES
+* host speed is more important than network speed: ast says that it has been long known that OS and protocol overhead is what really degrades time on the wire.
+* in other words, the host is the biggest bottleneck on most networks.
+* typical example of host resource squandering: the NIC receives some packet. then the OS copies it around - first from the NIC, then to some network layer kernel code, and then some transport layer kernel code. some expensive memory copying right there. after that, theres also the deadly context switch (changing from kernel mode to userland mode) to give the packet to the applayer process.
+* a possible example: someone could have a network manager of sorts (userland firewall?). that would be a MITM between the kernel and the applayer process. multiple context switches, all very expensive.
+* in some cases, it is possible to use header compression - i.e. compressing, for example, the 20 bytes IP header and the 20 bytes TCP header as well. ast says some implementations/schemes can reduce a 40 byte header to a mere 1 to 3 byte(s), if also using prediction - the slashdot example comes to mind: its like sending a car with the bumpers inside, then you figure out how to assemble it to make a complete car.
+
+DELAY-TOLERANT NETWORKING
+* special networking where nodes keep packets when the next node (or the final host) is currently unreachable - think interplanetary networks.
+
+DNS
+* is a RPC-style applayer service. people connect to a DNS server to request IPs based on names. thats it. theres lots of organizational policy'ing around it, to make it internationally usable - see ICANN.
+
+* configuring DNS allows you to setup up subdomains pointing to different machines inside your network; for exampĺe, suppose you have a network with 2 servers, one running apache and serving webpages, and another running some ftp server. you could setup your DNS server to have www.yourcompany.com point to the apache machine and ftp.yourcompany.com point to the other machine running an ftp server. (domain resource records)
+
+* so basically, the 'www' part of dns addresses is usually what resolves to a machine running apache. another possible example would be print.yourcompany.com to point to a print server or something.
+
+* on linux systems, its possible to edit /etc/hosts - that file, on my slackware box, notes that its intended use is to be able to "hardwiredly" resolve names at boot time when the host might not still have full network presence.
+
+* there are 13 root dns servers: a.root-servers.net through m.root-servers.net. 
+
+* the dig tool: linux and other unices come with the dig tool, a dns lookup utility. sample usage: dig a.root-servers.net www.google.com will look up the IP for google at the first root Internet DNS server.
+
+* DNS uses UDP as the transport layer.
+
+BASE64 ENCODING
+* turning arbitrary binary data into ascii. used in SMTP because it originally did not allow binary data to be sent thru it, only ascii.
+
+MIME
+* MIME is basically a definition of some content, so you can decode it properly.
+* the IANA also regulates MIME definitions.
+* octet-stream as I see around sometimes means something that is untyped and presumed to be known how to deal with by the user himself.
+
+SMTP (simple mail transfer protocol)
+* has no applayer level authentication. this means that once connected to a MTA, you can send anything you want in the "FROM: " field - quite useful for spammers as ast notes.
+* ast also notes that SMTP does not support encryption itself. ofcourse you could encrypt the message body but the headers will go in the clear.
+* there is also ESMTP - on which case, if the users wants its session to actually use that, it sends the "EHLO" initial handshake message, instead of the more traditional "HELO".
+* ESMTP does have client authentication, it is worth noting, as an extension; it also has other extensions too.
+* SMTP and ESMTP are push based protocols - they are only used to SEND email. they take a message, connect to a remote host and send it to them. they do not provide any sort of receiving/reading email stuff.
+
+MTA (mail transfer agents)
+* act as both clients and servers - they listen to a user connecting with his mozilla thunderbird (for example), or listen to other servers wanting to route email around to them. corollarilly they also act as clients when reaching out for other servers to route email to.
+* notice that the mozilla thunderbird used in the example above is NOT an example of an MTA. mozilla thunderbird is actually an UA (user agent).
+
+EMAIL ADDRESSES
+take "bob@cs.tokyo-uni.edu" as an example. this is how an MTA send an email to that address: it consults the DNS server for the IP of the machine on that subdomain - more specifically, the IP of the machine listed as the MX - mail exchange. then it connects to that IP and relays the message. the message will be stored there until bob connects to the MTA, download his inbox and read it. the "bob" part is what the receiving MTA uses to identify which mailbox should get that message.
+
+IMAP
+* the RECEIVING part of the email scheme - it is used to fetch emails from MTAs. includes stuff like getting messages, deleting, querying, etc.
+* the user agent (e.g. mozilla thunderbird) connects to a MTA and uses IMAP to fetch email.
+* ast notes that it is more secure - it routinely uses encryption to encrypt both the data and the commands sent to the MTA.
+
+POP3
+* is also used for reading email. ast says it is less secure, older and all around lesser and obsolete as compared to IMAP.
+* originally did not allow for a copy to remain on the MTA - once downloaded, emails on the server were gone. this became a rather notorious shortcoming of the porotocol.
+
+HTTP
+* (usually?) accessed with TCP connections.
+
+URLs AND HOW BROWSERS FETCH STUFF
+* URLs have three parts: the protocol, the DNS, and the remote resource
+* the "http://www.cs.washington.edu/index.html" URL has these parts: "http://" is the protocol, "www.cs.washington.edu" is the DNS name, and "/index.html" is the remote resource. the server may interpret the remote resource in any way it likes - in the applayer, ofcourse. if you are using something like the apache web server, then the remote resource is considered to be a page inside a directory hierarchy - preconfigured in the server.
+* nothing stops you from custom-interpreting the remote resource in your custom server. you could just go "http://www.mvendramini.org/myraspberry" and then implement a custom http server (running on the machine pointed by www.mvendramini.org) that, whenever reads "myraspberry" from the http GET command, replies if anything you'd like, and not necessarily a HTML page sitting on the "myraspberry" folder.
+
+BROWSERS
+* they associate MIMEs with plugins.
+
+COOKIES
+* have at most 4kb of string data.
+* using cookies is how servers can keep sessions with particular browsers.
+* completely irrelevant for public pages. and apparently, the only way to setup user-specific session - think keeping a ecommerce shopping cart, a login session, whatever.
+* cookies have a 'Expires' field. if its left blank, then the browser clears it upon exitting. servers can delete cookies they have created by sending it again to the client with a date in the past - so as to trick the browser into deleting it.
+* they also have a 'Secure' field, which indicates that the browser may only send it back to the server using a secure SSL/TLS connection.
+
+* one possible attack:lets say you implement a web store. your webstore has a shopping cart. the shopping cart is implemented by means of a cookie, that only sets a user id locally - the shopping cart itself remains on the server. if the cookie is set with its 'Secure' field to false, someone else inside the network could sniff that cookie, manually recreate it on their own machine, and impersonate.
+
+* cookie based tracking: placing some ad at a number of different pages is enough to implement tracking. the ad itself would be a complete html page that only has a gif inside of it. whenever visiting pages, the user has to send a request to the ad server for that ad page - and here the ad server can place a bug (the tracking cookie) inside of your browser.
+
+DYNAMIC WEB
+* ast's networks book, fifth edition, has a really nice image that illustrates very well dynamic web architecture, see figure 7-35.
+
+SERVER SIDE DYNAMISM
+* as far as the web server is concerned, it is only supposed to be answering http requests. for dynamic content generation, there are two ways to do it:
+a) delegating further processing to a script/program/interpreter/whathaveyou by means of a CGI plugin/interpreter/code artifact/servlet/etc etc etc
+b) embed some dynamic code/little scripts/applets on the static html pages. 
+
+CGI
+* so ive finally found out whats this cgi thing after all these years; it's a web server's interface for plugins. plugins here would mean: some code/applet/interpreter. you could define your own mini language, then write an interpreted for it, and then interface your interpreter via cgi.
+* the server basically maps requests to the cgi-bin folder.
+
+FAST CGI
+* this one is more like an IPC (inter process comm) protocol - fastcgi programs run in their own process and stay there, serving requests to the webserver.
+
+DYNAMIC HTML
+* this term is used to describe client-side scripting languages, such as javascript.
+* javascript can alter the page's html contents. how appropriate: remember the DOM thing? it stands for Document Object Model - basically the tech/scheme that allows some client-side scripting (javascript, for example) to edit the current html page. DOM is basically 
+* DOM (document object model) is basically a tree representing the html document (tags and children, attributes, etc). that client-side stuff can edit, using URIs.
+
+XSLT (eXtensible Stylesheet Language Transformations)
+* this is just a scheme to describe how a XML should be transformed into a HTML page. duh.
+* ast says it is just like CSS, but more powerful. whatever.
+
+XHTML
+* a mashup of XML and HTML
+* ast says it is basically a Very Picky version of HTML
+
+WEB SERVICE
+* more correctly defining, a web service is when you use HTTP to transport some data (usually in XML form) to perform a RPC somewhere.
+* SOAP is usually used to carry the communication (via HTTP) to perform a RPC - and therefore constituting a web service. ast notes that SOAP can be used in such fashion in a language and system independent way.
+* (in other words) web services, by basic definition, are RPCs called using HTTP.
+* (in other words) SOAP is a XML based RPC web service - and as such, is also carried with HTTP.
+
+SOAP vs REST
+* SOAP is a RPC protocol - sort of. in practice, it's basically an interface to a remote object. the client and the server are more thighly coupled, as the client needs to know the metadata/definition of this particular interface beforehand.
+* REST is not a protocol; its actually an architectural style. client and server are less coupled. with REST, you dont need to know beforehand of any of the server's input interface; you'll just send some data over HTTP and that's it, the server processes your request, or not. REST is, as of october 2014, the preferred mechanism on the Web for implementing web services.
+
+RESTful APIs
+* RESTful APIs are stateless web services. the client must send over and maintain the state of a transaction. very much like HTTP itself. this allows for seamless scalability because a new instance of the service can be deployed to a new machine and clients can communicate with it readily.
+* rest apis are flexible in format. xml, json, csv, whatever goes.
+
+AJAX (asynchronous javascript and xml)
+* a technique for communicating with the server, asynchronously, so it does not block and let the user hanging, that uses XML for data exchange via HTTP and updates the page dynamically without the need for a full refresh.
+* the name AJAX itself refers to this technique only - it is not a library. a popular library that provides AJAX functionality is jquery.
+* breaking it down: you have a javascript script that needs some data from the server (or needs to send data to the server so it writes it to a database). you dont want a full refresh to happen - just update some area of the page. on your javascript script, you initiate a HTTP communication carrying the XML that describes the data - you set it up asynchronously, so when the server response comes out, it comes in the form of a event that will be handed over to a previously registered handler (think libevent...). this event handler will update only the portion of the pages necessary.
+* the name AJAX is more popular, although in practice, JSON is actualy more often employed instead of XML because it's more compact - see AJAJ.
+* to make it short - the whole point of AJAX/AJAJ is to not block the page while communicating with the server (for whatever reason the application requires. could be a read or a write to a db) AND to not require a full refresh of the whole page for some operations. think gmail and google maps. and plenty others too.
+
+HTTP
+* its original version, 1.0, used a fire-and-forget connection - open connection, send a request, receive answer, then close. it was necessary to reopen a connection every time you (the browser) wanted to send more requests. with http 1.1, the connection is reused for additional requests after some receives.
+* with http 1.1, it is also possible to pipeline requests - send afew requests even before the first response came in.
+* this connection reuse is called persistent connections, and is preferred to parallel connections - no tcp connection is an island. the parallel connections will compete with eachother and will be more aggressive on the network - parallel connection is discouraged.
+
+* the http "operations" are called "methods". inside the software, they are case sensitive - uppercase is the right way to do it.
+* the methods are: GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT, OPTIONS.
+
+* the basic example: "GET filename.html HTTP/1.1"
+* POST is used when html forms are submitted (more commonly, that is! remember you can specify the method on the html tag)
+* the CONNECT method is meant to establish a connection to a web server through an intermediate entity, such as a web cache (as ast notes)
+
+* browsers tipically transform the address bar contents into a GET request, so you cant really do some POST-based request sandboxes (dev tests) with a browser only, you'd have to serve it (the browser) an HTML page that has a form whose method = "POST"
+
+* every request gets a response consisting of a status line, and possibly additional data/info; this additional data, in case of a successful usual GET, would be the page itself.
+* example of a status code: 404 - page not found.
+
+* the methods can be parameterised, too: these are called request headers. one common parameterised information that is sent with a GET request is the user agent - mozilla, chrome, etc. this is how some pages (the dynamic, server pre-processed ones) render different stuff for different browsers. think mobile versions of websites.
+
+* there are many request headers (parameters). go find the spec (the RFC).
+
+* there are also many response headers (return parameters of sorts). one popular one would be "set-cookie".
+
+* more on cookies: when a page wants to set a cookie on the client, it sends responses back (piggybacking-style!) with the "set-cookie" response header. then the client is expected to send that cookie back to the server on subsequent requests, via the "cookie" request header.
+
+* one more interesting response-header is "last-modified": when the page file was last modified.
+
+* i remember once visiting the slashdot website with my old 2011 blackberry. it switched over to something like m.slashdot.org (the url got redirected to a mobile version, apparently). what probably happened is that the blackberry browser sent the user agent id on a request header, and received a "Location" response header. the location response header could be decided upon by the client ip, or preferred language, whatever·
+
+* there are some request/response headers that go both ways, such as: "Date" - self explanatory. "Range" - for fetching in multiple takes; when the range response header is used for responses, it indicates what portions of the page it is returning.
+
+* http has a mandatory request header: "Host"
+
+* using HTTP to carry other stuff (soap or even rtp for example) is good because firewalls usually block other ports/protocols.
+
+TELEPHONY
+* when you pick up a phone, you hear the dial tone. that means you may now dial. if you heard nothing, it would mean that the line is overloaded and you wont be able to get service (i.e. make phone calls). basically what happens there is when you pick up the phone, there will be  an attempt to reserve band so you can get service. the dial tone indicates that the line is available for use. nowadays, the dial tone comes almost instantly, but ast says that years back, you could have to wait afew seconds until the dial tone came.
+
+SERVER FARMS
+* for popular sites to function, it's necessary to have huge serving capacity. this is usually achiieved by implementing server farms.
+* server farms allow for many servers to act as one logical server.
+* one proxy routes all requests to one of the farm nodes - by using balancing algorithms.
+* needless to say its necessary that all farm nodes have the exact same copy of the site, otherwise youre just running servers in parallel.
+* one common solution is to have the DNS server rotate a list of IP addresses for incoming DNS requests - effectively making the various users connect to different servers.
+* another solution is to have a more hardware-ish approach: have a special router/switch do the job: these will operate on packet or frames, and have as such a good potential of being faster.
+* policies may be simple or rather complex, including inspecting the http contents, the tcp headers, and so on. this, much in the same way as NAT, breaks the stack boundaries (noone should ever inspect payloads, or headers from other layers)
+
+CDN (CONTENT DELIVERY NETWORK)
+* for extra large sites (think youtube), a CDN may be necessary.
+* basically, there is a root server (origin server). this root server pushes copies (as when using caching) down a tree of nodes. these nodes are regional nodes - say each country gets one. then, regional clients access their regional nodes. it is a massively distributed cache.
+* to implement CDN's, it is common to employ a name server (a DNS) to aid in the redirections; say your site is www.mynet.org. register this DNS to point to your own controlled DNS server. then, your DNS server will provide the correct IP of the CDN node the client is supposed to be served by.
+* to use CDN's, you must add support on your HTML pages; the <a href="..."> references must point to the CDN's base url. (this is mainly a concern for shared CDN's)
+
+DISTRIBUTED NETWORKS
+* P2P: every node has chunks, and nodes (users) cooperate on service. BitTorrent is an example of a centralized p2p network: it has a central tracker; the tracker keeps info about which nodes have which chunks.
+* Kademlia: is a fully distributed p2p network. there are others similar too. kademlia and similars use a DHT: distributed hash table, to keep even the tracker distributed.
+
+IPSEC
+* a framework for using symmetric cryptography in the network (IP) layer.
+* users will get wire security seamlessly, without having to re-code any applications.
+* the crypto algorithm can be chosen - this is to prevent hardwiring a crypto algo that could be broken futurely.
+* it's somewhat surprising that even though it sits on the network layer, it is connection oriented in some sense - a key must be kept for some time. a connection in the context of ipsec is called a "security association"
+* each security association establishes a identifier. this identifier is carried between the secure packets.
+* ipsec has a scheme called isakmp for establishing and selecting keys between the two parts.
+* can operate in two modes: transport mode and tunnel mode.
+* in transport mode, the ipsec headers are added to the original IP header -> the Protocol field of the original IP header is modified to signal that IPsec headers follow.
+* in tunnel mode, the whole IP packet, header and all, is embedded inside another IP packet. ast notes that this is how it's used with security gateways - only the gateway knows about IPsec, every other device on the LAN knows nothing.
+
+FIREWALLS
+* at the most basic level, they would  sit on the network layer only, and block IP addresses.
+* however, more often than not, firewalls also peek at the transport layer, inspecting the ports (think blocking emule or quake) and also possibly the application layer - to detect genuine HTTP going thru port 80 or sneaky P2P going thru 80.
+* ast notes that firewalls commonly include vpn-establishing (serving?) capabilities.
+
+CONNECTION SECURITY
+* the basic scheme of a secure session (connection) is to use asymmetric crypto to establish a symmetric session key between two hosts.
+* the reason to switch over to a symmetric session key for the remainder of the connection is primarily for performance. asymmetric crypto is much slower than symmetric crypto - and also much lenghtier, data-wise. so, to reduce network usage, simmetric crypto is employed.
+* using timestamps is always interesting to consider when designing secure protocols.
+* unbeknownst to me insofar, network authentication is a pretty hot and big subtopic within networks. key exchange schemes and auth in general are rather susceptible to replay, reflection, mitm attacks and the like. I hereby increase my attention to this topic, because it is actually big and difficult to do right.
+
+[SECRET SHARED KEY / CHALLENGE-RESPONSE] AUTHENTICATION
+* a pre-shared (most likely a symmetric) key is agreed by two hosts previously - think setting up symmetric keys on two computers manually, in person.
+* obviously, the pre-shared secret key cannot be exchanged/shared via the insecure network it is supposed to defend against.
+* to authenticate, the hosts generate some sort of random text, and send it in plain to the other - and request the other side to produce an encrypted copy of it, with the pre-shared key. after both hosts do this (request a response from their challenge), then they are both authenticated with eachother. this is a naive implementation of the scheme though.
+* if the pre shared key is big, after auth is complete, the two hosts can use a subsequent temporary session key.
+* watch out for reflection attacks: if the original (the naive) scheme was simplified to be 3 messages in all (the challenge-responding PC sends his own request together with his repsonse), and if its possible to open multiple sessions on hosts, the reflection attack is possible.
+
+best practices for [ssk/cr] auth:
+* have two shared keys, one for each host.
+* make sure the protocol is secure against reflection-like attacks, where parallel connections can be used to obtain some information and fill the missing gaps on different sessions.
+* have the initiator prove himself before providing any sort of information to him. i can think of having the server (the host that was contacted, as opposed to the initiator) sending the challenge, and then expect the client/initiator to produce an encrypted copy of that content.
+* have the two hosts generate challenges from different sets (think odd or even numbers): this is to avoid someone trying to send a fished challenge back to a host, in the hope it will encrypt its own challenge.
+
+the original, naive implementation defeated:
+* if its possible to open multiple connections between hosts, and you happen to fish an incoming connection from one of the hosts, you could trick the host into sending you a challenge. then, you open a connection to that host, and send the challenge back to the host that originated it. the host will encrypt its own challenge, and give back to you!
+
+* establishing a secure connection between two hosts using ssk/cr is actually hard. one way to do is to use CBC between the two parties. another is to use HMACs as in IPsec. so if you ever find yourself wanting to implement a ssk/cr scheme, make sure to check out the Right Way To Do It.
+
+KDC AUTH (KEY DISTRIBUTION CENTER AUTHENTICATION)
+* if for your application sharing secret keys is too much of a burden, you might want ot check out KDC's.
+* it is a central database of keys. each participant only has one pre-shared key with the KDC.
+* the safe way to auth in a KDC scheme is by using the otway-rees protocol, which is an improvement over the original needham-schroeder.
+
+KERBEROS AUTH
+* kerberos itself is a network auth protocol.
+* ast notes that it assumes that participating nodes have their clocks synced. hmmm...
+* basically it operates three servers: AS (authentication server), TGS (ticket granting server), and the application server.
+* AS: checks users logins. like a KDC, the AS has a preconfigured shared key with each user.
+* TGS: issues tickets (that are like mini/short lived certificates) that a client can use to prove they are who they say they are.
+* messages carry a timestamp to defend against replay attacks
+
+PUBKEY AUTH
+* think ssh.
+* if i'm host A, and i want to contact host B, i first need host B's pubkey. this could be arranged either by consulting a PKI directory for host B's certificate (and extract its pubkey from there) or to have it pre-configured locally.
+* then, when host A has host B's pubkey, it will use host B's pubkey to encrypt a nonce and my "host A identity" - encrypting the identity too is important to prevent reflection attacks.
+* host B then decrypts the incoming message with his private key. it is from "host A". ok, lets get somehow "host A"'s pubkey - again, either via a PKI directory or locally configured.
+* host B encrypts its own nonce, host A's nonce, and a proposed session key with host A's pubkey, and sends it to host A.
+* host A receives it, decrypts it with its private key. now they both have a session key to work with. to complete the auth, host A now sends host B's nonce back to him, this time encrypted with the session key (that was proposed by host B to begin with).
+* host B receives his own nonce, encrypted with the session key, and authenticates host A. full auth completed.
+* ast notes that this scheme is indeed very secure.
+* The equivalent of authing another machine is to know about its pubkey -> both need eachothers pubkeys
+
+IP SPOOFING
+* on Linux, its possible to use raw sockets to create IP packets with fake source IP addresses.
+
+DNS SPOOFING
+* how to do a MITM attack on a website? as in, intercepting requests to a bank's website and directing to a controlled webserver? one possibility is cracking the DNS: hacking into the name server and replacing the IP address of the name in question. another way to do it is by spoofing a DNS request: DNS servers communicate with eachtoher, using UDP. if you request bob.com to a DNS server, and it does not have it, it will then ask the top DNS server about that name. someone might beat the top DNS server by sending a forged DNS reply before, therefore injecting a forged DNS entry onto some DNS server - it would keep the forged name inside its cache. the cache is then called a poisoned cache.
+
+* in other words: tricking a DNS server into installing a false IP address (by beating the top DNS) is called DNS spoofing.
+
+DNSSEC
+* DNS originally had no security at all. dnssec was proposed by the IETF to address DNS security issues.
+* ast notes that, atleast as of 2010, it wasnt widely deployed.
+* builds defenses against DNS spoofing.
+* basically, it's all about having pubkey-based security within the DNS hierarchy, so participants can have proof of where the data has originated.
+* it is backwards compatible with old (vulnerable) DNS.
+
+HTTPS
+* plain HTTP used over SSL/TLS
+
+ALITTLE PRACTICE
+* sockets: the transport layer ports are assymetric between client and server. so if you have a server running on port 80 (apache perharps) and you are listening on it, then any client may initiate a connection to that server, indicating the port 80 as the remote port.
+* the clients themselves will use an OS-assigned port as the local port, and 80 as the remote port.
+
+THE SO CALLED MTU THING, WHAT NEEDS TO BE KNOWN FOR NETWORK CODING
+* MTU is a property related to network protocols. each network protocol has one.
+* the MTU of ethernet is 1500 bytes. the MTU of the IP packet is (about) 64k, and so on.
+* if you create packets (network layer) or segments (transport layer) that are, say, larger than 2kb, and if you are sending them over a ethernet link, then the routers will have to fragment the packets, and this can lead to problems - the routers might start "getting lost in confusion".
+* so it's ideal to avoid packet fragmentation by the routers.
+* it's not enough to craft your packets to result in exacly 1500 bytes. some devices might append additionall stuff to traveling packets - maybe your packets did exit your NIC with 1500 bytes, but in the middle of the route there might be some router/gateway encapsulating the packets to make a tunnel or something. so you need to cut these devices some slack and use even less payload. IPsec comes to mind. VPNs too. if you're using both in your infra, about 1400 byts of payload might do the trick - remember these need to be configured in the OS network interfaces, as you cannot control the payload size of packets in the application layer.
+

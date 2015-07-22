@@ -1,0 +1,190 @@
+
+POSIX FORK / DAEMONS:
+* creates a near-perfect copy of the current process, and start it from its beginning
+* to create a daemon, it is a good idea to fork twice and terminate the middle process, so as tyo orphan the grandchild. this will prevent the daemon (the grandchild) from becoming a zombie process, by having the OS become responsible for the grandchildren. it is basically RAII for processes. in unix, the parent process is responsible for cleaning up its children processes, so when you fork twice and kill the middle, the OS becomes responsible for such task.
+* zombie process: a process that terminated execution (died) but has not been "reaped" (cleanep up - process table).
+* orphan process: whose parent has died, but has been adopted by the OS. it will be reaped (cleaned up) automatically when its done.
+* fork bomb: iteratively creating forks endlessly to deplete a system's resources. also called a rabbit virus.
+
+PERMISSIONS
+* if a directory has no X (executable) permission, you cannot CD into it. if it has no R (read) permission, you cant LS it.
+* a directory must have W (write) permission fro you to be able to create files inside of it.
+
+UMASK
+* umask is a syscall that sets the umask of a process. the process's umask is basically the default permissions for newly created files by this process.
+
+* when observing weird behaviour relating to permissions on something (a file or directory), then something else might be interferring/overriding the traditional 9 bit permission model - possible culprits are SELinux, some special filesystems, or others.
+
+* to share directories among users, one could turn on the setgid bit on that directory - so as to have each newly created file inside that directory automatically get the group of the directory instead of the user creating it.
+
+* native binary executables only need the +x permission to be run (the kernel runs them directly). shell scripts also need the +r permission to run because the interpreter runs in user space and therefore needs to read the file.
+
+/ETC/SERVICES
+* list of portmappings
+
+INETD
+* a service proxy: it listens on many ports at once, and when it gets a connection on that port, based on its conf, it spawns the appropriate server to handle that request.
+
+LOADABLE KERNEL MODULES (LKM)
+* linux has had for a while (not sure it still does but...) userspace-loadable kernel modules, a more flexible alternative to kernel drivers, that prompt an entire kernel recompile. these can be loaded/configured with modprobe.
+
+/PROC
+* various info about processes - and the system in general too.
+* cat /proc/cpuinfo will give you cpu info. in 2014, i tried this on my i7 desktop and i got one desc section fo each of the 8 cores.
+* every process running in the system will have a corresponding folder inside /proc. for example, say youve got a program running, and you ps aux and find its pid. this pid will have a folder inside /proc with info about the process.
+
+* the linux "top" and "ps" programs read stuff from /proc
+
+/etc/hosts
+* a basic DNS (well, that would be a big misnomer, actually). on a two pc LAN, you could add an entry to your host file to have a name to refer to the other machine's IP number.
+
+/etc/hosts.allow and /etc/hosts.deny
+* a basic firewall.
+
+/etc/resolv.conf
+* DNS configs. on my slackware box, this file was filled with info gotten from eth0 - my net virtua router/modem.
+
+/PROC/SYS
+* an interface for physical devices.
+
+* these are sometimes parameterisable. for example, to set the maximum number of open files at the same time inside the system, you could change the value inside /proc/sys/fs/file-max (this particular example is reboot-volatile).
+
+* to make your linux box not respond to pings, set /proc/sys/net/ipv4/icmp_echo_ignore_all to 1 (observe the ipv4 folder right there) - furthermore, many ipv4 options can be twiddled with here.
+
+/PROC/PID
+* lots of process specific info here. one example: the cmdline file, contains the command line arguments passed to the process.
+
+PROGRAM SEGMENT ADDRESSING
+* starting at kernel 2.6 and above, linux started randomizing the segment's starting (virtual) address to mitigate against buffer overflow attacks. so every time you run a program, you'll see your stack begins at a different virtual address. it's possible to disable this option by editing the file /proc/sys/kernel/randomize_va_space
+
+MAN PAGES
+man X subject: the X indicates which "chapter" of the manpage you wanna check out.
+for example: "man passwd" brings up the default chapter - one - which refers to the passwd command. "man 5 passwd" refers to the passwd file stored in /etc/passwd
+chapter numbers are sort of standardised:
+1       user apps/commands
+2       system calls and kernel error codes
+3       library calls (aka procedure calls)
+4       device drivers and network protocols
+5       standard file formats
+6       games and demos
+7       misc files and docs
+8       sysadmin commands
+9       obscure kernel specs and interfaces
+
+* note these chapter numbers are for linux. other unices use different numbers.
+
+* man pages scroll down using whatever program indicated by the PAGER envvar. on my centos 6, it was blank and Im guessing it defaulted to less.
+
+INITTAB
+* /etc/inittab specified what to do (what init scripts are to be exec from /etc/init.d) at each runlevel
+
+INIT SCRIPTS AND RUNLEVELS
+* the rc.N scripts inside /etc/ are symbolic links to runlevel-specific init scripts inside /etc/rc.d: this is to control the order in which init scripts will be executed. think not making sense wanting to bring up sshd before network services daemons and such.
+
+CHROOT
+* chroot itself is a syscall that confines a process inside a directory. the chroot command is just a wrapper for this syscall. some daemons have built in support for it - ie, they can be configured to call the syscall themselves, and as such, they dont require a manual use of the wrapper command.
+
+ACCES CONTROL POLCIIES IN TERMS OF CODE IN UNIX/LINUX
+* the code that enforces access control policies are scattered around the whole system - backed by documentation, instead of some sort of central config/database of policies/rules.
+* by "scattered around the whole system", i mean: passwd, the app, has some policy code inside of it. and so does the login app, and so on.
+
+FS ACCESS CONTROL FILES
+
+* theres /etc/passwd with user names and some preferences such as preferred shell, and also /etc/groups.
+
+THE LOGIN APP
+* after the kernel boots up, it launches the "login" program as root. if any legitimate user logs in, it changes its uid and gid to the user's account.
+
+SYSTEM LOGS
+* /var/log/messages             shows asorted system messages
+
+SYSLOG - the system logging daemon
+* syslog is the logging daemon. with it, you can log by severity, re-route logs to user terminals, other pcs in the network, and more.
+* you are supposed to use logrotate to rotate, compress and mail the logs and stuff.
+
+* config file is /etc/syslog.conf
+
+* has three parts: the syslogd the daemon itself, openlog, a client library to send log entries to the daemon, and logger, a shell program to send log entries from a shell. the logger app by default sends log messages to /var/log/messages
+
+* can be optionallt started with an option to enable accepting log entries from the network.
+
+* the client libraries write to /dev/log, then the daemon reads entries from this file (it is a domain socket, then routes the entry based on its /etc/syslog.conf config file)
+
+* the syslogd starts at boot time
+
+* if you edit the /etc/syslogd.conf file, you should send a HUP signal to the syslogd. this will cause it to close its log files, then re-start and re-read its config file.
+
+* trying to rotate logs that are open by the daemon is not a good idea.
+
+SETUID and SETGID EXECUTABLES (THE PASSWD APP)
+* some executables have what's called a setuid/setgid bit. these executables spawn a process that runs as the owner of the file.
+* when some user runs passwd, the process that executes this app changes its uid to root (because /usr/bin/passwd is owned by root). this effectively empowers normal users to run apps as root. as for passwd, it is coded to allow only the user to change its own password, and nobody else's. root can change any password.
+* a good security practice is to mount filesystems housing user's /home folders with the nosuid mount option - no setuid programs can be run from the user's home folder, then.
+
+
+PROCESSES
+* as of kernel 2.6.24, linux supports processes with the same PID (called process id namespaces), this is to support container-based virtualisation
+* processes in linux have a real UID and effective UID: the effective UID is for those programs who make use of setuid for priviledged access.
+* processes also have a real GID and effective GID, much in the same way as the user IDs - useful for when accessing the filesystem.
+
+* processes have their own working directory - which is originally inherited from the parent process.
+
+* processes always should have a parent, and all processes are descendants to the init (pid=1) process. processes that have children are supposed to acknowledge the death of their children via the wait() call. when the parent dies before the children, though, the children are adopted by init.
+
+* processes can be in one of four states at a time:
+runnable                the process can be  executed
+sleeping                the process is waiting for some resource
+zombie                  the process is trying to die
+stopped                 the process is suspended/not allowed to execute
+
+THE INIT PROCESS
+* this is process with PID 1. this is the process that runs the /etc/rc.d scripts
+
+SIGNALS
+* basically, signals are used for communication between the kernel and processes.
+
+* when youre in bash, and you run an app that neatly implements an infinite loop, and you issue Ctrl+C, what happens is that bash sends a SIGINT to the child process (the infiniloop app). the app could catch that signal and ignore it - effectively stripping away the power from the user to kill it by ctrl+c.
+
+* when sending a SIGINT to a running process that has not defined a catch for it, the kernel executes some default code for that signal. in the case of SIGINT, it means end of the line for the process.
+
+* the KILL signal (9) cannot be caught.
+
+* theres the SIGSEGV signal that is delivered by the kernel - if youve set ulimit -c unlimited, this would generate a core dump (by the kernel, if the app didnt catch SIGSEGV to do something else ofcourse). it's possible to kill -11 PID and deceive someone into thinking their app segfaulted :-)
+
+* it is possible for a process to define a signal catching function - with the signal(...) syscall (note: apparently, the signal(...) func is older. currently, the preferred interface for modern signal handling is sigaction(...). the signal handling function should be reentrant: if your app is running a signal handling function, theres always the possibility that another signal will arrive before it is done executing. this function cant just let inconsistent state around, it must be prepared to receive another followup signal - before its done running itself.
+
+OBSCURE MAN PAGES
+* man hier              filesystem hierarchies: explains what's each of the standard dirs inside root (/etc, /var, and the like)
+
+FILES
+* there are 7 types of files
+* regular files                 normal files containing user data
+* directories                   yes...
+* character device files        is used to provide an access point for kernel drivers that model a stream-based IO scheme. the driver itself will do buffering as required. examples: modems and printers.
+* block device files            is used to provide an access point for kernel drivers that model a random acess memory IO scheme. the kernel does buffering for larger chunks of data. examples: hard disks.
+* socket files                  for IPC or network comm.
+* named pipes                   as ive seen with my bash studies.
+* symbolic links                both soft and hard ones.
+
+/etc/passwd
+* does not contain the actual encrypted password. in this file, you might encounter some info that links the account logging in scheme with some directory service, like LDAP.
+* each line is a different user.
+* root has UID = 0
+* user's home folder is defined here
+* also defines the user's preferred shell (such as bash or zsh)
+
+* there is no need to parse it on your app. there are std-C library routines to do just that - such as getpwuid, getpwnam, getpwent, and more.
+
+LDAP
+* LDAP goes beyond just centralising user accounts, it can also centralise some apps configs too.
+* at the client-side, a user would use something like /etc/nsswitch.conf to LDAPify things - this would in turn re-route some std-C library calls through a client-side LDAP library, for some serious integration voodoo.
+
+UIDS
+* nemeth notes that recycling UIDs is a very bad idea: if some user must be deleted, then dont reuse his UID - this prevents confusion if restoring old backups. furthermore, UIDs should be the same across a whole network - as i've learned when trying to share a ext4 formatted pendrive between deskbox and nobox in early 2014.
+
+/LOST+FOUND
+* this is where the fsck utility dumps "orphaned" files to; orphaned files are those whose parents cannot be determined.
+
+POSIX THREADS
+* they are userland threads.
+

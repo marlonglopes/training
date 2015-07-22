@@ -1,0 +1,40 @@
+
+TEMPLATISED CLASSES:
+
+here is a sample of a templatised base class class:
+
+template<typename Company>
+class MsgSender {
+// ...
+};
+
+and its accompanying derived class:
+
+template<typename Company>
+class LoggingMsgSender: public MsgSender<Company> {
+// ...
+}; 
+
+TEMPLATE TYPES + PRIMITIVE TYPES:
+this is perfecly legal:
+
+template<typename T, std::size_t n>
+class SquareMatrix {
+// ...
+};
+
+
+and accompanying instantiation:
+SquareMatrix<double, 5> sm1;
+
+* HOWEVER this can cause code bloat, because for each matrix size (the 5 up there), a new function will be generated at compile time. there are workarounds for this.
+
+TEMPLATES AND IMPLICIT CONVERSIONS
+c++ has afew nice implicit conversions (and some bad too). for example, its natural to go: const myclass *ptr = &other_non_const_myclass_instance; this is actually an implicit conversion. doing these with templates is tricky, so make sure you look the techniques up when you find yourself coding your own smart pointer templatised class so it accepts all these "natural" implicit conversions (there are afew of them)
+
+TEMPLATES AND EXPLICIT TYPES (SAFE, LSP-compliant ALTERNATIVE TO TYPE INFERENCE)
+templatised fucntion parameters can be used as safe, compile-time checked alternative for RTTI. suppose youve got a object hierarchy, of 3 levels: MyInterface (1), MyConcreteBase (2), MyConcreteDerived (3). then, somewhere, you want to create a function that only accepts MyConcreteDerived. your clients might be handling a base pointer of type MyInterface. what to do? the client would have to dynamic downcast. if you want compile time checking of the type, you must create a wrapper around said function that then passes the parameterised type to the function.
+
+VALUE CLASS OPERATORS IN TEMPLATISED CLASSES
+* rather tricky; when defining operators for a value class (say, a Rational class for representing rational numbers), there is a technique to be used: look it up. (keywords: friend)
+

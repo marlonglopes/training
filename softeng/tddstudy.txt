@@ -1,0 +1,21 @@
+
+TDDBASICS
+* create a test before you code. it must fail at first (you havent added any code yet, so how could it work!)
+* add code and work on it till all tests pass.
+
+* furthermore: each new feature you add, you do this basic routine: add a new test-that-fails to your testing framework, then work on some code untill all tests pass. the interesting part is that this provides you with regression tests as-you-go, because for each new feature, a new test is created, and you'll see "in real time" if your new code has broken any older code, because you'll be constantly monitoring your test framework, including the older tests.
+
+* a big difference in relation to what I do today: i test with the debugger. with tdd, you code the tests, and you keep them on the repo.
+
+TDD AND CODING TEAMS
+* slight idea, just ocurred me: the architect designs the code (the interfaces, function signatures, etc). the developer codes what the architect designed. the tester creates unit tests for the code, and starts testing the classes based on their contracts. the tester needs to know how to code somewhat (not like a wizard, but ...) so he can do good test code.
+
+TEST AND CODE DEPENDENCY: GETTING THE INTERFACE RIGHT
+* I see tdd as encouraging thinking of good interfaces; the code and the tests may develop dependencies, but that's a side effect. the goal of tdd is to write a test first, thinking of what makes sense in that method/function/class, and then refactor/redesign/recode the actual thing as many times as possible, all based on the test - in essence, you think more of how the target artifact is meant to be used, what's its scope, what's its responsabilities, requirements, limitations whatever. it makes you think on how youre supposed to use that artifact AND also provides a very meaningful way to validate whether you have indeed delivered what was expected of it, by means of continuous testing, and accumulative regression testing.
+
+TDD AND REFACTORING
+* tdd is very good for refactoring. it provides you with additional, essential validation that goes beyond  just compiling your changes to see whether they work. you keep tests that ensure you're still getting consistent results, and that your refactoring is not sneakily changing something fundamental that will break your legs later on.
+
+TESTING TECHNIQUES
+* you might find yourself brainstorming test cases, but cant code any of them just yet - time to turn to pseudocode. use pseudocode to describe tests, even before you start writing them.
+

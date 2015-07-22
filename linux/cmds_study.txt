@@ -1,0 +1,453 @@
+
+COMMANDS SUMMARY
+
+CHMOD
+* some examples:
+chmod u+w                                   adds write permission for the user (owner)
+chmod a-x                                   removes execute permission from all (user, group, and others)
+chmod g=u                                   makes the group permissions be the same as the user permissions
+chmod --reference=srcfile targetfile        copies the permissions from srcfile to targetfile
+
+CHGRP
+* change the group of something.
+
+UMASK
+* as an app, it is a wrapper for the umask syscall. inside a bash shell, this app is handy for setting the default permissions for subsequently created files inside the shell - because it sets the umask of the shell process, every other process you run inside the shell will inherit this.
+
+LS
+* use ls -l to list a single file's permissions. use ls -ld for directories.
+* when using one of the detailed flags of ls, the time printed is the last contents modified time - not the creation time. date of creation is not kept by Unices.
+
+the detailed list of LS (-lsomething, as in -la, -ld, etc):
+file type, nine permission bits, link count, user, group, permission bits (octal), last modification time, entry
+file type: a dash represents a regular file. a d represents directories, and so on. the entry thingy is the item (file) itself.
+* on the permission bits string, if the file/directory is setuid, then the X on the user spot would be replaced with an S.
+* on the permission bits string, if the file/directory is setgid, then the X on the group spot would be replaced with an S.
+* the link count iss only increased for hard links. symbolic links do not increase this link count. directories always have two hard links: ".." and "."
+
+* the -t option will sort files by time of modification.
+
+RM
+* to delete squirrely named files, use rm -i ./*   here -i stands for interactive and will prompt for confirmation for each file
+
+LN
+* has the same syntax as cp.
+
+UMOUNT
+* refuses to umount a filesystem if it's in use. "in use" means whether theres a process with its current working directory set inside of it, or a program that resides in there is running as a process, or theres any open files inside of it.
+* has a "lazy" umount option: -f. this will automatically umount the filesystem when its no longer in use. using this will disallow further opening of files residing on the filesystem.
+
+FUSER
+fuser -c /the/path will print every PID that's using the filesystem that contains the indicated path.
+
+SU
+* when using su - user (notice the dash) then youre chaning onto the user in login mode: when using bash, this means that youll be using .bash_profile instead of .basrc
+
+SUDO
+* sudo is able to log which user called sudo, what time, what commands etc etc all to the syslog
+* sudo offers many fine grained control policies to be set (which user can run what programs etc)
+* can be configured to require a password again every 5 minutes or so - to prevent unauth people using unattended terminals
+
+UDEVADM
+* udev admin tool. can be used to interface with udev - the program that manages devices and deals with their identity cryses.
+
+LAST
+* this program reads from the wtmp binary log file
+* user, reboot, possibly others: shows last reboot, last user login, etc
+
+arch                                prints system arch
+at -f script.sh                     marks a job to run at specified time
+cal                                 prints nicely formatted calendar
+sleep, usleep                       sleep in seconds or microseconds
+lsusb                               lists all usb buses and the devices hooked into them
+lspci                               lists all pci buses and the devices hooked into them
+lsdev                               lists info about installed hardware
+lsblk                               lists block devices
+lscpu                               lists cpus
+procinfo                            displays system info gathered from /proc (uptime, mem, swap, irqs, others)
+free                                displays used and free memory amounts
+basename full/path/app              strips away base path, returning only the app name
+dirname full/path/app               strips away base name, returning the path without the app name
+bzgrep file.bzip2                   can be used to grep inside gzipped files
+cmp                                 a simplified diff
+bc, dc                              calcs. echo "150 + 160 + 99" | bc
+df                                  reports file system disk usage by mount points
+
+DMESG
+* prints all kernel bootup messages to stdout
+* you can choose the verbosity level by doing: dmesg -n # (# is an int between 1 and 7. 1 is for grave kernel panics, 7 is all your verbosity exposed).
+
+stat                                file stats
+diff3                               three-way comparison
+merge                               three-way file merge
+dig -x www.domain.org               fetch info on a domain (www.domain.org)
+pushd, popd, dirs                   navigate directories using a stack. dirs lists the stack. echo $DIRSTACK prints the top of the stack.
+dump, restore                       backup utilities for raw data
+sudo dumpe2fs /dev/sda1             dump very verbose filesystem info
+egrep                                 shorthand for grep -E
+env                                 print envvars
+export var                          exports vars to the current environment (in stead of just setting it on the "local current scope")
+groff                               text markup and display formatting language. this is what manpages use
+exec                                replaces the shell's text  image with a different one, as one would when replacing the image of a new forked subprocess.
+expand,unexpand                     replaces tabs with spaces to or from
+finger                              user info
+chfn                                set user info
+factor                              decompose integers in ...
+fuser -u /usr/bin/vim                will tell which users are using vim. or accessing any other file/system resource represented by a file. has the ability to kill matching processes.
+
+getfacl, setfacl                    retrieve/set file access list (group owner etc)
+readlink                            discloses the file pointed by a symbolic link
+head                                prints first 10 lines of a file to stdout
+tail                                prints last 10 lines of a file to stdout
+host www.hostname.org               prints ip of hostname
+id                                  prints real and effective user ids and groups
+who                                 whos logged onto the system
+infocmp                             terminal info
+insmod                                               forces installation of a kernel module. prefer modprobe instead.
+ip                                                   show and manipulate internet protocol stuff (routing, devices, policy, more)
+iwconfig                                             for configuring wireless connections
+lastlog                                              lists last login date for all users
+logger                                               writes message to /var/log/messages
+
+NETSTAT
+* print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships.
+* netstat -rn                   for IP routes.
+* netstat -lp                   to see which PIDs are listening on sockets.
+* netstat -tulpn                For pids and numerical ports. Run as root.
+
+SAR
+* collect, report, save system activity information.
+
+DMIDECODE
+* DMI table decoder. can be used to probe hardware info.
+* dmidecode -t type will give info about one hardware piece in particular. 1 is for system info, 2 is for motherboard info. 4 is for CPU info. theres more.
+
+VMSTAT
+* reports virtual memory statistics. can be parameterised to keep it running for statistics colleting.
+* can be used to monitor context switches form kernel mode to user space.
+
+IOSTAT
+* reports disk IO statistics. can be parameterised to keep it running for statistics colleting.
+
+MPSTAT
+* to monitor CPU cores. very useful for debugging and profiling software implemented with concurrency.
+
+NGREP
+* ngrep is a packet sniffer with the ability to filter by payload.
+* ngrep -q -d eth1 -W byline host stackoverflow.com and port 80 - an example.
+
+MODPROBE
+* adds and removes modules from the linux kernel
+* can be configured with /etc/modprobe.conf or autoconfed with modprobe -c.
+
+LOGROTATE
+* to manage logs. can compress, mail, and more.
+* it has a conf file /etc/logrotate.conf. basically, you'd run logrotate out of a daily cron job and it would read its config file and do its log management business.
+* /etc/logrotate.d is a shared repository of log management policies that your software can use to deposit its own configs.
+
+LOGCHECK AND SWATCH
+* these are two tools (not included on my centos nobox in early 2014) to process logs. logcheck comes with many preconfigured configs for differet distros and is intended to be used with a cron job. swatch is a perl thingy with access to all of perl's regex mojo - comes with no preconfigurations, and runs a la tail -f.
+
+logcheck comes with a package called sentrytools (sf.net/projects/sentrytools)
+
+logname, whoami                                      show username. same as echo $USER
+lsmod                                                installed kernel modules
+modinfo                                              lists kernel module info
+lsof                                                 list opened files. has many interesting uses. can tell whether a single file is opened by anything.
+m4                                                   macro processor
+xmessage                                             desktop GUI popups
+mcookie                                              quick and dirty 32 char (128 bit) hex magic number
+mesg                                                 enables or disables writes to user's terminal from other users
+shred                                                overwrite a file afew times to ensure its gone forever. more advanced forensic analysis may still be able to recover the file.
+mknod                                                makes block or character special files
+mktemp                                               creates unique temporary file with zero length inside /tmp
+nc                                                   linux's telnet
+netconfig                                            for configuring network adapters using DHCP. Red Hat centric, is also available on slackware.
+pathchk                                              checks whether a path+filename is valid
+pstree                                               prints all processes in tree format
+sync                                                 flushes OS buffers
+rsync                                                syncs two remote dirs
+readelf                                              basic info about an elf / Readelf -d binname: Will tell the dynamic area of an elf, and with that, you can check out its rpath (libs)
+readonly                                             sets a variable as const/final. same as declare -r
+script                                               makes a typescript of the terminal session (like an auto-it of sorts, records keystrokes sent to the terminal)
+tac                                                  cat upside-down (reverses lines printed to stdout - does not change the file in-place)
+rec                                                  reverses the whole file and prints to stdout. no in-place alteration.
+setserial                                            get/set serial port info
+setterm                                              set terminal attributes
+shar                                                 shell archive utility
+strings                                              list recognized strings inside an elf. lots of useful info can be derived by looking at the output (libc version for example)
+uname                                                system info.
+uniq                                                 can be used to delete duplicate lines in a sorted file
+uptime                                               displays system uptime
+watch                                                minimalistic cron. sample: watch -n 5 tail /var/log/messages 
+wc                                                   word, line others count.
+whereis app                                          tries to find full path to a given app. been wanting this forever. very important.
+which app                                            also tries to find full path to a given app. less results, wonder why.
+arp                                                  set up arp stuff
+patch                                                -p0 < /path/to/patchfile.patch
+
+USERMOD
+* -L and -U                                 those two options lock and unlock an account. they do this by twiddling with the encrypted pwd in /etc/shadow.
+
+CHFN
+* set the user's GECOS info (full name, office number etc - stuff for finger)
+
+OBJDUMP
+* displays information about an object file or binary executable in either hexadecimal form or as a disassembled listing (with the -d option).
+* objdump -p libexep.so | grep SONAME               you guessed it. shows a dso's soname.
+
+PWCONV
+* can be used to reconcile shadow and passwd files
+
+READ
+* this little program allows for setting shell variables easily. just do "read varname" and it will prompt for input, apparently until a newline, then set that shell variable.
+
+NEWUSERS
+* linux command for adding users in batches
+* it's rather insecure. better use a wrapper around adduser or something.
+
+NMAP
+* network exploration tool and mapper / port scanner - as per the manpage
+* can be used to scan hosts for open ports. it has some sneaky functionalities - such as using unconventional TCP communication (using TCP packets not in the right order - think middle packets instead of beginning packets) to try to gather info about a host and what's it running.
+* it can also try to detect the host's OS by analyzing the answers it gets from the host's TCP implementation.
+
+TCPDUMP
+-i any                                              listens on all network interfaces
+-n                                                  dont resolve hostnames (shows IPs instead)
+-X                                                  show packets contents in both hex and ascii
+-c $NUM                                             only get $NUM packets then stop
+-s#                                                 defines the snaplength. use -s0 to get everything
+-E                                                  decrypt IPSEC packets by providing the cryptographic key
+host www.google.com                                 dumps all traffic sent to google
+tcp|udp|icmp                                        selects which protocol to dump
+src port $PORT                                      only packets coming from $PORT
+dst port $PORT                                      only packets going to $PORT
+portrange                                           ...
+less 32                                                only packets smaller than 32 bytes
+greater 128                                         only packets bigger than 128 bytes
+
+samples:
+tcpdump -s 1514 port 80 -w capture_file             Capture all Port 80 Traffic to a File
+tcpdump 'tcp[13] & 16!=0'                           Show me all ACKNOWLEDGE (ACK) packets...
+tcpdump 'tcp[13] & 2!=0'                            Show me all SYNCHRONIZE (SYN) packets...
+
+LSOF
+lsof -i@172.16.12.5                                 Show connections to a specific host using @host
+lsof -i :22                                         Show networking related to a given port using -i :port
+lsof -iTCP                                          Show only TCP connections (works the same for UDP)
+lsof -i                                                Lists all open connections
+lsof -i -sTCP:LISTEN                                Find listening ports
+lsof -i -sTCP:ESTABLISHED                           Find established connections
+lsof -u user                                        Show what a given user has open using -u
+lsof /var/log/messages/                            Show everything interacting with a given directory
+lsof /home/daniel/firewall_whitelist.txt           Show everything interacting with a given file
+lsof -u user -i @1.1.1.1                            Show me everything user is doing connected to 1.1.1.1
+
+sftp                                                does use ssh underneath itself, but this is NOT the  original ftp. sftp and classic ftp are not compatible.
+
+KILL (PKILL)
+kill -9 `lsof -t -u user`                           Kill everything a given user is doing
+kill -l                                             shows a list of system available signals.
+kill -STOP pid                                      will pause the process - can be resumed with CONT later on.
+pkill -u somedude                                   will kill all of somedude's processes (by sending a TERM signal - you might want to try something stronger, perharps SIGKILL)
+
+ETHTOOL
+* can be used to set lower level stuff of ethernet interfaces, such as link speed, full/half duplex etc.
+
+STRACE
+* traces system calls - that is, OS functions.
+* it is also possible to monitor signals received by the process.
+* does not show your app's internal functions calling eachother, only OS functions.
+* on a gcc generated C programs, the first syscall will likely be execve, which will indicate the program to run, its arguments, and possibly other stuff.
+* on gcc generated C programs, you can spot to load()-ing of the libc.
+* on nasm generated programs, you'll likely see only what you manually call (INT 0x80) - except youre using the libc with nasm.
+* is interactive - for example if your C program has a gets() somewhere, it will stay put at a read() syscall, waiting for you to input stuff. as soon as you do, it continues its path.
+* if your C program has a printf() in it, you'll see it there as a call to write() - that's because printf() simply uses write() passing 0x1 to the first parameter - which stands for stdout.
+* if you want to dump the outputs of strace to a file, use the "-o output.txt" cmdline option
+* you might want to measure how long each syscall is taking. for that, use the -t cmdline option so that every syscall will also have a preceding absolute timestap. use -r for relative timestamps.
+* to filter which syscalls you want printed on the screen, go: "-e open,read" and etc.
+
+* one particularly interesting way to use it is for tapping applications. for example, networked applications will use socket syscalls (connect, send, recv). you can read what they send right there! strace nc google.com 80 is quite revealing - you can see the DNS request by finding the UDP socket opened.
+* one trick to remeber for making sense of syscall stuff: keep an eye for the descriptors they return. for example, the socket() syscall returns a int representing a socket handle. suppose you spot a socket(...) = 3 syscall, the integer 3 here is returned as the socket handle. subsequent syscalls using this integer (for example: send(3, ...)) will give you hints of whats going on.
+
+* you can also attach to an already running process like so: "strace -p PID".
+
+* very interesting hack: open a bash terminals. ctrl+alt+t to have twin tabs on it. switch to the second, and start strace-ing the first one with strace -p PID - you can do this by doing ps aux and checking the lowest PID, that will likely belong to the oldest (first) tab. you'll see the strace showing you the temrinal window hung at a read() syscall waiting for input. you can also see it detecting anything being typed at the first terminal.
+
+* strace -c will give you syscalls statistics.
+* use the -f option to "follow" the process when it forks.
+
+LDD:
+is not safe to execute! dont run ldd on apps you dont trust (you might get compromised, as it does run the executable).
+besides that, ldd can be run to tell which dependencies an app has, and which ones are satisfied before running the app.
+running with ldd -u will tell you which libs are referenced but not actually used
+
+DIFF / PATCH
+say you got two versions of a file. file1 and file2. you "diff file1 file2 > thepat.diff" and then "patch file1 thepat.diff"
+
+GIT KBASE:
+git rebase is used to combine (more than merge!) a commit with another. so them both will become one, instead of giving way to a third, merged commit of the two.
+
+HEXDUMP:
+hexdump -C file works pretty well.
+
+SIZE
+displays the size of each elf region (text, data, bss)
+
+CRON
+* individual, per-user crontabs are kept in /var/spool/cron - but do not edit them manually. use crontab -e instead.
+* cron maintains a log of its activity (when commands last ran, by whom, etc) in /var/cron/log or /var/adm/cron/log)
+* should be edited with crontab -e, this will automatically bring $EDITOR and notify the cron daemon of new changes afterwards
+* syntax: minute(0~59) hour(0~23) dayofmonth(1~31) month(1~12) weekday(0~6, 6=sunday) command
+* each time field can be: a star (*) to match all range, an integer (singled out match), two dash separated integers (a range, as in 5-15), and more
+
+* cron does execute the user-defined commands as a process with the user's UID. although it does not read the user's environment (it's not a login shell, so ~/.profile and ~/.bashrc are not read). this may cause some commands to not work as expected.
+
+* cron does not automatically change into the command's directory. if you want your command to be run from with its working directory the same as its location directory, then do this, for example: [* * * * * cd /home/truta/myapp; ./myapps_binary]
+
+* samples:
+20 1 * * *    find /tmp -atime +3 type f -exec rm -f {} ';'       runs at 1:20am everyday and removes from /tmp files that havent been accessed in 3 days
+
+* the linux variant of cron is called vixie-cron. vixie-cron also reads /etc/crontab, which is a system-wide crontab, and every line inside of it can have a UID-to-run-the-command's-process set.
+* /etc/crontab differs in syntax from per-user crontabs a little.
+
+* apparently, /etc/cron.d is the directory that should house software-installed crontabs
+
+* by default, when cron cannot run a scheduled job, it uses /bin/mail to notify the user.
+
+RPM
+* rpm -q --whatrequires packagename     self explanatory.
+* rpm -qa                               lists all installed packages. grep the output if you like.
+* rpm -q packagename                    queries the version installed
+* rpm -U newpackage                     upgrades a package.
+* rpm -i thepackage.rpm                 installs the package (if no previous versions are around)
+* rpm -e package                        erase - uninstall
+
+DPKG
+* dpkg --install thepackage.deb     if its already installed, the old one is removed
+* dpkg --remove thepackage
+* dpkg -l                           lists all installed packages. grep the output if you like.
+
+APT-GET
+* the repository link is configured by means of /etc/apt/sources.list
+* theres a tool called apt-mirror (apt-mirror.sf.net) to create whole mirrors of debian-based distributions - think installing debian on hundreds of machines, it would not be smart to have each of them update from the internet, but instead from a LAN-located mirror.
+
+* apt-get update            updates the local cache
+* apt-get upgrade           downloads and installs new versions of packages
+
+YUM
+* the config is /etc/yum.conf
+* yum update                the same as apt-get UPGRADE. this downloads new packages.
+* yum upgrade               the same as apt-get UPDATE. this downloads new definitions for the local cache.
+
+GIT COMMANDS:
+"git reset HEAD <file>"  to unstage
+"git diff --staged" to see whats currently staged
+"git commit -a -m \"message\" " to commit without staging
+"git branch" to create a branch / "git checkout <branch>" to switch to a branch
+"git checkout -b <newbranch> " create a branch and switch to it
+"git branch -d <branch>" safe delete of a branch (if its been already merged and its uniqte contents wont be lost). use -D instead to force.
+"git merge <branch>" receives a branch for merging i.e. the actual merging takes place on the current checked-out branch. not the one indicated on the command
+"git branch" and "git branch --merged" respectively, shows all branches, and shows branches that have been merged
+"git pull <repo>" will "git fetch" the indicated repo and then merge with it.
+"git push <repo>" will publish your branch to the indicated repo
+"git bisect start" will start an assisted binary search session. 
+"git submodule add <repo>" will add a submodule to your local repo
+
+GIT BRANCHING STRATEGY (GIT-FLOW):
+work constantly with branches. always merge with --no-ff, (this avoids fast forward merges) so the log history always shows the branches used.
+
+use two branches: master and develop.
+every commit on master becomes a release.
+
+branch off of/create a new branch from develop for work; it could be a new feature or a bugfix. commit as many times as needed on this separate branch, when its done, merge back onto develop with --no-ff.
+
+branch off of/create a new branch from master for hotfixes; work on this hotfix branch, then merge back onto master AND develop. (also with --no-ff)
+
+use a master branch for releases i.e every commit on it is also tagged, because each commit was pushed to production. to do a release, first branch off of this branch (e.g. upcoming_release_1.2), then work on last minute details (writing internal version strings and such) then merge back onto master for an actual release
+
+OBJCOPY
+* useful for creating separate debug symbols from executables - think MSVC++'s .pdb files.
+* objcopy --only-keep-debug exe_with_dbg_symbols the_separate_dbg_symbols will do this trick.
+* use objcopy --add-gnu-debuglink=debug_symbols_file stripped_executable to graft back debug symbols onto the executable (when I tested this on my slackware box 14.1 in 2014 it didnt work)
+
+SED
+the stream editor. useful for regexxing/replacing string patterns inside a file. practical example: creating a script that uses sed to change a version string (e.g #define VERSION 0.5) inside sourcecode files.
+
+sed -i '2d' file.cpp                the -i option is 'in-place', that is, will change the file being used for input. this will delete the second line in this file.
+sed -i 's/this/that/g'              just like you would in vim, replaces 'this' with 'that'.
+-n                                  suppresses printing to the console
+-p                                  print whats in the pattern space
+-e 'command' or '2d; 3d'            two ways to specify commands
+'2p'                                duplicates second line
+'2,4p'                              duplicates lines 2, 3 and 4.
+'2,3 {p; p}'                        applies commands p and p onto the range 2~3. this example in particular will triplicate the second and the third line.
+'$p'                                duplicates the last line
+'='                                 places the line number underneath each line
+'$='                                places the line number underneath the last line only
+'s/Line/lane/Ig'                    replaces line with lane, case insensitive
+sed -f script input                 will apply script onto input (command file scripting)
+'2aenxerto'                         appends 'enxerto' after line two
+'2cenxerto'                         appends 'enxerto' before line two
+sed can also use hold space, like variables. use that for crafting text from patterns then replacing them around for example. commands: x, h, g.
+
+SCREEN:
+type 'screen' to start the screen sessioning
+then ctrl+a, shift+s to to split screen horizontally
+or ctrl+a, shift+V to to split screen vertically
+then ctrl+a tab to change onto the other tab
+then ctrl+a c to create a window on that tab
+
+GREP and REGEX
+[abc]                                matches a, b or c
+[abc]*                               matches a, b or c, zero or more times
+^[a-z]*                              matches lines that start with text, lowercase only
+^[a-Z]*                              matches lines that start with text, case insensitive
+[a-Z]$                               matches lines ending with text, case insensitive
+^$                                   matches blank lines only
+grep -c ^$ input.txt                 will count how many blank lines are there on input.txt
+grep -v regex input.txt              the -v option inverts the results.
+[^T]este                             o chapeu ^ dentro de colchetes [] significa negaçao. this will match "teste" but wont match "Teste"
+
+some regex functionality is only accessible using extended regexes:
+
+grep -E "cat|hat"               searches for cat or hat.
+grep -E "[0-9]{5}"              five numbers in a row
+grep -E "[0-9]{5,7}"            five, six or seven numbers in a row
+grep ".at"                      returns every "at" that is preceded by "one anything" (eg. cat, hat, 7at _at)
+grep -E "box+"                  matches everything starting with box. (plus is one or more). must be used with the -E option or be escaped.
+
+FIND
+-xdev                           will prevent find from visiting network storage locations. useful if you want to search only your own machine.
+2>/dev/null                     adding this to the param list will hide away all the permission denied messages
+find ./ -name "*.txt"           find all txts recursively starting at the working dir
+-iname                          by name, case insensitive
+-type f                         find only files
+-type d                         find only dirs
+-user root                      show only files belonging to root
+-mtime                          show only files modified within the last minute
+-nouser                         no user matches the file's owner ID. useful for finding abandoned files (because the original owner was deleted)
+
+TMUX
+tmux                    starts tmux and attaches to it
+tmux attach             attaches to a tmux terminal
+ctrl+b, d               detaches from tmux
+ctrl+b, c               creates new window
+ctrl+b, n               next window
+ctrl+b, p               previous window
+ctrl+b, #               switches to # window
+ctrl+b, [               switches to Copy Mode
+
+STRINGS
+strings app will output strings contained inside an elf. very useful for extracting lots of info from an executable, such as its libc version, and more.
+
+TEE
+echo 'some content' | sudo tee --append /etc/priviledgedfile.conf > /dev/null
+
+NM
+* lists symbols in an unstripped object file
+* by default, will print 3 columns: the symbol adress, the symbol type, and the symbol name.
+* symbol types: T stands for text (so the symbol is defined in the text area - the code segment). D stands for data (initialised vars), B stands for BSS (uninitialised vars) and so on - see the man for more.
+* lowercase symbol types indicate local symbols, and uppercase symbol types indicate external symbols.
+* if you spot U typed symbols, those are likely symbols pertaining to dynamically loaded libraries - printf for example. printf resides inside glibc, and it wouldnt be loaded at the time of nm running.
+

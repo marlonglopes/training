@@ -1,0 +1,38 @@
+
+websec:
+* http://code.google.com/p/browsersec/wiki/Main
+* cross-site scripting, cross-site request forgery
+* http://www.amazon.com/dp/0470170778/ref=cm_sw_su_dp
+
+security:
+* http://stackoverflow.com/questions/2794016/what-should-every-programmer-know-about-security
+* http://en.wikipedia.org/wiki/Post-quantum_cryptography
+* learn all about TLS, detailed, step by step.
+* break down and analyze the mitm CA spoofing attack
+* diffie hellman key exchanges
+* X.509 certs
+* http://en.wikipedia.org/wiki/Off-the-Record_Messaging
+* digital signatures (http://www.youtube.com/watch?v=7gZefMlLpV4)
+* digital certificates (http://www.youtube.com/watch?v=G0vOyDEPQbs)
+* self signed certificates
+* certificate authority
+* PKI (http://en.wikipedia.org/wiki/Public_key_infrastructure)
+* PKCS (http://en.wikipedia.org/wiki/PKCS)
+* Salt
+* hash
+* sha256
+* md5
+* Assimetric keys attacks (http://en.wikipedia.org/wiki/Man-in-the-middle_attack)
+* safely store passwords in databases (hash+salt)
+* https://www.owasp.org/index.php/Main_Page
+* http://en.wikipedia.org/wiki/Key_exchange
+* criptanalise
+* hash collisions
+* SSL (http://en.wikipedia.org/wiki/Secure_Sockets_Layer)
+* http://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities
+* http://en.wikipedia.org/wiki/Pretty_Good_Privacy
+* one time pads
+* the EMV certificate requests
+* re-read that slashdot post about salts for defending against dict attacks
+* Draw sandbox: so to trust a certificate, you need that CA's certificate installed?
+

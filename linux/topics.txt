@@ -1,0 +1,73 @@
+
+linux:
+* http://wiki.linuxquestions.org/wiki/Library-related_Commands_and_Files
+* also check out the double fork affair again
+* http://stackoverflow.com/questions/881388/what-is-the-reason-for-performing-a-double-fork-when-creating-a-daemon
+* posix standards
+* posix signals (emphasis)
+* sandbox: track a procedure call to a system call in the kernel code (at the C app, then I call fopen(..), then what ... ?)
+* sandbox: make a daemon, complete with dummy clients and slackware init scripts
+* learn to make deb, rpm and tgz packages
+* http://www.win.tue.nl/~aeb/linux/lk/lk-10.html
+* http://linusakesson.net/programming/tty/index.php
+* http://en.wikipedia.org/wiki/List_of_Unix_programs
+* comb /etc/ and perharps create some intel/kbase minirepo on that. original motivator: /etc/services
+* http://www.makeuseof.com/tag/an-a-z-of-linux-40-essential-commands-you-should-know/
+* https://www.kernel.org/doc/Documentation/
+* http://faculty.ucr.edu/~tgirke/Documents/UNIX/linux_manual.html
+* std unix pastas (usr/doc usr/share/doc etc)
+* shorewall
+* go pro on code profiling / find a auto code profiling tool, linux or ...
+* DDD debugger (for lots of langs)
+* samba
+* ipsec (http://www.unixwiz.net/techtips/iguide-ipsec.html)
+* Postgres admin
+* sendmail admin
+* read FHS (filesystem Hierarchy Standard) -> acervo, em pdf
+* lpi stuff
+* http://refspecs.linuxfoundation.org/lsb.shtml
+* https://www.wiki.kernel.org/
+* http://www.catb.org/esr/writings/taoup/html/ch01s06.html
+* read ALL of tldp.org
+* http://www.linuxjournal.com/article/8110
+* http://www.win.tue.nl/~aeb/linux/lk/lk-3.html
+* read up libc / glibc source code
+* http://www.linuxfoundation.org/collaborate/workgroups/technical-advisory-board-tab/linuxdevicedrivermodel
+
+books:
+* linux from scratch
+* http://rute.2038bug.com/index.html.gz
+
+securitytube:
+* https://www.youtube.com/watch?v=eo-OW5rNC14 (gdb expert)
+* https://www.youtube.com/watch?v=LtWZxJiS6Oc (wats up with the debug syms)
+* https://www.youtube.com/watch?v=z1KPLCnXReo (debugging p3: using nm)
+* https://www.youtube.com/watch?v=M3a1f12zcts (debugging p4: using strace)
+* https://www.youtube.com/watch?v=qv8M10fsXFg (debugging p5: breakpoints)
+* https://www.youtube.com/watch?v=bFD2uHsO098 (debugging p6: mod regs and mem)
+* https://www.youtube.com/watch?v=Kh1kM1m1kkk (debugging p7: conveniences)
+* https://www.youtube.com/watch?v=NlcMetmoFUg (debugging p8: disasm crack with dbg syms)
+* https://www.youtube.com/watch?v=bbVLw6I15f0 (debugging p9: disasm crack)
+* https://www.youtube.com/watch?v=gIWlGxmVzT0 (debugging p10: conditional bps)
+* https://www.youtube.com/watch?v=M9p5bcmd7PA (debugging p14: gdb on 64 sys)
+
+done:
+* http://stackoverflow.com/questions/827862/why-i-need-to-re-compile-vmware-kernel-module-after-a-linux-kernel-upgrade
+* https://www.kernel.org/doc/Documentation/stable_api_nonsense.txt
+* http://liquidat.wordpress.com/2007/07/21/linux-kernel-2623-to-have-stable-userspace-driver-api/
+* http://en.wikipedia.org/wiki/Linux_kernel_API
+* https://lwn.net/Articles/159313/
+* http://lwn.net/Articles/162686/
+* http://en.wikibooks.org/wiki/FOSS_A_General_Introduction
+* http://en.wikibooks.org/wiki/FOSS_Licensing
+* http://en.wikibooks.org/wiki/FOSS_Open_Standards
+* http://en.wikibooks.org/wiki/LPI_Linux_Certification
+* read unix programming FAQ (see acervo)
+* the slackware book / http://www.slackbook.org/html/index.html
+* comb http://en.wikipedia.org/wiki/Portal:Linux
+* briefly checkout the snail book, about ssh: http://www.snailbook.com/
+* strace (https://www.youtube.com/watch?v=M3a1f12zcts) (big emphasis)
+* http://stackoverflow.com/questions/9809810/gdb-corrupted-stack-frame-how-to-debug
+* watch that henry kroll c prog, linux debugging video again
+* try to get something useful from a coredump produced without debugging symbols.
+

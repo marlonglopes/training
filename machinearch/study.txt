@@ -1,0 +1,53 @@
+
+PROGRAM ARCH
+* position independent code: the program's memory addresses are not absolute (i.e. not mapped to real memory values). this is a must for shared libraries. its not necessary for executables though, because PIC uses more registers (just one more?) - this would be a drag, for example, in the register-starved x86 architecture.
+when using PIC, only the program counter must be updated when paging back to PIC-enabled programs - no relocations are needed.
+
+LOADERS
+* program loaders load executable files from disk (typically) into ram (typically). it performs some basic bootstrapping stuff like setting registers, checking permissions, and ultimately jumping onto the program entry point (_start or main). in unices, the program loader is the handler of the execve() syscall.
+
+* in unices, theres also the dynamic linker (ld), that loads/links (sort of attaches) a library onto a running program, in runtime.
+
+APPLICATION BINARY INTERFACE
+* calling conventions, type representation, and symbol name mangling are all part of what's known as an application binary interface.
+
+* different compilers may implement incompatible ABIs among themselves, even for the same programming language.
+* C++ is sometimes differently compiled on different compilers. C on the other hand is safer to use across compilers.
+
+CALLING CONVENTION
+* a documented convention on how function calls are made, in the assembly/arch instruction level.
+* in other words: the "standard" or "pattern" for calling functions: either by pushing parameters on the stack, or via processor registers, or a mix of both, for example.
+
+DLLs and DSOs
+* the have no "identity" - they run onto the calling executable's thread, and use its memory (stack and heap). they behave exacly as if they were compiled inside the program. the only difference is the linking.
+* they are basically lazy-linking. what the OS's loader does is link them to the main executable, and then run it all as if it all was a single static monolithic executable.
+
+HARDWARE ARCH VS (OR COOP) SOFTWARE ALGORITHMS
+"What good is an O(log2(n)) algorithm if those operations cause page faults and slow disk operations? For most relevant datasets an O(n) or even an O(n^2) algorithm, which avoids page faults, will run circles around it."
+
+HIGH AND LOW
+* high is leftmost, and low is rightmost on little-endian (x86) archs.
+
+REGISTERS
+* internal sentinels/memory on the processor
+* EAX, EBX etc in 32 bits pcs. theyre called RAX, RBX and so on in 64 bits pcs.
+* on 64bit pc machines, you can also use EAX to access the (lower) 32-bit part of RAX. its also possible to use AH and AL to access the even lower parts.
+
+* EIP/RIP = Instruction Pointer. points to the next instruction's address in memory. sometimes also called PROGRAM COUNTER, but its the same thing. in gdb, you can set this register with either set $eip (32 bits machines), $rip (64 bits machines) or $pc.
+
+program counter (pc): holds the memory address of the next instruction
+stack pointer (sp): contains local scope memory
+
+registers are managed by software, as opposed to cache that is mostly controlled by hardware.
+
+MEMORY LAYOUT (PC COMPATIBLE)
+
+* the list below shows the memory layout for a program. It is a sorted list - the memory on the .text segment is the lowest memory address, the toppermost is the highest memory address.
+
+* Stack (local variables, function parameters. grows down).
+* [unused memory]
+* Heap (dynamic memory - malloc and friends. grows up.)
+* .bss (uninitialised variables.)
+* .data (initialised variables)
+* .text (the code)
+

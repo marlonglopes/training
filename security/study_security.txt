@@ -1,0 +1,58 @@
+
+PRINCIPLE OF SECURITY
+* to make a system secure, its necessary to implement security in depth: implement multiple layers of security.
+
+GENERAL PRINCIPLES OF LOGGING SYSTEMS
+* something the user knows
+* something the user has
+* something the user is
+
+BUG EXPLOITS (ATTACKS BASED ON EXPLOITING PROGRAM BUGS)
+* theyre basically all about overwritting some memory somehow in order to have injected code run.
+* example: using stack-allocated buffers beyong their boundaries will overwrite stack memory around. this overwriting usually is junk, but it could be with purposedly crafted malicious code.
+* some modern CPUs do have special mechanisms to defend against these attacks, like allowing to mark stack pages read/write but not execute. ast notes that many OSes dont use this feature though.
+
+BUFFER OVERFLOW ATTACK
+* remember that the return address of functions are pushed onto the stack. when a function stops executing, the program jumps back to that address.
+* sample C code:
+
+void func(){
+
+    byte buffer[128];
+    memcpy(buffer, someotherbuff, sizeof(someotherbuff));
+    anotherfunc();
+
+}
+
+* if someotherbuff is bigger, there will be a buffer overflow. if you "aim right", you could overwrite anotherfunc()'s return address with a slice of someotherbuff's contents. there are afew possibilities here: change that address so the program will JMP to some memory area with malicious code, or ... use your imagination. if the program  in question is being run as root, you could start doing all kinds of funny syscalls - think FORKING the process into a shell and there running all sorts of bad things.
+
+RETURN TO LIBC ATTACK
+* same as a buffer overflow attack, but also works for nonexecutable stacks - it circumvents this protection.
+* works like this: instead of poisoning the stack with executable shellcode to return to, it instead overwrites the return address with the address of (typically) strcpy. it then tricks strcpy into consequently returning to the shellcode, residing on the data segment (heap), therefore circumventing the stack execute protection.
+* does not have to necessarily be libc the "auxiliary" libary - could be any other, but libc is more assuring - it is always linked to all C programs.
+
+INTEGER OVERFLOW ATTACK
+* feeding a program some data to have its integers wrap around
+* example: an image manipulation program. if you feed a large image on a program that uses shorts to hold its height and width, and then mutiplies these two to calculate the length of the buffer it should use, and that stores the resulting product into another short (short bufflen) then the subsequently allocated (with malloc maybe) buffer will be too small - and possibilities for attacks are now ripe.
+
+PROGRAM TRAP
+* imagine you tamper with the 'ls' unix program - the one to list a directory's contents. then you place it on your user's home. then you start acting funny inside the server. then the admin notices this. then the admin changes into your home folder, and goes 'ls -la' - he just started your infected ls program, with root powers.
+
+FIREWALLS
+* they can be stateless or stateful. in hardware or in software.
+* the stateless one will just allow or disallow packets based on IP and port, preconfigured on a file.
+* the stateful one may also monitor connections to implement IDS (intrusion detection systems).  to do this, it may inspect packet's payloads - and as such, these will stand in multiple network layers.
+
+MALWARE TACTICS
+* some malware reside on the memory or on the kernel
+* those residing on the kernel may interceppt all system calls, for lots of mischievous purposes
+* some antivirus use checksumming to determine whether executable files are in a state of integrity or have been infected. still, viruses could infect the kernel and try to subvert the checksumming apps/procedures.
+* to defend against memory resident viruses, some antiviruses themselves become memory resident and intercept all system calls to inspect them for suspiciouss behaviour.
+
+ACTIVEX
+* x86 binaries that come from the Internet. what could go wrong? those were not sandboxed, interpreted, or monitored.
+* it did employ security measures though: they were signed; to run these, you had to trust the signer's pubkey.
+
+PDF and FLASH
+* both are code, and as such, they are security threats.
+

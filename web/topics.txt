@@ -1,0 +1,37 @@
+
+webdev:
+* https://www.owasp.org/index.php/Category:OWASP_Guide_Project
+
+weblangs:
+* python webdev
+
+other:
+* Web architecture / http etc
+* apache config + plugins for langs (python, cgi, whatever)
+* soap
+* http
+* do lots of sandboxing apache srv (try fetch page, soap-comm via nc)
+* java applets
+* other web protocols
+* http://en.wikipedia.org/wiki/Representational_state_transfer
+* http://en.wikipedia.org/wiki/Category:Web_service_specifications
+* http://en.wikibooks.org/wiki/Web_Application_Security_Guide
+* http://en.wikibooks.org/wiki/Nets,_Webs_and_the_Information_Infrastructure
+* just 'what' is the www anyway
+* sandbox: using sdl_net, create a microhttp server: listen on port 80, respond some requests. then try to talk with it with my chromium.
+* django
+* css
+* ajax
+* Jquery
+* when php goes print() something, whats the route alltheway back to the clients browser?
+* http://www.webtoolkit.eu/wt
+* php+laravel/codeigniter/yii
+* Node.js
+* jquery
+* http://www.mnot.net/cache_docs/
+* http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol
+* http://www.danielmiessler.com/study/http/
+* How browsers handle ssl sec (pki)
+* Browsers pegam lista de CAs de governos??
+* Browsers with pubkeys? Can someone manually override these keys?
+

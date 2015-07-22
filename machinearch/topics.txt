@@ -1,0 +1,45 @@
+
+machinearch:
+* study the asm output of a non-optimising C compiler, such as tinyCC
+* sandbox: buffer overflow. while i'm at it, play alittle bit more with core dumps - "if the src code [debug symbols loaded] is available, the stack layout is known in advance"
+* http://stackoverflow.com/questions/3291936/example-of-a-buffer-overflow-leading-to-a-security-leak
+* do actually look at sample C code for return-to-libc attacks and buffer overflow attacks
+* http://lwn.net/Articles/250967/
+* -fPIC
+* http://en.wikipedia.org/wiki/Relocation_(computing)
+* program segments (text, data, stack)
+* http://www.tedunangst.com/flak/post/analysis-of-openssl-freelist-reuse
+
+* http://www.drpaulcarter.com/pcasm/
+
+securitytube:
+* https://www.youtube.com/watch?v=K0g-twyhmQ4 (asm primer p1: intro)
+* https://www.youtube.com/watch?v=aoEEH2EJdVY (asm primer p2: virtual mem org)
+* https://www.youtube.com/watch?v=t-bjhu2z9wE (asm primer p3: gdb)
+* https://www.youtube.com/watch?v=RvvRO_gWYIg (asm primer p4: hello world)
+* https://www.youtube.com/watch?v=8ymVjHCIciQ (asm primer p5: data types)
+* https://www.youtube.com/watch?v=nm7EeFGWpFU (asm primer p6: moving data)
+* https://www.youtube.com/watch?v=nBhR8xgK6qA (asm primer p-6: working with strings)
+* https://www.youtube.com/watch?v=HhMbb26N8bc (asm primer p8: uncond branching)
+* https://www.youtube.com/watch?v=TRRndtl0DyM (asm primer p9: cond branching)
+* https://www.youtube.com/watch?v=jxQSvWWPNkc (asm primer p10: funcs)
+* https://www.youtube.com/watch?v=KRaJoeVXF_8 (asm primer p11: func stack)
+* https://www.youtube.com/watch?v=5wHymfp0adg (asm+libc)
+
+* http://slouken.blogspot.com.br/2011/02/problem-solving-in-powerpc-assembly.html
+* http://slouken.blogspot.com.br/2011/02/ninja-hacking-on-iphone-part-1.html
+
+* https://www.youtube.com/watch?v=T7GtWid5hsw (shellcoding basics)
+* https://www.youtube.com/watch?v=RF7DF4kfs1E (buff ovf primer p1: stack smash)
+* https://www.youtube.com/watch?v=qaNyU5PnelI (buff ovf primer p2: writing shellcode)
+* https://www.youtube.com/watch?v=Q1yC515WWO0 (buff ovf primer p3: executing shellcode)
+* https://www.youtube.com/watch?v=6XTmLamRonE (buff ovf primer p5: shellcode for execve)
+* https://www.youtube.com/watch?v=eLpG1LbtSZA (buff ovf primer p6: exploiting an app)
+* https://www.youtube.com/watch?v=N0DBu3TGejI (buff ovf primer p7: exploit demo)
+* https://www.youtube.com/watch?v=pVBnjSQ4Fjk (buff ovf primer p8: return libc theory)
+* https://www.youtube.com/watch?v=GwtPmwa2PLg (buff ovf primer p-8: return libc demo)
+* https://www.youtube.com/watch?v=nYVGFEIU5Eo (analysis: poor mans encoder)
+
+later:
+* checkout RISC machines ?
+

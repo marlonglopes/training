@@ -1,0 +1,66 @@
+
+GDB:
+to generate core dumps, its necessary to activate them first. this should do it: ulimit -c unlimited (sets the amount of memory to dump)
+doing gdb theapp core will show exacly which line made the program jump onto the weeds
+
+* OBS on handling breakpoints: whenever you create one, it gets assigned an index. indices are not redistributed whenever you delete any of them.
+* OBS about core dumps: if you cant tell whats going on from the get-go when inspecting a core dump, you likely would want to use bt (backtrace) to trace the call stack that led to the error. when you get weird things from bt, the program possibly jumped onto the weeds by smashing the stack and setting the instruction pointer to an invalid address.
+
+basic cheat sheet:
+
+$gdb theapp                 start up debugging session
+>r                          runs. will hit whichever breakpoint comes first
+
+>list                       shows the source code for the region you are stepping around. using repeatedly will keep printing down the lines. this requires the source code file to be present. also, this can take a line number as a parameter.
+
+>b main.cpp:15              sets a breakpoint at line 15, file main.cpp. its possible to code conditions here (if var > 5 for example)
+>b func                     sets a breakpoint at function func(), file main.cpp. its possible to code conditions here (if var > 5 for example)
+>b *0x00110022              sets a breakpoint at specified address
+
+>del 1                      deletes the breakpoint with index 1. to see breakpoint's indices, use "info b".
+>dis 1                      disables breakpoint with index 1.
+>ena 1                      enables breakpoint with index 1.
+
+>bt                         backtraces
+>where                      same (i guess) as bt
+>display var                displays var value
+
+>watch var                  places a watchdog on var. whenever var is changed, the execution breaks right there (as if with an implicit breakpoint)
+>condition 1 var == 5       attaches a condition to breakpoint with index 1
+
+>print var                  prints var value
+>print SomeDefinedFunc      shows info about some defined function, such as its address.
+
+>continue                   hops from breakpoint to breakpoint
+>s                          step. meaningful inst by inst
+>si                         step inst -> will step a single machine code inst, good for disassembly.
+>winheight                  will show you the source where youre currently at. is probably customisable to mimmick a gui of sorts.
+>file dbg_symbol_file       specified and loads separate debugging symbols from a file [alt: symbol-file]
+
+>set var = 35               sets the var to 35 (integer)
+>set $rax = 20              sets the RAX register to 20
+>set $rip = 0xdeadbeef      this is how you change the next instruction to be run.
+>set $newvar = 50           this allows for creating new (convenience) variables at debugging time. you can subsequently assign real program variables to your newly defined variables.
+>set $mynewarray = (char*)malloc(10)        this is also legal, and does exacly what it looks like.
+>set disassembly-flavor intel   uses a nicer asm syntax. by default, gdb uses at&t syntax.
+
+>call printf($mynewarray, argv[1])          is also legal
+>call your_local_func       will call your own functions
+
+>info b                     will show the active breakpoints
+>info registers             will show info about registers - you can see their values too.
+>info variables             variables info. by default, this will print only global and static variables - but not local, stack-allocated variables.
+>info scope [scope]         use this to show local variables inside functions - the [scope] right there would be the function's name.
+>info functions             shows defined functions
+>info locals                local variables
+
+>save b debugfile           saves all breakpoints to debugfile. to use them later, next time you run gdb with the -x debugfile option. (or during runtime using the source command)
+>source debugfile           loads breakpoint files
+
+>disassemble func           disassembles func
+>layout asm                 split screen with disassembled view and cmd terminal view.
+>x/10xb 0x7fffffffd960      will print 10 bytes, in hexa, from the specified virtual address.
+>x/i main                   will print main (just the first line) disassembled. main+n can also be used.
+
+break write if $rsi == 2    will break on all writes to stderr on amd64, where the $rsi register is used to pass the first parameter.
+

@@ -1,0 +1,10 @@
+
+cppconcepts:
+* http://www.parashift.com/c++-faq/
+
+* read work: Deep C, Olve Maudal
+
+* http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms
+* c/cpp standard: activation frames, sequence points, calling conventions
+* read the C++ Spec
+

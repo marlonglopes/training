@@ -1,0 +1,21 @@
+
+WHEN TO USE THREADS
+* when your code is adventuring itself in the direction of a long IO operation, blocking the rest of your app. use a thread for that and let your users keep playing with your app or whatever.
+
+THREAD-SAFETY, BASIC
+* its about controlling write access to some shared object. reading also requires syncing.
+* a class/function is considered thread-safe when accessing it from multiple threads does not break its specified invariants.
+
+THREAD SAFETY AND OOP
+* stateless and immutable objects are always thread safe.
+* thread safe classes should encapsulate the thread syncing - think synchronized in java.
+
+RACE CONDITION
+* basically, just like programming by coincidence, but for a runtime context: the computation will only succeed because of lucky timing.
+
+ATOMICITY
+* to implement state in a class in a thread safe way, the variables that compose this said state should be modified only atomically.
+
+REENTRANCY
+* this is a piece-of-code property; its basically a concept that defines whether some code (a function, a class maybe, ...) is safe to be paused, and be run again. to achieve this, it must make sure it does not leave stuff around in an inconsistent state. a typical example is a function (C-style, outside a class) that monkeys with global variables. this function is not reentrant - it cant be safely re-entered.
+

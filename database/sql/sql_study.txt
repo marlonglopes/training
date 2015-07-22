@@ -1,0 +1,23 @@
+
+QUERY CLAUSES:
+
+* Select: determine which fields to include in the result set
+* From: determine which tables to get data from (can be more than one, when they are joined)
+* Where: defines filters to filter out unwanted data, commonly by field values.
+* Group By: used to group records together based on field values.
+* Having: Filters out unwanted groups
+* Order By: text sorting, based on field values.
+
+SELECT:
+
+* basic: SELECT fields FROM table
+
+* the optional DISTINCT modifier: goes right after the SELECT keyword. this will eliminate duplicate records.
+* example: "which cities are represented by our bowling membership?" -> SELECT city FROM bowlers. this might yield multiple ocurrences of a city if theres two
+members in the same city.
+* so changing that to a SELECT DISTINCT city FROM bowlers will remove the duplicate records.
+
+* ORDER BY: comes after the table. this is used to specify the field used to sort the result set.
+* example: SELECT city, date_registered FROM customers ORDER BY city ASC/DESC
+* it is possible to include multiple fields as the sorting subjects. they are evaluated from left to right.
+

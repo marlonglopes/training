@@ -1,0 +1,45 @@
+
+java8news:
+* http://www.drdobbs.com/jvm/first-class-functions-in-java-8/240166766
+* http://www.drdobbs.com/jvm/lambdas-and-streams-in-java-8-libraries/240166818
+* http://www.drdobbs.com/jvm/parallel-array-operations-in-java-8/240166287
+* http://www.drdobbs.com/jvm/lambda-expressions-in-java-8/240166764
+* http://www.drdobbs.com/jvm/java-8-arrives/240166820
+* http://www.drdobbs.com/jvm/java-se-8-beyond-lambdas-the-big-picture/240166881
+
+java:
+* http://en.wikipedia.org/wiki/Java_hashCode()
+* https://sites.google.com/site/freejavalectures/
+* http://en.wikipedia.org/wiki/Java_Native_Access
+* http://www.oracle.com/technetwork/java/faq-141681.html
+* http://www.ibiblio.org/java/javafaq.html
+* http://www.apl.jhu.edu/~hall/java/FAQs-and-Tutorials.html
+* http://en.wikipedia.org/wiki/Comparison_of_Java_and_C++
+* Java: classes in the same package can access eachothers protected members
+* Raise except inside java thread ??
+* the java lectures (bookmarks?)
+* Java exception deadlock possible? (assertexception)
+
+* tomcat, glassfish
+
+* learn some frameworks (spring, struts, hibernate)
+* jboss / weblogic / wildfly
+* learn webservices better
+
+* http://stackoverflow.com/questions/2114212/questions-every-good-java-java-ee-developer-should-be-able-to-answer
+* http://stackoverflow.com/questions/291279/getting-started-with-java-ee
+* http://stackoverflow.com/questions/5739099/how-to-design-and-architect-a-java-j2ee-web-application
+
+javatools:
+* http://en.wikibooks.org/wiki/Apache_Ant
+* maven
+
+* http://en.wikipedia.org/wiki/JMX
+
+other:
+* alittle java homework: immutable classes (thread safe), java functional prog caps (closures? java 1.8?), java faq etc
+
+sandboxes:
+* threads
+* jna
+

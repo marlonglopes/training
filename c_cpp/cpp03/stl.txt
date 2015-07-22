@@ -1,0 +1,8 @@
+
+STD::FUNCTION (STD::TR1::FUNCTION)
+this lets out bind artifacts with compatible signatures to generic contexts (pre-reference a function pointer OR a function object); very clever. allows for generic Stratgey pattern.
+
+STD::VECTOR
+guarantees to mantain its internal memory in a consistent sequence (in the actual memory)
+they are the gateway to C ABI.
+

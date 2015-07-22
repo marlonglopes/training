@@ -1,0 +1,19 @@
+
+vim topics:
+* vimtutor
+* https://www.youtube.com/user/MinuteVimTricks/videos
+
+* http://benmccormick.org/2014/07/21/learning-vim-in-2014-getting-more-from-vim-with-plugins/
+* http://joelhooks.com/blog/2013/04/23/5-essential-vim-plugins/
+
+* http://www.catswhocode.com/blog/130-essential-vim-commands
+* http://stackoverflow.com/questions/5400806/what-are-the-most-used-vim-commands-keypresses
+* http://www.bestofvim.com/plugin/pathogen/
+
+* https://www.youtube.com/watch?v=_NUO4JEtkDw (learning vim in a week)
+* https://www.youtube.com/watch?v=ke7SfUFvvxo (intro expert vim)
+* https://www.youtube.com/watch?v=SkdrYWhh-8s (expert level vim)
+* https://www.youtube.com/watch?v=9jzWDr24UHQ (vim + tmux + ruby)
+* https://www.youtube.com/watch?v=67OZNp9Z0CQ (vim python mode)
+* https://www.youtube.com/watch?v=vk285Zc5_Zw (using vim and tab)
+

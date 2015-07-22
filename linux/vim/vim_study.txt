@@ -1,0 +1,77 @@
+
+VIM
+0                               goes to the beginning of the line
+$                               goes to the end of the line
+0D                              clears current line
+y$                              copies to the end of the line (similar to shift+d)
+[{ and }]                       goes to the beginning and the end of the current code block, respectively
+%                               goes to the matching parenthesis, brackets or keys too!
+|20                             goes to column 20
+M                               goes to the middle of the screen
+H                               goes to the top of the screen
+C                               clear till the end of the line and enters edit mode immediately
+u                               undo
+ctrl+r                          redo
+d5w                             delete five next words (words are text separated by spaces, duh)
+x                               deletes char on cursor
+X                               deletes char behind cursor
+cw                              change word. delete the word close to the cursor, then goes into edit mode.
+ci"                             change inside ". delete contents inside this line's "............" then goes there, in edit mode.
+.                               repeats the last commands entered between normal mode and insert mode
+5.                              repeat last action, five times
+>G                              increase the indentation, until end of file
+>}                              increase indent, until end of codeblock (cpp codeblocks that end with })
+i                               insert. changes to edit mode without changing the cursor.
+I                               start inserting at beginning of line.
+a                               append. changes to edit mode, moving the cursor to n+1
+A                               append and the end of the line.
+o                               append newline below cursor, goes into edit mode
+O                               append newline above cursor, goes into edit mode
+f{char}                         places the cursor at the first occurrence of {char}
+t{char}                         places the cursor before the first occurrence of {char}
+;                               repeats the last f or t (or F or T)
+s                               deletes the char in the current position and goes into edit mode
+*                               searches the word inside the cursor, frontwards
+#                               searches the word inside the cursor, backwards
+guaw                            changes selected word into lowercase
+guaP                            changes selected paragraph into lowercase
+gUaw                            changes selected word into uppercase
+gUU                             changes whole line into uppercase
+zz                              centers screen on cursor
+ZQ                              same as doing :q!
+cc                              change whole line. basically clears the line, puts the cursor at the indentation level (nope it does not clear the previous indent) and then goes into insert mode.
+
+6t7                             copies line 6 and pastes on line 7
+6t8                             moves line 6 to line 7
+
+Combos in normal mode
+<C-ww>                          changes focus from windows to another (for example, changes focus from open buffer back to nerdtree)
+Ctrl+G                          shows statusbar
+
+Combos during Insert mode:
+<C-h>                           delete character (backspace)
+<C-w>                           delete word
+<C-u>                           delete back to start of line
+<C-v>{numeric code}             inserts a character by (uni)code
+
+Search/Replace:
+/line\|lane                     searches for line or lane
+/\cLINE                         searches for line, case insensitive
+ggguG                           set all text to lowercase
+gggUG                           set all text to uppercase
+
+
+copy, paste, visual mode:
+press V to go into visual mode. select around. press y to yank or any other command, normally. then press P to paste.
+
+copying text with mouse selection (gui-style):
+* press v to enter visual mode, click and drag to make a selection, then press y to yank normally
+
+Command line
+:set paste, and then shift+ctrl+v           to paste lines copies from elsewhere without having vim go crazy on the indentation (happens on slackware, but not on mint)
+:split file.cpp                             split screen editing
+:2,35s/old/new/g                            replace all occurences between lines 2 and 35
+:h wildmode                                 shows the "manpage" for the wildmode option
+:write | make                               executes write and then make, in serial mode
+:noh                                        clears the search highlight (does not disable it)
+

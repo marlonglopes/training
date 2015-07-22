@@ -1,0 +1,6 @@
+
+opsis:
+* read POSIX signals specs
+* http://en.wikipedia.org/wiki/Linda_%28coordination_language%29
+* http://www.youtube.com/watch?v=H4Z0S9ZbC0g (all parts)
+

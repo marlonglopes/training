@@ -1,0 +1,8 @@
+
+STARTUP SERVICES
+* /etc/rc.d is where startup services should be placed. turn them on/off by setting chmod +x or -x to them. you can put your own custom startup scripts in there too, by 1) putting your script there and 2) listing it on /etc/rc.d/rc.local
+
+* starting apache on slackware: $sh /etc/rc.d/rc.httpd start        as you may see, this can be done by a normal user, no problem. no need to su root; apachectl start
+
+* slackware uses BDS-style init scripts.
+

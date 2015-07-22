@@ -1,0 +1,32 @@
+
+infra:
+* Build systems: ant, maven, gradle, jenkins.
+* http://en.wikipedia.org/wiki/Puppet_software
+* http://www.openldap.org/
+* http://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer
+* how to auto create getters and setters with vim again?
+* How to use ssh keygen ?
+* Make real sure to block outgoing connections with iptables
+* checkout jenkins
+* checkout gradle
+
+* doxygen
+* cmake
+* http://en.wikipedia.org/wiki/Nagios
+* http://denyhosts.sourceforge.net/
+* openvpn (do implement a vpn between both my pcs)
+* openswan
+* go pro on jenkins
+* go pro on gradle
+* freenas
+* xenserver
+* implement jenkins, with warnings listed and unittesting and cppcheck, using my own custom makefiles, bugtracking, repository checking, perharps even my own redmine? the whole jazz (that i want/need)
+* install cygwin on my win
+* learn netbeans shortcuts and ops yet more
+* for the next generation of box ticketing system, employ PGP for emailing
+* checkout http://en.wikipedia.org/wiki/Apache_Bloodhound / Trac / Redmine / Bugzilla / whathaveyou
+* checkout http://en.wikipedia.org/wiki/Docker_(software)
+* checkout double choco latte dcl.sf.net / mantisbt.org / scarab.tigris.org / otrs.org
+* institutionalise "Dev/buildcfgman" -> with jenkins for building, release configs, active customer deployments, makefile templates etc. and the active jenkins instalation too. also bug/issue tracking. and wiki. and more?
+* see some videotut on how to setup pgp on your email
+

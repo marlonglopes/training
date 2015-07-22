@@ -1,0 +1,11 @@
+
+LIBRARY INTRODUCTION
+* beware the software introduction; take an opensource library for example. likely the user wanted to do something ELSE, and went into searching for a library because he didnt want to reinvent that wheel. so he probably wants to just add the library and start working on his stuff. a painless introduction to the library is therefore essential. the user does not want to pay (with too much time) for using a library. basic flow could be:
+* list features. mention who uses, if its stable, how long its been out there, if its still actively developed, is it backed by a strong community, company, etc.
+* download, build and link (link to the users project, not the library's sources!! for example, POCO lib in early 2014 produced a number of .so's, but i had no idea which ones i had to link!! i had to go into hacking/figuring out mode to find out which one(s) i needed 'cause all i wanted was threading stuff.
+
+* the key is to avoid having the user having to go into hacking mode, because this costs energy, and people going after libraries are looking for speedy solutions and certainly dont want to burn themselves out learning YET ANOTHER damned API. having to learn and memorise tons of them gets old and makes us jaded, so we want to avoid it, rightfully so!
+
+GENERAL CONTRACTOR
+* a class that provides some service, but uses a number of subclasses (composed via asbtract factories, perharps) to delegate some of the work.
+

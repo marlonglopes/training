@@ -1,0 +1,5 @@
+
+pre-train for several architectural classics:
+* a web(or otherwise) backend that listens, receives a request, spawn a worker to process it, then return it.
+* single and multi player games
+

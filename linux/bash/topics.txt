@@ -1,0 +1,5 @@
+
+bash:
+* http://en.wikibooks.org/wiki/Bourne_Shell_Scripting
+* http://www.tldp.org/LDP/abs/html/
+

@@ -1,0 +1,19 @@
+
+INHERITANCE: "IS A"
+* "The single most important rule in object-oriented programming with C++ is this: public inheritance means "is a.". Commit this rule to memory."  - Scott Meyers
+* private inheritance, as such, is NOT a "is a" relationship: its a "implemented in terms of" relationship - shameless code reuse basically.
+* see Liskov's rule for more on "is a" relationships - they must be "is a" in terms of BEHAVIOUR. so a square is not a rectangle.
+
+INTERFACES:
+* public interface: for clients. protected interface: for derived classes.
+* derived classes should NEVER conceal inherited interfaces. they should not meddle with the interface's signatures either - this last point is rather dangerous in c++ in fact, because if you do change an inherited signature, you will actually end up HIDING the original function.
+
+C++ VIRTUALS:
+* by default you should do pure virtuals (the class becomes abstract - a java interface)
+* nonpure virtuals require a default implementation.
+
+DESIGN
+* always think ahead (before coding) the design of a class.
+
+POLICY vs MECH
+* push policy up, mechanism down (interface vs implementation)

@@ -1,0 +1,13 @@
+
+extlangs:
+* D
+* lua
+* ocaml: said to be very fun to program in, designed for "smart people", faster than java, and more powerful than java
+
+debuggers:
+* gdb for dlang
+
+other:
+* Awk (http://en.wikibooks.org/wiki/An_Awk_Primer)
+* m4 (macro processor)
+

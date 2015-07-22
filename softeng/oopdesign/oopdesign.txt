@@ -1,0 +1,88 @@
+
+OOP / RAII:
+when creating a RAII object (a resource handler), there ought to be cases where you must not allow that object to be copied, so disable the copy constructor and perharps also the attribution operator. (making them private will suffice)
+
+INTERFACES:
+"The most important thing to get right is the interface. Everything else can be fixed later. Get the interface wrong, and you may never be allowed to fix it." Herb Sutter.
+
+* also make sure to always think of distinguishing between public and protected interfaces. public interfaces are for clients to use. protected interfaces are for derived objects to use.
+
+OOP / INHERITANCE:
+inheritance is about substitutability (Liskov principle of substitution). create interfaces that can be used polymorphically. inheritance is not meant to reuse code from a base class. for that purpose, use composition instead (or mixins, if the language allows)
+
+Also, its important to keep in mind the base contract. if the base class has a function that is advertised as always succeeding, the derived classes should obey that, as in not throwing exceptions for example.
+
+IBird interface -> COstricht implementation. IBird has virtual Fly(). What to do at COstricht::Fly() ? It depends. If the base contract advertises always-sucess for IBird::Fly(), then COstricht shouldnt derive from IBird.
+
+OOP / INHERITANCE / CONTRACTS (template method, NVI - nonvirtual interfaces)
+when creating an interface, dont declare virtual functions as public; if you do, youre subject to derived class treachery - will render the interface unreliable. instead declare the interface
+functions as normal functions that the base class control (sets the pre/post conditions etc) (ie. nonpublic virtual functions, virtual private functions - then provide an interface implementation)
+
+TEXT DATA PARSING:
+create a container class for the data, without setters. declare some friend class as a mutator. let the container class have getters only. neat encapsulation.
+
+ERROR HANDLING
+* When coding oop / designing code structure always keep in mind how to properly handle errors - some are recoverable. make sure not to neglect these recoverable ones.
+
+
+INHERITANCE
+* the whole point of inheritance is to define abstractions. classes with no virtual functions should not be derived from (generally; unless someone is lazy and wants to "borrow" some code via private inheritance)
+
+* never redefine (overwrite) an inherited nonvirtual function.
+
+INHERITANCE OF INTERFACE vs OF IMPLEMENTATION
+* its important to separate the two (pure virtuals, nonvirtuals et al)
+the airplane problem:
+airplane { virtual fly() };
+modelA: public airplane { // uses the default implementation. airplane::fly() is not pure virtual! };
+modelB: public airplane { // same as modelA };
+modelC: public airplane { // this one flies alittle differently };
+
+see, when inheriting from airplane, its not necessary to provide a fly() implementation. by omitting it, the derived plane will automatically (implicitly) be using the default implementation of fly(). this is correct for modelA and modelB, but modelC flies differently; when writting modelC's class, if the programmer forgets to override fly(), then modelC too would be using the default implementation, which is incorrect for modelC.
+
+the solution is to force an explicit request for the default implementation, like so:
+airplane { public: virtual fly() = 0; protected: defaultfly() };
+
+then every derived plane would have to implement fly(), even if its just to re-route traffic to airplane::fly()
+
+POLYMORPHIC INTERFACES
+... may require less and provide more. but never require more and provide less; in practice, override responsibly, be careful not to break liskov when making descending overrides
+
+NONPOLY INTERFACES
+* The purpose of declaring a non-virtual function is to have derived classes inherit a function interface as well as a mandatory implementation.
+
+LISKOV
+public inheritance is substitutability; its meant to provide liskov, not to reuse code. incase you really MUST inherit to reuse some code, then do it in private (i.e. inherit privately); but do make sure you cant use composition first though.
+
+inheritance must model the commonly called "is-a" or a "works-like-a" instead of "is-implemented-in-terms-of". however, I believe calling liskov a "IS-A" model construct is a really bad misnomer.
+Instead, one should think of inheritance as a means to model a "behaves-like-a" relationship. inheritance is about behaviour, NOT about real-world and natural-language parallels.
+
+DESIGN GUIDELINES
+* its all about the contract/interface. you promise stuff on the base abstraction, then implement specialisations down below.
+* when designing an oop system, keep in mind that the "quality of the hit" that you make on the abstraction's interfaces is what will keep you from having to MODIFY existing code down the road; design a program's architecture to ascribe to the Open-Closed softeng idea: open for extension, closed for modification.
+* a red flag of bad oop design: having to switch(type){ ... } the object's type.
+* derived classes should never require more than their base classes; so a circle is not always an ellipse.
+
+FIVE GUIDELINES
+* SINGLE responsability: a class should have only one responsability, and it should be obvious what it is - based on natural language naming of the class itself and its operations. a recent example of mine: the sedpp layout processors have *many* responsabilities - error reporting, file parsing, amongs other things. always try to break things into single-responsability classes. one more example could be: separating a class that holds geometrical info about a class, and a class that does the actual rendering of that geometrical form.
+
+* OPEN-closed: software components (classes for instance...) should be closed for modification but open for extension. that's a given: dont fuss with released code that's working. and adding new stuff should never break existing stuff. one good example of a violation is assessing a pointer's subtype via RTTI for "manual polymorphism", as in: if dynamic_cast worked, then draw_circle.
+* another way to phrase it: when you want to add new features to your app, you should ideally only add new code, and not change existing code - provided that the new feature does not go
+against preinstated app requirements; in other words, this new feature is not changing/subverting preceding system requirements.
+
+* LISKOV substitution: what I personally call the triangle effect on object hierarchies. if youre using a pointer to an object, whatever it is actually filled with (a derived class or not, a default implementation perharps), you must be able to use it without knowing what is exacly in there. so basically you need to mantain a triangle hierarchy, and never have to infer the derived type to do different stuff, because this decision-making is exacly what OOP purposes to do to begin with. in oop, a square is not necessarily a rectangle - the classic example. some operations defined for a rectangle are not compatible with a square's. moreover, deriving from rectangle could be wasteful too - think of a CAD program with thousands of squares for digital circuits, each of them wasting away 4 bytes for another needless int.
+
+but the real danger of deriving from rect is to try to manipulate a square through a rect pointer -> doing so will lead to stingy code. might lead you to actually need to make changes to the upper class - which is a very bad sign; you should always strive to get the interface right and never need to change it. 
+* so basically, the OOP IS A relationship is not equivalent to the mathematical IS A. so a square IS NOT a rect. in OOP design, you need to think in terms of handling the actual object through a base pointer to an interface, and see if everything down below behaves consistently, and you mustnot need to know what's actually instantiated inside the base pointer. handling a Rect pointer that actually contains a Square subtype that forces the width and the height to be equal can be at best misleading. it would be better to have another EXPLICIT Square type that does NOT derive from rect, or maybe insert a Square strategy object inside the Rect - would be alittle better.
+
+* the LSP makes very clear that the IS A reltionship pertains to BEHAVIOUR, not a mathematical equivalent. not internal behaviour, but PUBLIC (the exposed interface) behaviour is mantained through inheritance. to make it terminantly clear: a client who's handling a Rect object (that has been filled with a Square by, say, a factory) can't just guess that there's actually a self-adjusting square in there. this breaks LSP.
+* The LSP compliant alternative for type inference: if you ever find yourself in a situation where you *need* to do type inference on a base pointer, then: first, tidy your house: make sure youve got your interface right. you might be doing it wrong, you might need to weaken the interface and make siblings. second, wrap the code block with a templatised parameter (perharps with the help of a function) and pass the templatised parameter to a function that *explicitly accepts only the type you want, and NOT THE base pointer*.
+
+* INTERFACE segregation principle: make fine grained interfaces, and avoid cyclic dependencies between them. clients should not depend on interfaces they do not use. separate clients means separate interfaces. interfaces must not be polluted and fat.
+
+* DEPENDENCY inversion principle: the implementations must depend on the interface, *never* the other way around.
+* this principle is about advocating separation of policy and mechanism - by pushing policy high up the object hierarchy (onto the interfaces) and mechanism down, onto the concrete classes (the implementations). example1: the "copy" app, that copies characters from the keyboard and sends them to the printer. the naive implementation would couple the policy (we get a stream of chars, and send it to a device) to the mechanism: printing it direcly to the printer. the policy and the mechanism are tighly coupled, and as it stands, to extend this we would have to litter the policy code with if/else statements. which is bad. example2: the lunaeft hsm console: i noobily coupled the console handling code with the policy. here, the policy is the treatment of user input. furthermore, another policy is to actually protocol requests to the hsm. the mechanism is the console input/output/basic validation. the whole console access could have been separated into a class. so this principle states that the policy should only depend on abstractions, never on hardwired mechanisms.
+* to put it short: high level modules should not depend on low level modules. both should depend on abstractions.
+
+
+

@@ -1,0 +1,109 @@
+
+JARGONS
+multiprogramming: when the CPU has the ability to switch processes. e.g puts a process on hold (perharps because it is waiting for some I/O op to finish) and switches to another process.
+
+PROCESS TURNS
+when taking turns, processes will be put on hold. when this happens, the OS will make a core image of the process, to be re-loaded later, when said process gets to make a turn again. ps. by turn, read: some arbitrary time (determined by the OS's scheduler) to run itself.
+
+SYSTEM CALLS
+the OS accesses the hardware thru system calls (the harddisk, screen, etc). modern OSes will also ship with libraries to provide an interface to these syscalls (libc for example).
+
+PROCESS HIERARCHIES
+unix/posix has parent and child processes (ie. there IS a hierarchy in place). windows does not.
+
+PROGRAM MEMORY (IBM/PC compatible arch)
+has three regions (segments):
+text/code segment. the program's instructions. read-only.
+data segment (data + bss + heap) (data is storage for initialised variables. bss is for uninitialised variables. the heap are the manually allocated variables)
+stack segment (the stack. read/write)
+* more on this on my machinearch study
+
+OS BASICS
+provides abstractions to the end user. they are provided through system calls. four main groups of system calls: 1) processes 2) files 3) dirs 4) misc
+
+CPU BOUND / MEMORY BOUND
+a program is $something bound when its execution speed is given almost entirely/mainly by the amount of said $something.
+
+PROCESSES
+the abstraction for running programs.
+on unices, to create a child process, use fork(). on windows, CreateProcess() will create a separate, independent process (not a child process, as there is no process hierarchy on windows)
+using unix's fork(), you inherit file descriptors, memory image, env strings; after that, you may use execve() to load a different program.
+using windows's CreateProcess(), you must specify the new program, and whether it will inherit file descriptors and afew other things.
+
+whenever a fork/createprocess takes place, the new process will have its own address space (memory will not be automatically shared across processes)
+neither unix nor windows automatically kill orphaned processes (ie. whose parents have been killed). some other systems, however, do.
+
+* processes may employ the copy-on-write (COW) memory management optimisation: when they fork, the new process will point to the same memory, but will be marked as copy-on-write. whenever it does alter its memory, then a whole copy of the memory is made.
+
+THREADS
+lightweigth processes. these do share the address space, and run in quasi-parallel mode. theyre faster to create and destroy. an app might get a nice performance boost when separating its main computing routines from its IO routines (its generally a good idea to start a thread for IO).
+they do also take advantage of real parallelism (when there are indeed multiple CPUs)
+
+(revision: finite-state machines is basically event-driven computation that mantains state; ie. each computation has a state, and is driven/preceded by an event)
+threads and finite-state machines: when trying to optimise a single threaded app with nonblocking function calls we are often basically just imitating threading mechanisms with FSMs.
+
+comparison table:
+threads       | parallelism, blocking system calls (somewhat harder, ok performance boost)
+single-threaded process   | no parallelism, blocking system calls (easy and sucks)
+finite-state machine     | parallelism, nonblocking systemcalls, interrupts (events) (ok performance, harder to code)
+
+* the basic rule about thread usefulness is to avoid letting the CPU sit idle while theres IO/other blocking stuff to be made.
+
+* example for useful threading scenario: there is a large amount of data that must be read from the disk, processed, then written back onto the disk. might aswell use 3 threads, one for each step (input, processing, output). this is asusming the blocking system calls will only block the thread and not the whole process.
+
+* threads share exacly the same address space (same memory. global variables are the same. its possible to read/write and wipe eachothers stack), the same open files, the same child processes when they own any, alarms, signals, etc.)
+
+* threads do have private stuff: program counter, registers, stack and state.
+
+* the concept of threading "joining" others is to actually have a thread (the joiner) wait for another (the joinee) to finish its processing.
+
+* threads can also do a "yield", which is basically voluntarily giving up its CPU turn in favor of others.
+
+* Threads are also useful for taking advantage of real paralellism (multiple cpus)
+
+PARALELLISM CONCEPTS
+processes are basically conceived to group resources (and they do not share memory)
+threads are basically conceived to optimise CPU usage (and they do share memory)
+some CPUs have hardware support for multithreading. the OS might take advantage of that and collaborate with the CPU to parallelise its threads (by feeding the CPU its thread's addresses or something)
+
+* one very important thing to understand about parallelism: when youre inside a thread execution, and you open a file. this file is now available to every other thread in the process, because it will in fact belong to the parent process. the resources grouping abstraction is the process only. threads only exist to put the CPU to good use if you are to run into a blocking system call.
+
+USERSPACE vs KERNELSPACE THREADS
+its possible, but apparently not very useful to make userspace threading. threads are useful to sect a process into blocking zones. by doing threading entirely on userland, it would be hard to do achieve this; threads wouldnt be allowed to make system calls, because that would block them, therefore defeating the whole purpose of threading.
+
+MORE ON LINUX PROCESSES
+processes on linux can only send signals to other processes that belong to the same process group (ancestors, siblings, descendants)
+
+POSIX SIGNALS:
+sigkill cannot be caught or ignored
+sigterm: request graceful termination
+
+PROGRAM LOADING
+global variables are initialised with zero.
+
+POSIX
+* does not specify memory management (the implementation of malloc for example). this topic was considered too machine dependent, and therefore the buck was passed on.
+
+SOCKETS
+* it is possible to bypass all the protocol drivers and write directly to the NIC by using raw_sockets (only available as root)
+
+SHARED LIBRARIES
+* dsos and dlls. the key to understand them is to think of them as lazy loading of part of a program. a shared library does not get its own stuff i.e. it does not run on a separated process.
+
+FILES AND MULTIPROGRAMMING ON LINUX
+* it is possible for two processes to acess the same file and write to it in parallel. for that to work out, it might be necessary to use fine grained file locks. on linux, its possible to lock as little as a single byte in a file.
+
+LINUX FILES
+* special files: the /proc directory on any linux filesystem contains process information such as CPU info, disk partitions, devices, interrupt vectors, kernel counters, file systems, loaded modules and much more. they can be (mostly?) acessed unpriviledged.
+
+LINUX FILESYSTEMS
+* virtual filesystem: basic filesystem abstraction.
+* NFS: ability to have parts of the virtual/logical filesystem to reside physically outside the computer, in another computer, hooked in through the network.
+* permissions: the x bits for directories are actually search permission
+
+THREADING PRACTICES / RULES OF THUMB
+* Its safer to thread only stuff you control/ is sure about innards, quote carmacks experience
+
+KEYBOARD BLOCKING
+* if the user makes a procedure call which involves reading from the keyboard, the user will stay blocked until theres keyboard input. when the OS recognizes this, it will probably try to give quanta to other processes. whenever theres keyboard input, the OS will likely try to find a process that wanted keyboard input in order to unblock it and to give a smoother user experience. * this is for non-realtime OSes ofcourse.
+

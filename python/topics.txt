@@ -1,0 +1,16 @@
+
+python:
+* create and keep asorted python snippets
+* https://www.jeffknupp.com/blog/2013/06/30/pythons-hardest-problem-revisited/
+* sandbox miniproj: python script to extract a C library's exported definitions by reading its .h and creating equivalent ones in ... pascal/boxscript/java/??
+* general python toolsmithing: text processing with python. do a mini compiler?
+* script text manip miniproj (the classmaker. some python scripts to make pojolike classes with getters and setters.)
+* tryout some python batteries / webdev sandboxes
+
+* alittle python homework: read the faq, yield/generators etc
+* also tryout python's batteries for webstuff (and others too): its http caps, mail caps, others.
+* learn to use the pdb (Python debugger)
+* stackless python
+* http://docs.python.org/3/faq/
+* adv python: get a hold of the real pythonic way of things
+

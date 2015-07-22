@@ -1,0 +1,97 @@
+
+links:
+* http://gbracha.blogspot.com.br/2013/04/making-methods-live.html
+* http://gbracha.blogspot.com.br/2007/06/constructors-considered-harmful.html
+* http://gbracha.blogspot.com.br/2007/12/some-months-ago-i-wrote-couple-of-posts.html
+* http://gbracha.blogspot.com.br/2009/06/ban-on-imports.html
+* http://gbracha.blogspot.com.br/2009/07/ban-on-imports-continued.html
+* http://www.martinfowler.com/articles/injection.html
+* http://www.digitalmars.com/d/archives/digitalmars/D/Iterators_Must_Go_video_online_94908.html
+
+other:
+* tricks to work better and faster from a linux console/terminal
+* fish stuff from khan academy
+* learn to make memory caches
+* research specialised tech to bet on. Embedded, AI, cg? Choose the one youre good at and are passionate about.
+* adv. multiprog/distrib prog/parallel prog/etc
+* SandboxOS: a simulated os, with custom language that compiles
+* http://en.wikipedia.org/wiki/Reactive_programming
+* software licenses / research selling software licenses / acquiring software copyprotection
+* design and implement asorted solutions: toy instruction set compiler with gofdps, others. (implement in haskell, perharps - good for implementing compilers)
+* documentation, components responsabilities and concerns
+* create a language AND a virtual machine: boxvm, with a specified bytecode, then create a separate parser and compiler (implement the compiler with visitor patterns and composite and other madnesses), then port the boxvm for windows too.
+* how to hack an app (the X exploit (X as in X11, the linux GUI server) for example? X running as root, i attack it, and gain control of the whole machine. simulate something like this - create a faulty app to run as root, attack it, gain unlimited power)
+* study deeply the linux kernel, perharps provide afew patches.
+* learn to disassemble for debugging: get bigass x86 / ARM / other assembly book
+* C and C++ copmpiler's output - disassembly. call conventions (parameters going onto the stack - in reverse order?), return values on registers?
+* get acquainted with software profiling: "90% of the execution time of your program will be spent in 10% of its code"
+* some book on software security (Writing Secure Code, 2d Ed. (Howard and LeBlanc 2003) as well as the January 2002 issue of IEEE Software.)
+* learn Ada?
+* improve your github alot in order to establish a work portfolio
+
+[
+* find where the local fighters are. start with marco pokorsky and victor oliveira.
+* Jornal do comercio, folha TI (evento)
+* Launch some esquema about personal events for dev/networking
+]
+
+* start regularly checking out pucrs softeng events - get out of the vacuum
+* go into data gathering mode again and start studying again - tons of more books and essays and everything.
+* private research: try to identify my own Box Patterns when coding - what kind of problem am i trying to solve? can i automate it?
+* checkout my own proj ideas.txt
+* after all this is done (perharps more than once), keep looking for case studies of software archi/design, like ch2 gofdp: the lexi case study
+* comb stackoverflow for the most pop QAs
+* create Training graduation bigproj: design and implement bigass system: with db, concurrency, services, embedded http, the whole nine yards
+* also get some classical mechanics physics book
+* start researching tcc subjects
+* draft classmaker: add to mvtools
+* http://www.hackersdelight.org/
+* http://www.gamasutra.com/view/feature/3094/1500_archers_on_a_288_network_.php
+
+* http://en.wikipedia.org/wiki/Snow_Crash
+* http://en.wikipedia.org/wiki/Soundex
+* http://en.wikipedia.org/wiki/Levenshtein_distance
+* http://en.wikipedia.org/wiki/Hamming_distance
+* http://en.wikipedia.org/wiki/Duff's_device
+* http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form
+* http://en.wikipedia.org/wiki/Elixir_(programming_language)
+
+minor skills:
+* int/long limits, signed and unsigned
+* agile brainparsing of c function pointers
+* Agile bitmanip
+* big O notation
+* Learn hashtables implementation
+* one's complement?
+* XOR and other logic stuff
+* demorgan
+
+books/articles:
+* checkout the mapreduce paper@acervo
+* ian millington's ai book
+* http://lwn.net/Articles/250967/
+* interesting for the future: learn more about DHT (distributed hash tables) see the seminal papper, Stoica et al, 2001.
+
+libs/techs:
+* emv ?
+* Qt
+* Study Opencl
+* android dev
+* Study openssl
+* study (modern) opengl
+* study (modern, v2.0+) SDL
+* study some physics library (bullet?)
+* linux kernel, linux device drivers
+* cg
+* ai
+* game design
+* embedded
+* generic/template metaprogramming
+* rtos (QNX?)
+* minix sandbox
+* digital signals
+
+actions:
+* become a fellow of the IEEE / computer.org / ACM whatever, and read their journals
+* start a webpage with info and personal projects and etc; so i can publish stuff. i know i can produce high quality stuff and attract future partnerships this way.
+

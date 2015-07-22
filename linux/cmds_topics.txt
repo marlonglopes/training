@@ -1,0 +1,78 @@
+
+fromlinux-orig-topics:
+* pstree
+* perf
+* gprof
+* splint
+* rsync
+* chroot
+* tcpdump (http://www.danielmiessler.com/study/tcpdump/)
+* traceroute
+* iptables (https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html)
+* lsof (http://www.danielmiessler.com/study/lsof/) (emphasis)
+* Lsmod
+* useradd groupadd usermod etc
+* expect
+* netstat
+* nmap
+* dig
+* ipconfig (ifconfig) / flushdns
+* cron
+* rpm (spec)
+* linux pipe
+* tail / fg / monit. logs
+* lsusb
+* dmesg
+* exec >/dev/null 2>&1
+* strings
+* rlwrap
+* tail
+* sshfs
+* tr
+* sort
+* ncat
+* rename
+* fc
+* tee
+* fmt
+* split
+* nmap
+* netstat
+
+devtools:
+* makefile
+* gcc tamer
+
+* git
+* quilt, diff, patch
+* hexdump
+
+* ldd
+* readelf
+
+* http://ndevilla.free.fr/etrace/
+* strace (re-visit)
+* Objdump
+* nm
+
+* tmux
+
+* jobs / fg / bg
+
+* dbg / http://en.wikipedia.org/wiki/Frame_pointer#Structure / http://www.youtube.com/watch?v=twxEVeDceGw / http://stackoverflow.com/questions/9809810/gdb-corrupted-stack-frame-how-to-debug / http://www.cs.umd.edu/~srhuang/teaching/cmsc212/gdb-tutorial-handout.pdf / Get some projects code and debug about with gdb
+* ndisasm
+
+* sed
+* awk (http://www.thegeekstuff.com/category/awk/)
+
+* learn vs macros / regexp searching (http://www.youtube.com/watch?v=aZGUBSQDAdI / http://www.youtube.com/watch?v=WX5Zfflvdt0)
+
+* cppunit
+
+* clewn.sf.net
+* ctags
+
+* git-flow (http://nvie.com/posts/a-successful-git-branching-model/)
+* doxygen
+* swig
+

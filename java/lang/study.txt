@@ -1,0 +1,82 @@
+
+JAVA MEMORY LEAKS
+* when youre done with objects, null them out to hint the garbage collector.
+
+RULE OF TWO
+* when overriding equals(), also override hashcode(), so your object works with hash based containers too.
+
+TOSTRING
+* should be always overriden...
+
+INHERITANCE
+* in java, its possible to forbid inheriting from a class by making it "final" (also called leaf class)
+
+IMMUTABLE TYPES
+* making a class final, with final variable members only; each "mock-modifying" operation returns a new instance. they are inherently thread safe.
+* strings in java are immutable, and therefore writing to them is thread safe.
+
+* an object is immutable if:
+1) its state cannot be modified after construction
+2) all its fields are final (this might be outdated, as of may/14)
+3) it is properly constructed; that is, the THIS reference (like the THIS pointer in c++, capital chars used for emphasizing) does not escape the ctor.
+
+FUNCTION POINTERS
+* it is possible to use function references by means of reflection.
+
+FINAL
+* class final blabla { ... } makes the class non-inheritable
+* final myclass mc = new myclass(); makes the instance mc not-rebindable. thogh its still possible to modify its internal members! unless the members themselves are also final.
+* public final func(); makes this method non-overridable (no longer virtual)
+
+CLASS WITH CONSTANTS (ENUM CLASS)
+* remember to enforce class design choices. so when making const classes, make sure to disallow its instantiation (make the ctor private, and non inheritable aswell)
+
+INNER CLASSES
+* inner classes 'belong', or are part, of the parent class. they have access to everything (privates included) on the parent class.
+
+@OVERRIDE ANNOTATION
+* the @override annotation will just make sure you got your function signature right - as in, matching the base class's, so as to make sure you are indeed overriding something and not shooting yourself in the foot with a typo.
+
+FPA IN JAVA
+* floating point arithmetic in java must be used carefully; they are notoriously bad for monetary calcs. author of eff java recomends using bigdecimal and such for monetary calcs.
+
+STRING CONCATENATION
+* using the '+' operator with java string is O(square n). the stringbuilder class can be handy for heavier string manip.
+
+JAVA EXCEPTIONS
+* its possible to throw either checked exceptions (those inheriting from Exception) or un-checked exceptions (those inherited from RuntimeException). checked exceptions are good for recoverable scenarios. unchecked ones are akin to fatal errors (break in preconditions)
+
+JAVA CONCURRENCY
+* synchronization has no effect unless both read and write operations are all synced.
+* roughly related to the NVI pattern, dont dispatch your flow to overriden functions from within synced methods.
+
+* yes, both getters and setters must be synchronized.
+
+EXECUTORS
+* are an extra layer of abstraction so you dont have to go about writing boiler plate thread managerial code.
+* "there is seldom, if ever, reason to use notify or wait in new code" - current java has many syncing utilities.
+
+THREAD GROUPS
+* were a foot shot by the java designers. dont use it.
+
+SERIALIZABLES
+* never serialize an inner class - they contain syntactic info that's unsafe to twiddle with.
+
+JAVA APPLETS
+* java classes that inherit from java.applet.Applet is an applet, and is usually ran by an applet viewer, has limited access to the host system, etc. as of feb 2013 it is also toast though.
+
+PRIMITIVE TYPES
+* java specifies all primitive types, unlike C/Cpp that leaves int's at the platform's mercy.
+
+PASS BY REFERENCE OR VALUE
+* everything in java is pass-by-value. when youre passing an object as a parameter, youre passing a copy of that reference.
+
+EQUALS OPERATOR
+* when using == on two objects, youre testing whether theyre the same object, hence the confusion with string comparison. use String.equals() instead.
+
+MULTIPROGRAMMING
+* it is indeed possible to launch more processes from within a java application.
+
+OVERRIDING EQUALS
+* in c++, when overloading the assingment operator in a derived class, you must also call the base class's assignment operator. in java, when overriding the equals() function, you only need to downcast your parameters.
+

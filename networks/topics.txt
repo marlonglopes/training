@@ -1,0 +1,56 @@
+
+network:
+* https://www.ietf.org/rfc/rfc2635.txt
+* read Q3 article
+* read rfc 1958
+* code for minix ping (shouldnt use a normal socket. what then?)
+* how to change the MTU in the OS? see tivit's terminal connection crysis
+* checkout http://www.w3.org/
+* what goes what how and where? the TCP packet goes inside the IP packets payload, right? and IP packets go inside ethernet/wifi frames, right? answer: PRECISELY!
+* does iptables run on kernel space?
+* show me a youtube intro/demo of CGIs and acoplation of a custom interpreter, please
+* http://en.wikipedia.org/wiki/Common_Gateway_Interface
+* does http include message boundary mechanisms?
+* http://www.comforte.com/solutions/tls-vs-ssh/
+* http://stackoverflow.com/questions/723152/difference-between-ssh-and-ssl
+* http://www.snailbook.com/faq/ssl.auto.html
+* http://trueg.wordpress.com/2012/09/06/use-an-x-509-certificate-for-ssh-login/
+
+sandboxes:
+* Wat about when listening on a socket? Do you select the transport layer of the socket?
+* ask stackoverflow: some tcp sockets usage examples and some udp sockets usage examples.
+* ask stackoverflow: can you connect() on udp sockets?
+* ask stackoverflow: can you timeout on a udp socket? no, right? you cant even connect in the first place, right? (connection-less, no guarantees)
+* Porta servidor e porta cliente sao assimetricas (connect porta 80 remota, outgoing local porta can be anything?)
+
+* sandbox: can I listen and connect at the same time? same ports too?
+
+* do a miniserver and nc to it, for testing. try running the server with netbeans+debugger, run nc, see if a breakpoint is triggered at the listen() function.
+* sandbox: try keep a server and a client on with TCP - see if they ever timeout. if they do, try implementing some very crude keep alive mechanism - then test again.
+
+* networks sandbox: setup a miniserver, listening on some port. then try to have two clients connect on that same port. is it possible? ifnot (atleast not that easily), then how can webservers
+ keep listening on port 80 for everyone?
+
+* network sandbox: try to do something like udp-based discovery (a-la dns/dhcp finding) - broadcast with udp, possible somehow? or multicast?
+* net sniffing sandboxes
+* Webdev: do some html form post to php and get and process sandbox
+
+* ask stackoverflow: what is the ideal packet size for tcp/udp?
+* when the NIC "posts" something on the cable, it has no idea where it's going, right? is there a "destination MAC address"? or only the network layer routes/decides ownership and such?
+
+book/later:
+* JSP? is it like PHP? do you embed it in HTML code?? <?jsp anyone ??
+* handmade email - checkout POP and SNMP SMTP whatever
+
+adv/later:
+* http://www.isoc.org/INET97/proceedings/F3/F3_1.HTM
+
+donedeals/futureref:
+* look around youtube videos: how do vpns work in detail? ip packet encapsulation?
+* https://www.youtube.com/watch?v=i69Ngf8rips
+* ask stackoverflow: what is a gateway anyway?
+* checkout some http/ftp protocols youtube videos
+* tcp and udp packets in detail
+* http protocol
+* checkout even more applayer protocols
+

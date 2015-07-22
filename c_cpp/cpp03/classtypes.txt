@@ -1,0 +1,28 @@
+
+class types: purpose, ctors/dtors, operators, other semantics
+from effective cpp: class design is type design
+
+GENERIC (these rules apply for all classes):
+* by default, disable copy ctor
+* by default, disable attribution op
+
+VALUE CLASS:
+* modeled after a primitve type. (e.g. chemical elements, 3d vectors, bytearray, etc)
+* explicit ctors + rule of three
+* no virtual nothing, not even the dtor
+* intended to be a final concrete class, and not be inherited from
+* usually stays on the stack
+* might be a good idea to keep its operators outside itself (nonmembers, e.g. Rational rat3 = 2 * rat2; // this is only possible if Rational's * operator is outside Rational)
+
+BASE CLASS:
+* define public nonvirtual interfaces, with private virtual functions (NVI)
+* dtor must be either public+virtual OR protected+nonvirtual -> the former to deallocate derivate's internals and the latter to emphasize the dont-instantiate me, on which case the virtual functions should also be pure virtuals
+
+EXCEPTION CLASS:
+* providing a base exception class
+
+DATA CLASS:
+* data storage
+* getters and setters
+* data validation (string with alphanumerics only etc)
+

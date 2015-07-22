@@ -1,0 +1,4 @@
+
+ruby topics:
+* http://rubylearning.com/satishtalim/tutorial.html
+

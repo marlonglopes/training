@@ -1,0 +1,14 @@
+
+STRUCT vs UNION:
+* a struct is a data structure, like ive always known.
+* a union is an alias definition mechanism. for example:
+
+union test {
+    int x;
+    int y;
+    int z;
+};
+
+
+test.x, test.y and test.z all point to the SAME memory location.
+

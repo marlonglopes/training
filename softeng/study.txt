@@ -1,0 +1,498 @@
+
+DATA / ALGOS:
+when designing software, be aware of the data youre gonna be handling (and what containers/datastructures to use for that scenario). dont forget to not prematurely optimise though; just make sure you plan ahead for a (possibly massive) growth of data existence on your software.
+
+ERR CHECKING:
+favor using assertions to detect coding errors. prefer leaving if/elses for data validation (happy path, recovery)
+
+MV SOFTWARE ENGINEERING APPROACH:
+you try to fit a coding technique into a problem in order to obtain the solution, not the other way around.
+ive seen a number of software engineers study real hard to learn as many coding techniques as they could, just so they could come up with arcane solutions to every problem they'd put their hands onto.
+
+BOX MODEL:
+Planning and requirements: draft some stuff, write down requirements, risks, etc. spend time on this - its not supposed to be 5 minutes either.
+Design Architecture: design the skeleton of the software project. using gofdp's, databases somewhere, design the main interfaces on the project, etc.
+Dev+test (iterate): coding, unit testing, contract programming. debugging, creating bugtrackers, issues, etc. (white box testing).
+Homolog: full smoke test, or black box testing.
+BCP (build config package)
+Release/deploy: and track the versions you've deployed, to which clients, and where (what machines).
+Ops.
+Support/troubleshooting
+Future: extension and eventual refactoring.
+
+BUSINESS APPS ENGINEERING:
+http://science.slashdot.org/comments.pl?sid=4437249&cid=45400095
+
+box commentary:
+of course. FIRST focus on coding the business rules onto a software module.
+after that, let people go crazy on interfaces.
+
+when creating business software, always keep the business rules inside a separate module.
+
+REFACTORING vs. REWRITING
+* refactoring is OK: its all about the Open-Closed principle. refactoring is making the software more flexible and easier to extend and bugfix. its NOT about rewriting. rewriting is often bad, because old code always gets better (after years running and receiving bugfixes) - though uglier. if a software project youre working on breaks when you try to extnd something / fix some bug, then it likely needs a refactoring. extending a software should never break it.
+
+PRE PLANNING (GATHERING REQUIREMENTS)
+* this is where software construction begins. plan ahead for everything you can think of, and try to clear away each and every risk as soon as possible.
+* next time i set out to start a new project, do exacly this: dont even prototype-code right away. no UML either: just think of the project, start drafting solutions, etc; just write stuff about the project. do spend a reasonable amount of time on it: draw draft squares, write down requirements etc.
+
+* one of the most important things at this step is to *know what the hell you're building*. this sounds obvious, and it really is - yet it rarely gets done. so, if you want a car, make sure you dont build a chicken scoop instead. semvpe is a very good example of a poorly planned, poorly requisited, poorly understood software project. the single worst thing he (ca-ed) did there was to couple parsing policy inside of semvpe aswell - which is an atrocity by itself but it gets even worse: this policy was saved to the database!!
+
+* so basically, being really prepared is very important.
+* sometimes the client is still not 100% sure what he wants, and you have to go through the project adapting.
+* purging architectural errors as soon as possible is a very good idea.
+
+PLANNING EXTENDED / NEW PROJECT BRAINSTORMING
+* when gathering reqs / brainstorming features, do create a checklist of sorts - explicitly separating WHAT IS A REQUIREMENT and WHAT IS A FEATURE. then start managing/allocating from there.
+
+DIFFERENT SYSTEMS
+* different systems have different cconstruction approaches and specialised deployed strategies might be necessary (embedded systems, etc)
+
+PROBLEM DEFINITION
+* its important to have a clear and well defined problem to begin with. a good problem definition does NOT make references to a possible solution. so, instead of trying to think outside the box, you should first try to find the box to begin with.
+* Without a good problem definition, you might put effort into solving the wrong problem. So be sure you know what you're aiming at (or where it is!) before you shoot.
+
+REQUIREMENTS
+* explicit and client-reviewed requirements will keep you from guesswork.
+* making explicit requirements can be even more important than making good code; says the author of code complete. i myself am not too sure because software always tends to be extended, and extending crap code can have very high costs.
+
+* code complete shows some data about requirements change. its understandable and justifiable, i also believe - as you go through a project, requirements may change because the client understand what he wants better. following rigidly frozen requirements means not responsing to your client's changing needs. there must be some negotiation. some changes may be acceptable, while others absolutely not.
+
+* about adding new features that the client is constantly thinking of and getting all excited about: "The easiest way to handle such feature-intoxicated people is to say, "Gee, that sounds like a great idea. Since it's not in the requirements document, I'll work up a revised schedule and cost estimate so that you can decide whether you want to do it now or later."The words "schedule" and "cost" are more sobering than coffee and a cold shower, and many "must haves" will quickly turn into "nice to haves." <- for defending against requirements change mid project that the client insists, point out to him that there's been a signing ceremony, many design meetings, etc that could be wasted if changing something too radical.
+
+* if requirements change is too frequent, you might want to consider setting up a change-control procedure, or maybe even a review board if youre a bigger corp or something. this can make the client happy because they'll see you have a plan in place for handling their input.
+
+* code complete 2nd ed, part1, chap 3, item 4 has a very nice requirements checklist -> a richter scale of how solid is the ground youre building on.
+
+* performance might be a prerequisite (whats the target machine?)
+
+ARCHITECTURE
+* having atleast a sketch, but preferably more, of an actual architecture is a good candidate for an actual project requisite.
+
+* the arch should mention the system's scalability -> are you expecting an explosion of data inside your system? are the datastructures ready to accomodate such a hike on demand? architecting a new system should take into consideration the possibility of need for scaling up.
+
+* the arch must specify the error handling strategy: this is very essential stuff, and must be defined at this point.
+* i would place two tasks as the most important at the architecting step: internal code structure and subsystems definition: the gofdp's (if using OOP) and the logging/utility classes etc.
+
+* might be interesting to devise a versioning strategy at the architecting point - could be a string, a #define, whatever. just make sure it remains consistent with redmines and jenkinses and spreadsheets of this world.
+
+* a testing strategy is also a good thing to consider here: what are the testable artifacts for posterior homologation and etc.
+
+* also specify key business rules, data structures and the main classes
+
+* for multiple teams, providing the motivations behind the major design decisions might be a good idea.
+
+* singletons? sometimes they are an illusion (see java; different classloaders). but architecturally, afew things benefit alot from being singleton-like, so architecting for achieving singleton-like capabilities will reduce code duplication and maintenability - think of utility classes being copied all over the system whenever there's a different module bounary.
+
+CHECKLISTS
+* when starting out the planning / architecting of a new software project, do create checklists. get the habit of making and keeping them. for sedpp, for example, I could already have at this point created a checklist of requirements for each new sedpp module (the error reporting mechanisms recently for fisconv).
+
+COMPLEXITY
+* as i have myself experienced a number of times, software complexity sometimes becomes unmanageable. software becomes too complex when it is poorly modularised - so start slicing it into modules/libraries etc.
+
+* cc's mcconnell suggests that an approach to keeping complexity small is to try to not overflow one's brain with essential complexity; and keeping accidental complexity from proliferating.
+
+* whenever having to use older/very poor code, it might be a good idea to encapsulate it inside a module and provide a facade to it, in order ot insulate it and not allow its rottenness proliferate thruout the rest of the system.
+
+INFO HIDING
+
+* information hiding (class encapsulation, even system modularization) is extra important because it provides abstraction - requires less noise to understand something - the goal is to have an interface/higher level representation of a whole functionality/subsystem that can accomodate the "brain stack" - that does not burns out the programmer.
+
+* mcconnel presents the interesting concept of eventually also hiding away a variables type, on static-typed languages like C++, by means of typedef for example (or maybe by defining a class).
+
+ON PREMATURE OPTIMISATIONS
+
+* premature optimisation must not happen, period. trying to keep code stuffed on less routines to avoid calls, avoid creating more objects for separation of concerns and stuff is simply wrong - code optimisation is about profiling first, and other steps later. so, when profiling, if you run into a bottleneck, it will be much easier to fix/amortize it if the code is flexible and modular - you only have to fix a single spot without affecting the whole system.
+
+GOOD DESIGN
+* a good design is ready (or almost) to accomodate future changes. to achieve this, you need to be able to anticipate changes. try to identify unstable areas and isolate them.
+
+* to devise a good design, you should always try to disprove it - look for counter arguments. design to avoid failure, dont just copy previous successful designs.
+
+* mcconnell states that design is a nondeterministic and heuristic activity. top down or bottom up design strategies are not competing, for example, you can use them interchangeably and iteratively - until you get things "right".
+
+* in mcconnell's code complete 2nd ed, chapt5.4 table 5-2 suggests how much detail and formality on the design and construction documents should be for varying projects. interesting to note is that he suggests medium details and medium formality for large projects - likely because large projects change alot. its also very intsresting to note the varying degrees of detail and formality according to the experience of your design/construction team, as well as the turnover ratio.
+
+* one good design practice is to iterate: try multiple designs - literally try to solve the problem more than once before coding anything. measure twice, cut once.
+* prototyping is also big on the design phase. its especially suitable for risky areas - just make sure you throw it away and not turn it into production code.
+
+* always designing for concurrency is also a very good idea: see temporal decoupling
+
+ROUTINES (FUNCTIONS / PROCEDURES)
+
+* make sure to think ahead about the routine's side effects - if there are any, they must be documented. example: a function that formats some reporting into a string BUT ALSO saves a buffer to the disk. the saving to a disk might be sneaky if not documented or announced or etc.
+
+* likewise, any eventual routine assumptions must also be documented.
+
+* pay attention to the name and ofcourse the purpose of the routine youre creating. consider if it fits nicely on its context; a class method for example. if you find yourself creating functions that dont feel like theyre fitting in very well, you might be creating a "god class" by accident.
+
+ERROR HANDLING
+
+* assertions are for programming errors: stuff you know are not related to user input (be careful with that!)
+* exceptions are for faulty user input.
+
+* you might consider what kind of application youre developing: if a game or word processor, you may want to tolerate some minor data/input errors here and there. a thermomether software reader for example, might not always get a reading from the hardware (for whatever reason), and just return the "value returned last time". however if youre processing a bank transaction, you may expect full correctness.
+
+* hence the distinction between correctness and robustness: correctness is when no data is invalid in any possible way (think radiation container controllers?). robustness is when the app does not stop execution for minor failures (a minor visual artifact in a videogame for example).
+
+* with these in mind, always consider the error handling policy of your app: how much tolerance, what to do on minor failures (log maybe) and so on.
+
+EXCEPTIONS
+* handle exceptions locally; repackage exceptions if necessary. example: you have an Employee class, and inside its ctor it reads from a file. if the file is invalid, you should throw a employeeexception preferably, instead of a file exception. this might not be necessary on interal classes, but across module boundaries it is certainly a must.
+
+DEBUGGING AIDS
+* a development version of a software might employ a number of debugging aids. ms word for example, when in debug mode, automatically checks for data integrity inside its idle loop every few seconds.
+
+* remember to include debugging aids for support staff, so logs are a must, and there must be internal documentation that guides troubleshooting for error cases that are logged by the client operation.
+
+* another good thing to remember: too many debugging aids can be very bad: debugging code may contain bugs, so they might aswell be a recipe for disaster!
+
+CLASS DESIGN / ROUTINE DESIGN
+
+* always try to document as much as possible. make sure to atleast document the purpose of a class, with header comments or else. routines that implement cryptic algos should also get a header comment of sorts, atleast to document its purpose, no need to do a contract for each and every routine.
+
+CODING PROCESSES
+
+* tdd and ppp are sometimes competing, sometimes complimentary. theyre also just TOOLS. tdd = test driven dev. ppp = pseudocode process programming.
+* theres also contract programming which also goes along either of them, sometimes.
+
+CODING PRACTICES / TECHNIQUES
+* interesting addition to coding practices is to define a typedef more often (for me): a status variable for example, could benefit of using a typedef, or an enum, etc.
+* cc's mcconnell presents the interesting technique of creating complex loops from the inside out.
+
+* mcconnell also suggests considering employing lookup tables instead of more complex object hierarchies. i agree - they are acceptable, quicker, but less flexible. theyre pretty easy to meddle with too, so nice for prototypes. i would always wrap the table up with a class though.
+
+* micro coding process: i'll experiment with a small addition to my current coding pratice: suppose im writting a routine that does some computation (whatever): first, i'll do a PPP-like comment design, then ill break it down into mvtodo steps. after im done, i'll be removing the mvtodos and allow the original guidelines/coding design remain as a facilitating comment - but will adjust this top comment if i changed anything to reflect the real code.
+
+BOX GENERAL PROCESS
+* planning think-ahead: prerequisites checklist, anticipate risky/change-likely areas.
+* architecture think-ahead: high level entities.
+* design think ahead: classes (clearly define the class's responsability - should be only one. also think about what the class should hide)
+* code think-ahead: routines: @brief comments, or full pseudocode to describe more complex algos AND clear away ambiguities AND document any assumptions
+* remember: code is read more often than written, so keep clear
+
+SOFTWARE QUALITY CHARACTERISTICS
+* there's external and internal characteristics of software quality. the external ones concern the user: ease of use, reliability, correctness etc. the internal ones, hopefully atleast the programmer: maintainability, flexibility, etc.
+
+* interesting to note is that improving some characteristics can hurt others. for example: super accuracy might well hurt efficiency.
+
+* as far as software QA goes: make sure everything is according to spec; stress the software, and audit/review the code to see if its easily maintainable and extendable. its also very important to know what are your software quality priorities: robustness, reliability, etc - remember theyre often in different sides of the road.
+
+FORMAL INSPECTION
+* s.eng's answer to academic "peer reviews". its a committee of analysis of a code piece - could be a suspicious, freshly developed routine, third party class, whatever. this methodology states afew rules, like a moderator, different roles, checklists, among afew other things. a key rule is that the author of the code piece under revision plays a minor role - perharps just to speed up understanding of some parts of the code.
+
+* turns out its very good for more software that requires more formality. mcconnell notes that its purely a technical activity, so management should not be involved.
+
+* one key point is group FOCUS. its best to not discuss solutions at all during these reviews. the scribe will just keep on writing errors up, solutions will be though up later. reminds me of felipe always trying to subvert conversation focus to himself so he could work on alittle "pro cred".
+
+CONTINUOUS DEVELOPMENT
+* one idea i just had: some software projects might benefit from continuous histograms -> if you're sensitive enough to be able to correcly identify useful data. addendum: the histogram's data i was referring to was stuff like number of bugs open, closed, reincident bugs, amount of time to correct bugs, etc etc. be very very careful to not mismanage this kind of data!
+
+DEVELOPER TESTING
+* the best testing policy is to have about five times more "dirty tests" than "clean tests" - tests that are intended to break the app and tests that are intended to make the app work, respectively.
+
+* regression testing is what sedpp autotests does: its a tool to make sure that new features dont break old code.
+* regression testing must be automated, or else it wont be useful - people become numb of seeing the same tests over and over and human error is very likely to render regression testing unnefective.
+
+* test scaffolding refers to extracting some faulty code and sandboxing it.
+
+GOOD NAMING
+
+* cc mcconnell's presents a psychological study of attention to detail when debugging. choosing good variable names helps alot - costs less brain energy. pcfgpcpData as there is on sedp is a good example of bad names (for me, anyway).
+
+SOFTWARE EVOLUTION
+
+* in the past, it was more common to focus on never rewriting anything at all, ever. that might be a good strategy for some kinds of projects, where evolution is expected to be limited - i.e. the thing has a very high chance of being phased out totally in the near future.
+
+* but more recently, code is expected to evolve, be extended more. so keeping an eye on the software's current "biological" state might be interesting - after a number of extensions, it might be starting to look frankensteinish - think BCM's ProCP, the code was in a bad shape.
+
+REFACTORING
+
+* bad class cohesion - a class is taking responsability for a number of responsabilities. the current layoutprocessors from sedpp are a good example, they should be delegating some stuff to other satellite classes.
+
+* from a refactoring point of view: beware of "design ahead", or writing code that "might be used someday". dont do it - design to spec, only and always.
+
+* if you find yourself passing a parameter to a routine as you would do with a Strategy gofdp, youre probably doing bad design. consider setting up an interface and separate implementations to carry out the different code.
+
+DESIGN HINDSIGHTS, practical cases
+
+* sedpp: i could well have insulated the getcommoninfo into classes. an interface accepting the bytearray (sedppcommoninfo i think), perharps some parameters too, and then a visa implementation (concrete class) and a mastercard implementation - this would do the trick much more elegantly than passing Visa and Mastercard as enums to the function.
+
+CODE TUNING
+
+* you have to profile, period. identify the hot spots and then work on the specifically - and then profile again, to see if you didnt make something else slow. 
+* also, make sure you KNOW what youre trying to tune, so you can contextualise it and understand its implications: dont end up optimising an OS's idle loop by accident.
+
+* no operation is an island. wwhen you enhance some code here, performance might be degrated elsewhere. code tuning is basically about profiling and then trying to amortize the hot spots and then profiling again.
+
+* its worth noting that improving performance is not always a necessity whatsoever. so as far as code tuning goes,  estimating the cost of tuning must precede any code tuning.
+
+* common causes for slowliness in apps: IO, paging (not just disk swapping, but memory paging too), bad algos, syscalls.
+
+* code tuning is in contrast with refactoring. by definition, optimisations degrade the code in exchange for performance. if they didnt, they would be considered standard coding practice (avoiding premature pessimization as the 101 book puts it)
+
+* floating point operations are rather slow. finding integer-based workarounds (using BCD for money for example) can improve performance.
+
+* caching is fair game; if your app does alot of IO you might consider implementing a freestore based cache.
+
+* often, math functions have too much precision (think putting an astronaut in the moon, accurately). sometimes you dont need that much. unrolling a log() function could be much faster, but, granted, much much uglier too. cc's mcconnell presents an example of a logarithm unrolling, which went about 90% + faster on C++ but about 40% SLOWER on PHP. always profile.
+
+CONFIGURATION MANAGEMENT
+
+* managing the artifacts involved in the system - test cases, uml diagrams, documentation, wiki, bug trackers, etc. basically it is establishing a systematic organisation discipline for a systems's various artifacts - so they all remain synced.
+
+ESTIMATES
+* trying to estimate "pretty big" tasks is total nonsense. take the time to break down in parts, gather reqs, otherwise your estimate will be worthless.
+
+* for projects falling behind schedule: 1) add people if there design is really good and theres something readily-easily followable like contract programming or something like that 2) slash features, postpone them for a future version or 3) reconsider the priorities of the project: the schedule, correctness, performance, etc.
+
+* remember to keep and adjust according to your features list: must haves, nice to haves, optionals, "someone-might-want-someday-maybe", experimental, etc.
+
+WORKPLACE ENVIRONMENT
+* cc's mcconnell presents a chapter entitled Treating Programmers as People. funny it made me remember my days at canopus, a dirty and ugly place to work, that could *easily* be TURNED AROUND with just about 3k brl.
+
+MANAGING YOUR MANAGER
+* encapsulate your job. uh. or find another job.
+* i personally think its a good approach to show excellence and competence and acquire trust, make the manager feel "apoiado" by someone who is very dedicated.
+* the problem is that some managers want to feel successful, by expecting you to perform well under them. and when you dont, because they are bad leaders, they may project the guilt on you, because you failed to make him happy. run away from these - if you can. i personally wish i had had more options in life.
+
+INTEGRATION
+* phased integration refers to developing small units of software (many in parallel) and then trying to join them all in a single integration task. when done for classes, its a recipe for disasters. when done for whole submodules that have very clearly defined interfaces and frozen requisites and etc etc, its ok. but the former is a rare case, perharps only existing for ISO stuff and the like. it is especially very bad for classes - such kind of integration would be putting faith on the design of a class (that it will never change), something that never works.
+
+* theres also continuous integration - jenkins and friends, which i believe is much better: you architect and design the system ahead, and start off by coding the main parts of the system - like a skeleton. then you keep going from there.
+
+* continuous integration offers psychological morale boosts for all actors: developers feel theyre accomplishing stuff. managers feel the thing theyre responsible for is getting unrolled, customers feel they are (or will be, eventually/soon) getting their money's worth.
+
+* suffice to say that with CI you must also implement automated unit tests thruout the system. and keep/manage the test cases.
+
+INTEGRATION STRATEGIES
+* top down: start from the core, supposedly well defined skeleton and start expanding thereabout. i think its good because it exposes architectural problems earlier, and allows for a working overall prototype earlier too. it allows for continuous prototyping, and youll have something visible earlier.
+* mcconnel suggest you be prepared to deal with problems that bubble up the hierarchy with top down - meh. you cant get full top down, it will still be a hybrid approach.
+
+* bottom-up: i consider approaching the design of a system from the bottom-up total sonsense. you might mix top down with bottom up in terms of thinking what the interfaces will require considering a set of objects you intend to design, but thats it. so, bottom up might only be truly applicable on very rare cases, when coding truly frozen requirements, ISO style - stuff that's really formal, that explicitly regulates creativity out of the construction part - deliberately to avoid human error, perharps.
+
+* sandwich: a mix of top down and bottom up that leaves the middle classes for later. i think its pretty good: code a main skeleton, then start thinking about lower level objects and design interfaces for them - say youre making a game, and you choose a set of firearms. then you design an interface of them (the bottom up part) and decide where you want to hook that up later.
+
+risk-oriented: like sandwich integration (code and integrate sort of arbitrarily, deciding iteratively as-you-go) but emphasizing risk: integrate first the hardest parts.
+
+feature-oriented: like risk-oriented, but the thing that identifies the scope of the changes are features (which might well involve multiple classes). sounds alittle refactoring-averse to me, because there is always alot of important code unrelated to any features that need to be always kept on check. i think's basically asking to run into worrysome refactoring problems down the road or even worse - small software lifecycle due to unmaintainability. (also reminds me of bullet point engineering). it might be feasible if you have a very strong and solid structure already in place.
+
+overall: it might be interesting to shift the integration strategy as the project goes - from one that focuses on structure more (top down) to one that thinks more about individual artifacts (bottom up) and then when the software is strong and healthy, feature-oriented. mcconnell has his name for such an approach: T-shaped (think breadth first, followed by depth first).
+
+SMOKE TESTS
+* mcconnell says that it really boosts morale among staff.
+
+* very interesting idea: allows you to identify problems early, and chase after causes - which might be deeper problems. it allows you to take remediative steps against accumulative deterioration - prevents your project into turning into a tarpit towards the end. it basically amortizes the problems thruout the project.
+
+* for smaller teams, smoke testing every 3 days might be ok. for medium or larger ones, its almost mandatory to do it daily.
+
+* its important to keep the smoke test current, as the project advances. in the beginning, it might be something really basic, but must evolve to check more stuff as you go, otherwise you'll be creating a false sense of confidence.
+
+* the build group: dependign on the project's size, managing the build system might well be someone's job - or a group's job. its nice to think of getting staff for these "code-infra" kind of thing - same thing with the toolsmith - hiring someone to write auxiliary automation scripts and such.
+
+* for larger teams, consider allowing the developers smoke test their own code in private before committing to the source tree.
+
+HIRE TESTERS
+* and use them effectively, as joel spolsky pointed out - hire aggressively if you have to (i.e. keep them coming). not having testers is a false economy.
+
+PRAGMATISM
+* always consider the context of what youre doing. great example: when i implemented the BIN cfg class. that was really bad design. i should have invested more time on considering the context (the real deal behind the bincfg class) and considered alternatives.
+
+* broken windows instill subsequent damages to buildings; keep your software clean. else people will start feeling a sense of abandonment and lack of perspective. in other words, neglecting stuff you know is bad will further deteriorate your software.
+
+* code that remains clean always will receive much better care by programmers working on it - nobody will want to be sloppy on it.
+
+* if something isnt quite right, and you know how to fix it, but you're certain management will try to talk their arses out of the trouble, start making the stone soup. soon the villagers will help with vegetables and stuff. (the catalyst of change)
+
+* good software delivered today may well be better than perfect software a month from now. also, by delivering something usable earlier, youre giving your users something to play and give you feedback - like tracer bullets, so you know where youre shooting at.
+
+* communicating/conveying information: first, know where the person is at on the subject at hand (onde que o cara está em tal assunto, e começar a transmitir a partir DAQUELE ponto). then, you have to PITCH the information: to do this, you need to know why the person would be interested on the subject. a marketing guy would like to know how he can use that info to con more people, and clients would like to feel they'ill be getting their money's worth somehow - perharps the info is a feature or ... ?
+
+DONT REPEAT YOURSELF PRINCIPLE
+* how do you go about implementing a client/server software pair, as far as the shared datastructure go? what if client and server are in different languages? the pragprog book suggests using a metadata file (.ini anyone?) and use preprocessing.
+
+* interesting idea: appointing a team member to be a librarian of routines/snippets and such - to avoid utility functions duplication.
+
+ORTHOGONALITY
+* what other authors call cohesion (single responsability and all)
+
+* if you spot a team bickering constantly, you might be witnessing a team thats been working on a badly overlapped project, where people are constantly affecting eachother's work. then, for every change, huge meetings are held because *anything* changing *might* affect *anyone*.
+
+TRACER DEVELOPMENT
+* this aforementioned gem can be used for whole systems too. suppose youre involved in building a from scratch system but the requirements arent very clear - maybe youre dealing with lots of people from a not-so-organised coorp. taking a tracer development might be a good fit, in the sense that you design flexible frameworks, leaving some of the uncertain parts barely prototyped; then give it a spin. see how the participants/customer reacts. then keep adding from there.
+
+PROBLEM DOMAIN
+* try to program closer to the problem domain: C++ for example is a general purpose language. but there could be higher level, more abstract programming languages for a restricted problem domain that abstract alot of boiler plate onto higher level statements. example: instead of doing alot of boilerplate c++ code for getting bytes off a socket, you could have another language that all it takes to read from a socket, process some input and send back some output to the client is this: feedback(client, format) or something.
+
+* this idea/strategy is basically about identifying a problem domain and designing a (mini)language for it, complete with a compiler, or a translator maybe. i liked the example of the satellite processing routine; this could be useful for implementing digital signal processing, maybe, or music notation.
+
+ESTIMATES
+* one trick to convey info about estimates - choose the right time unit. dont say "will take about 130 working days", it sounds too precise and places a bad expectation. say "about 6 months" instead.
+
+SECURE CONFIGS
+* wanna ship some software, but dont want the users messing with some .xml or .ini config file? md5 hash it!
+
+CONTRACT PROG:
+* A routine that writes to the members of its class can use contracts to validate/contractualise itself
+
+* no problem if theres no lang support for DBC (design by contract) - its just a design thing anyway. put the pre's on the top comments go a long way already. also citing the post might also be intresting.
+
+* on overkill-ness: i think sometimes dbc might be overkill: too much micro'ing.
+
+* dbc in java automatically propagates down a class hierarchy, which might be benefical when youre archiing a base interface and delegating the impls down a company hierarchy.
+
+* the 3 DBC mechanisms: @pre a var state required to be provided by the caller. @post what will be provided by the callee after successful execution. @invariant what wont change before and after kindof like micro unit testing
+
+* dbc can be applied less formally/detached from detailed/boilerplate code and be specified on a higher (but still code/technical) level too. say youre coding a payment switch, one of your preconditions might be that you never ever doubly debit a user upon any errors.
+
+ASSERTIONS
+* asserts are for stuff that should never ever happen - its a somewhat pedantic form of validation, for validating mallocs, fopens, null pointers and the like. its NOT for anything related to the program's input - on these cases you should use exceptions instead.
+
+* theyre basically for "this can never happen" situations. for others, use exceptions instead.
+
+* beware of acquired resources when asserting.
+
+* the pragprog authors note that assertions should be left turned on even on production. i agree, because the errors they catch would otherwise crash the app or even worse; trash data if they were off.
+
+EXCEPTIONS
+* only for exceptional circumstances; when asking a class for opening a file, it might be appropriate to raise an exception. but if you think its not so rare that some file wont be there, then a cool trick is to wrap the call to the file loading class around a "i-dont-care-about-your-exception" function.
+
+* another way to avoid using exceptions excessively is to first test the possibility - like, if (file_exists(...)). since you dont want to be throwing exceptions wildly with possibly anomalous circumstances, do create a testing function for these ocurrences first.
+
+LAW OF DEMETER
+* the "dont talk to strangers" law. in oop, basically, dont get internal handles from objects to monkey with (TERRIBLE). also, dont get internal values and print either.
+
+* its about not calling/using stuff you dont "own" - in oop, dont use an accessor (getter) to retrieve an internal thingy and toy with it. this internal thingy might be something its parent/controlling class needs to check/keep in a valid state somehow.
+
+* not violating it is especially important for multithreading.
+
+METADATA
+* data about data - think database schemas. very useful for defining everchanging business rules.
+
+TEMPORAL COUPLING
+* something i must confess ive never really thought about.
+* activity diagram: this is gold, when arching/designing user interacton with something/some interface. a key to its usefulness is putting the user in perspective - it makes no sense for intra-system relationships. this is stricly about the user - in what order is the user going to use some interface; it must remain in a valid state depending on the dependent factors.
+
+* enumerate user interactions, then figure out which ones can be done in parallel or serial. its an eye opener.
+
+* thinking of the temporal decoupling allows for insights on multiprocessing - you can design to decouple blocking/slower stuff and multiprog (or multithread) the system -> this approach will let you think of designing *services* instead of *components*. think about the scale youre dealing with; making another class/module/subsystem might not be the best solution - making an entire service/process might.
+
+PUBLISH/SUBSCRIBE (EVENT DRIVEN)
+* very useful when youre dealing with a program that interacts with a human user. otherwise, probably less relevant.
+* a basic conception: a user interacts with very different parts of the app, and therefore triggers different classes/modules to get flow.
+* the pragprog authors introduce the term "software bus" for what the gofdp would call a mediator of observers.
+
+* MVC and events allow you to think of a program flow as a network instead of a fixed serial chain
+
+BLACKBOARDS
+* pinning concrete implementations to a interface hierarchy. i loved this one.
+* the key basic concept is that its not just like a real life blackboard where you only pin data, with these, you can also pin instructions (instances with their own ops - like a embedded gofdp Strategy instance)
+* when too big, they can be organised/partitioned by interest groups etc.
+
+* better used to coordinate workflow. the "insurance system" is a very good example: when asking for an insurance quota, the insurance company performs a number of checks. these checks take different amounts of time to process, and some check results will warrant even more checks. a blackboard system has asynchronous updating caps.
+
+* example1: a meetings system. people post their availability, the app intersects and suggests a meeting time. then people can individually subscribe to it.
+* example2: a network monitoring tool: every system component pins reports to the blackboard. the monitor combs the blackboard for problems.
+
+PROGRAMMING BY COINCIDENCE
+* the standard bad practice; people make lots of assumptions - but they must be documented. contracts can help solve misunderstandings. what you want is to develop deliberately instead; do know what are you doing, basically.
+
+* "if you cant tell the difference in particular circumstances - if you must assume something - then assume the worst." its basically what ive been doing in real life.
+
+* dont guess - test your code AND also try your assumptions too; try to disprove them.
+
+* to avoid prog by coincidence when using libraries, keep your eyes out for the actual *guarantees* they make. think the same for the standard of your language of choice - do test these said guarantees as well though, if you can.
+
+UNIT TESTING:
+* ive always sort of failed to see much feasibility on this, unless youre extensively using contracts for your methods and etc. one thing that would be interesting to keep auto unit tests is modules boundaries - very good idea for medium-large teams: "noone breaks the module interface!"
+
+* going alittle further: the unit test must establish an artificial environment, run some code and collect the result and check its validity. contracts come to mind.
+
+* even more: you might want to start testing on the lowest hierarchies of your system/module: first, test the contracts of utility stuff, and then try to test other, higher level, dependant-of-the-lower-level-stuff routines. this is crucial for not wasting time debugging everything(tm) at once - you start testing and validating submodules and only then you can start examining higher level stuff.
+
+* one big benefit of keeping unit tests around is that your developers will have sample code to call interfaces.
+
+* one *perfect* way to outsource work is to provide a contract AND a unit test, and go like: this is the contract, with perharps a method signature or class interface. also, this is the unit test: i will pay you if all tests pass. all assumptions/reqs/ etc - the contract is there AND you also get a sample code to actually SEE how youre supposed to call said functionaility.
+
+PRODUCTION DEBUGGING:
+* afew ideas for debugging production stuff
+* provide a hotkey functionality - without telling the user, perharps. helpdesk can deal with it.
+* logs and traces galore. reminds me of the SCORE logs. it would be so much better to have them be autoparsed by some python scripts: `pyscorelogparser.py -showloadedkeys` etc. - to make this even better/more feasible, it would be nice to add some sort of text signature (a-la "DEADBEEF") to help your parser out - and enforce it organizationally.
+* troubleshooting server software: embed a lightweight http server on your software! have it write its logs to its (internal) /var/www folder. anyone can check the status of the server using a web browser.
+
+REQUIREMENTS
+* become the user, or carefully observe the user. gonna build a warehouse automation system? spend a week working there. just remember not to get in the way. this also helps building trust and establishing a communications channel with the user.
+
+* ideally, requirements should be also tracked/versioned, so you know when things are changing and why.
+
+USE CASES
+* try to cover as many cornercases in your software as possible:
+* what happens when $PROBLEM happens? either $SOL1 or $SOL2, or we check for $SOMETHING -> repeat this pattern many times, for as many problems/use cases as you can see.
+
+GLOSSARY
+* maintain a glossary for bigger/more formal projects; its detrimental that everyone is speaking the same language and mean what you think theyre mean; do away with ambiguities.
+
+HARD PUZZLES
+* evaluate all your options, dont just balk at something and dismiss it; are you sure something wont work? can you prove it? find the box - find your constraints. only then you may get out of it, if you want.
+
+HESITATION AND DOUBT
+* listen to your nagging doubts; start only when you are ready. good example: the sedpp customer documentation.
+* when you hesitate and doubt the requirements are truly gold; deploy tracer bullets, or just prototype away.
+
+TOOLS FOR METHODOLOGIES
+* tool adoption must not be underestimated. there is always an adoption cost - lest the tool not be effective at all. make sure you budget for it.
+
+ASORTED PROCESSES
+* another thing i need to improve: do create more checklists - as in, establishing a process.
+
+PROJECT SPONSOR / USER EXPECTACTIONS
+* success is also in the eye of the beholder; thats why i cant get along ca-ed: he defines success as "him outdoing me, him being superior to me" - something he simply cant do, because i'm better. i then fail to make him feel like the hero of the day. - on a more positive take: make sure to delight your project sponsor. HE will tell whether the project was a success or a failure. the customer is like the overall project unit test.
+
+* a project is only a success when it meets its user's expectations. gently exceeding them is a nice trick to boost customer relationship.
+
+PRAGMATIC TEAMS
+* teams also have a "soul", or constitution. no broken windows. no finger-pointing. encouraged co-op.
+* creating a brand for the team helps feeding the need for belongingness in its members - it creates unity.
+* isolating communication between teams is probably wrong; atleast in the present time. testers and coders should be able to talk to eachother. separating through different management chains is very wrong, i believe, specifically because our natural language is often ambiguous and incomplete for expressing many precise thoughs we need to express within the context of software development.
+* i think its even wrong that the basic coder stays layered away from the end users. he wont be able to make informed decisions if he doesnt know in what context the user is using his software.
+
+* the pragprog authors suggest two heads for each team: a tech head and an administrative head; tech head: sets coding philosophy, organises who codes what, synchronizes teammeber's works etc. the administrative will deal with schedules, allocating resources (buy new equipment for example), reports progress to more senior people, and sets business priorities. he can also serve as an ambassador to the external world.
+
+PRAGMATIC TEAM ROLES
+* toolsmith: lay makefiles, editor templates, shell scripts to parse logs, etc etc. he can also be operating the automated parts of the team: nightly builds, managing testfiles, repos, generating reports for the nightly builds and stuff.
+
+UBIQUITOUS AUTOMATION
+* another area i need to explore more throughly: automate always more. dont even manually recreate a VM - issue just one tommand to a python script to throw away the old image and copy another inplace. automate IDE configs deployments for all developers, etc.
+
+* one special favourite of mine: automate releases (as in, preparing a release for a given client. perharps a better phrasing would be "automate the deploy package creation"). create metadata for a client: what config files they need, what must be on those config files, what libs/modules do they need (think sedpp) etc etc. then you go: `pymakerelease.py sodexo` and a package specially tailored for that client is generated. plus, it could also automatically make a git tag on the repo! beautiful.
+
+* throughly document the workflow: processes/procedures and scripts for each and every step within software construction, from checking out the src code from the repo to deploying.
+
+* automate the support systems too! redmine stuff could also be automated in some cases i believe. we are doing it wrong in smartcon: we really should be putting project documents directly in the repository. infact, everything should go to the repo, because: *the repository is a database* and *redmine is Just a View*. redmine should automatically hook itself up on the project's repo and extract as much stuff from there, for example, automatically load the docs from sedpp/data/documents/*
+
+* will say again: repos are databases, redmines are just views. redmines can also be a design tool: you write down the issues there - on which case its got abit of its own data.
+
+MODULES INTEGRATION
+* if you have multiple teams, each one developing a separate module, you will want to be able to put faith on their intermodule glue. that would be their interfaces. this said interface should be very formally defined with unittesting and contracts. so if either module is not integrating very well, you can rather easily find the culprit.
+
+USER INTERACTION VALIDATION
+* this goes into the project's planning stage - NOT after its done. this is for testing the user's needs. you need to make sure youre about to build the RIGHT thing, not what you though you knew. you need to test, with the user, their needs and specification. try to disprove the feasibility of the solution or rerquirements.
+
+GOOD USER INTERACTION
+* a software must "fit the user's hands". want to propose some major overhaul to something that already works? think windows 8 - dont go too far. by fitting the user's hands, i mean: do work towards the user's expectations/previous familiarities. when they try to use something, they'll try to use previous knowledge to "handle" it - take advantage of that and provide something familiar, and comfortable.
+* so there, you need to closely observe your user's handling of his current tools if you want to build him a new, better tool - and definitely not what YOU think would be better, though that could help too, especially if youve got good taste.
+
+TEAM MEMBER: PROJECT SABOTEUR
+* someone in charge of testing the unittests. this person would make a separate copy of the source tree and purposedly cause bugs and see if the tests catch them. this could be just another additional role for the toolsmith/buildcfg officer
+* tightening the bug net: if someone ever catches a bug (the saboteur, perharps), then it must be the last time: a unittest must be created to trap that bug.
+
+CODE COMMENTS AND AUTOMATION
+* also do employ tools to empower your source code comments. for example, what functions are exported - use automation for that. it'll be guaranteed to be up to date and will also save you time and effort.
+* not even the filename is approriate to be manually coded in the source file. have an automatic tool write that ontop of the header, if anything.
+
+DELIVERING BIG
+* you need to continuously work towards communicating with your users to make sure your understanding of their needs and expectations is accurate.
+* you shouldnt, though, keep the users too informed. you need to *surprise* them - delight them. go the extra mile - try to meet their expectations and THEN give a little more - just not all at once.
+
+* its about showing you care for them, and tha you have a vested interest in making a great system for them. you need to be sublte: you could add a custom splash screen, but you need to make sure not to tell them you spend alot of time on it! they'll be pissed if they feel youre prioritising cosmetic stuff when theres some serious stuff they wanted yesterday.
+
