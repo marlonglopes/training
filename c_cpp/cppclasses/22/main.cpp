@@ -1,12 +1,19 @@
 
 #include <iostream>
+#include "print_echo.h"
 
-int num = 0xdeadbeef;
+// 22: Libraries
 
-int main(int argc, char *argv[]){
+/*
+Bibliotecas estaticas
+*/
 
-  std::cout << "test" << std::endl;
+int main(int agrc, char *argv[]){
 
-  return 0;
+	std::cout << "test for echo" << std::endl;
+  print_echo();
+
+	return 0;
+
 }
 

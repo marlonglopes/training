@@ -1,64 +1,27 @@
 
-.PHONY : all clean compile link 
+.PHONY : all clean compile link
 
-TESTAPPNAME=tester
+APPNAME=tester
 
 SRC= main.cpp
-OBJ= main.o
+OBJ= ./*.o 
 
-ARCH := $(shell getconf LONG_BIT)
+CPPFLAGS = -I./staticprint
+LDFLAGS = -L./staticprint -lprint_echo
 
-ifeq ($(MODE),)
-	MODE=debug
-endif
+all: deps compile link
 
-ifeq ($(MODE),debug)
-INTFLAGS = \
-	-g \
-	-Wall \
-	-Wextra \
-	-pedantic \
-	-Weffc++ \
-	-fPIC \
-	-pthread \
-	-std=c++11
-POSTBUILD=
-#DEFINES= -D _DEBUG -D _LOG 
-endif
-
-ifeq ($(MODE),release)
-INTFLAGS = \
-   	-O2 \
-	-Wall \
-	-Wextra \
-	-pedantic \
-	-Weffc++ \
-	-fPIC \
-	-pthread \
-	-std=c++11
-POSTBUILD= strip $(TESTAPPNAME)
-#DEFINES= -D _LOG 
-endif
-
-ifeq ($(ARCH),64)
-CPPFLAGS = $(INTFLAGS) -m64
-else 
-CPPFLAGSS = $(INTFLAGS)
-endif
-
-INCLUDES=-I.
-LDFLAGS=
-
-all: compile link 
+deps:
+	make -C ./staticprint
 
 compile:
-	g++ -c $(INCLUDES) $(SRC) $(CPPFLAGS)
+	g++ -c $(SRC) $(CPPFLAGS) 
 
 link:
-	g++ -o $(TESTAPPNAME) $(OBJ) $(LDFLAGS)
-	$(POSTBUILD)
+	g++ -o $(APPNAME) $(CPPFLAGS) $(OBJ) $(LDFLAGS)
 
 clean:
-	rm -rf $(OBJ)
-	rm -rf $(TESTAPPNAME)
+	make clean -C ./staticprint
+	rm -rf ./$(APPNAME)
+	rm -rf ./$(OBJ)
 
