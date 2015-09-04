@@ -1,5 +1,5 @@
 
-.PHONY : all clean compile link libexep
+.PHONY : all clean compile link libexep deps
 
 APPNAME=tester
 LIBNAME=libexep.so

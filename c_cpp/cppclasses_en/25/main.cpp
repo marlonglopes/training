@@ -2,18 +2,18 @@
 #include <iostream>
 #include "exep.h"
 
-// 23: Libraries
+// 25: Libraries
 
 /*
-Bibliotecas dinamicas (DSOs)
+Dynamic libraries (DSOs)
 
-Quando linkamos com alguma lib, o linker le a o soname da lib
-Esta string entao e usada pra definir a linkagem, ao inves do filename
+When linking with another lib, the linker reads the soname form the lib
+this string is then used to define linkage, instead of the filename
 
-Isto serve para "influenciar" os binarios que dependam da lib, dependentes
-de uma "PK". No futuro, e possivel deployar novas versoes dessa
-lib, e os binarios vao cotninuar funcionando, porque vao procurar a mesma
-"PK" pra decidir se a linkagem esta satisfeita ou nao.
+Its purpose is to "influence" the binaries that depend on that lib - they
+will be depending on a "PK". In the future, it is possible to deploy new
+versions of said lib, and the binaries will still work, because they will
+search fot the "PK" to decide if the linkage is solved or not.
 */
 
 void func(){
