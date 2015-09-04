@@ -2,17 +2,17 @@
 #include <iostream>
 #include "exep.h"
 
-// 23: Libraries
+// 25: Libraries
 
 /*
 Bibliotecas dinamicas (DSOs)
 
-Quando linkamos com alguma lib, o linker le a o soname da lib
+Quando linkamos com alguma lib, o linker le o soname da lib
 Esta string entao e usada pra definir a linkagem, ao inves do filename
 
 Isto serve para "influenciar" os binarios que dependam da lib, dependentes
 de uma "PK". No futuro, e possivel deployar novas versoes dessa
-lib, e os binarios vao cotninuar funcionando, porque vao procurar a mesma
+lib, e os binarios vao continuar funcionando, porque vao procurar a mesma
 "PK" pra decidir se a linkagem esta satisfeita ou nao.
 */
 
