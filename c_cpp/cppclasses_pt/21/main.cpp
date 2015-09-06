@@ -1,17 +1,16 @@
 
 #include <iostream>
-#include "functor.h"
+#include "myclass.h"
 
-// 21: Functors
+// 20: Func. estatica
 
 /*
-Como usar object functions (functors)
+Funcoes estáticas membros de classe
 */
 
 int main(int argc, char *argv[]){
 
-  auto r = Functor()(2, 1);
-  std::cout << "r: " << r << std::endl;
+  MyClass::debug();
 
   return 0;
 }

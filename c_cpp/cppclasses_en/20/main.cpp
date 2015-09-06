@@ -1,16 +1,18 @@
 
 #include <iostream>
-#include "myclass.h"
 
-// 20: Static function
+#include "cat.h"
+
+// 19: Pimpl
 
 /*
-Class member static functions
+Hide class implementation (opaque "pointers", or Ceshire Cat)
 */
 
 int main(int argc, char *argv[]){
 
-  MyClass::debug();
+  Cat cat = Cat();
+  cat.meow();
 
   return 0;
 }

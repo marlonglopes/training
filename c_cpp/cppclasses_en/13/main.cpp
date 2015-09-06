@@ -1,20 +1,28 @@
 
 #include <iostream>
-#include <string>
 
-#include "myclass.h"
-
-// 13: Operators
+// 12: Templates
 
 /*
-Operator overloading, class members
+Basic templates
 */
+
+template <typename T>
+T max(T a, T b){
+  if (a > b){
+    return a;
+  } else {
+    return b;
+  }
+}
 
 int main(int argc, char *argv[]){
 
-  MyClass cat;
-  cat = cat + 10;
-  std::cout << "cat's age " << cat.age << std::endl;
+  std::string aux = max("d", "b");
+  std::cout << "max: " << aux << std::endl;
+
+  int ret = max(5, 7);
+  std::cout << "max: " << ret << std::endl;
 
   return 0;
 }

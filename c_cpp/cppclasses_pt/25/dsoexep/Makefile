@@ -2,14 +2,13 @@
 .PHONY: all clean
 
 LIBNAME=libexep.so
-SONAME=libexep.1.so
 
-SRC=exep.cpp
-OBJ=./*.o
+SRC=	exep.cpp
+OBJ=	./*.o
 
 all:
 	g++ -c $(SRC) -fPIC
-	g++ -o $(LIBNAME) -shared $(OBJ) -Wl,-soname,$(SONAME)
+	g++ -o $(LIBNAME) -shared $(OBJ)
 
 clean:
 	rm -rf ./$(OBJ)

@@ -1,25 +1,17 @@
 
 #include <iostream>
-#include "exep.h"
+#include "print_echo.h"
 
-// 23: Libraries
+// 22: Libraries
 
 /*
-Dynamic libraries (DSOs)
+Static libraries
 */
-
-void func(){
-  throw exep("bugger");
-}
 
 int main(int agrc, char *argv[]){
 
 	std::cout << "test for echo" << std::endl;
-  try {
-    func();
-  } catch (...){
-	  std::cout << "caught exception" << std::endl;
-  }
+  print_echo();
 
 	return 0;
 

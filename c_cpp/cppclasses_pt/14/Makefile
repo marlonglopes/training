@@ -3,8 +3,8 @@
 
 TESTAPPNAME=tester
 
-SRC= main.cpp except.cpp
-OBJ= main.o except.o
+SRC= main.cpp myclass.cpp
+OBJ= main.o myclass.o
 
 ARCH := $(shell getconf LONG_BIT)
 

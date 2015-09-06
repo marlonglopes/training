@@ -1,31 +1,27 @@
 
-.PHONY : all clean compile link libexep
+.PHONY : all clean compile link
 
 APPNAME=tester
-LIBNAME=libexep.so
 
 SRC= main.cpp
-
 OBJ= ./*.o 
 
-CPPFLAGS = -I./dsoexep
-LDFLAGS = -L./dsoexep -lexep -Wl,-rpath,"."
+CPPFLAGS = -I./staticprint
+LDFLAGS = -L./staticprint -lprint_echo
 
 all: deps compile link
 
 deps:
-	make -C ./dsoexep
+	make -C ./staticprint
 
 compile:
 	g++ -c $(SRC) $(CPPFLAGS) 
 
 link:
 	g++ -o $(APPNAME) $(CPPFLAGS) $(OBJ) $(LDFLAGS)
-	rm ./$(LIBNAME) 2>/dev/null;  ln -s ./dsoexep/$(LIBNAME) ./$(LIBNAME)
 
 clean:
-	make clean -C ./dsoexep
+	make clean -C ./staticprint
 	rm -rf ./$(APPNAME)
-	rm -rf ./$(LIBNAME)
 	rm -rf ./$(OBJ)
 

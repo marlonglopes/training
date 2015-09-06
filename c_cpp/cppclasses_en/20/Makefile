@@ -3,8 +3,8 @@
 
 TESTAPPNAME=tester
 
-SRC= main.cpp myclass.cpp
-OBJ= main.o myclass.o
+SRC= main.cpp
+OBJ= main.o cat.o
 
 ARCH := $(shell getconf LONG_BIT)
 

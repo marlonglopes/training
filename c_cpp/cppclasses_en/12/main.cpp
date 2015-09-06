@@ -1,28 +1,22 @@
 
 #include <iostream>
+#include <string>
 
-// 12: Templates
+#include "base.h"
+#include "derived.h"
+
+// 11: Inheritance and polymorphism
 
 /*
-Basic templates
+Classes but not-so-basic
 */
-
-template <typename T>
-T max(T a, T b){
-  if (a > b){
-    return a;
-  } else {
-    return b;
-  }
-}
 
 int main(int argc, char *argv[]){
 
-  std::string aux = max("d", "b");
-  std::cout << "max: " << aux << std::endl;
+  //Base *base = new Base(); // error: Base is abstract
+  Base *base  = new Derived();
 
-  int ret = max(5, 7);
-  std::cout << "max: " << ret << std::endl;
+  base->poly_op();
 
   return 0;
 }

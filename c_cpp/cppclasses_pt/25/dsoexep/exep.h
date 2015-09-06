@@ -2,22 +2,17 @@
 #ifndef __lib_exep_h__
 #define __lib_exep_h__
 
-class exep {
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-public:
+  void hello();
 
-	exep(const exep &other);
-	exep(const char *msg);
-	virtual ~exep();
+  // Aqui nao da pra usar templates, funcoes sobrecarregadas e qualquer coisa que seja cpp-only
 
-	void getmsg(char **msg) const;
-
-private:
-
-	char *message;
-
-
-};
+#ifdef __cplusplus
+}
+#endif 
 
 #endif // __lib_exep_h__
 

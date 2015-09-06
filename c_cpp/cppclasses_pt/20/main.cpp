@@ -1,16 +1,18 @@
 
 #include <iostream>
-#include "myclass.h"
 
-// 20: Func. estatica
+#include "gato.h"
+
+// 19: Pimpl
 
 /*
-Funcoes estáticas membros de classe
+Esconder definição de classe (usar ponteiro opaco, ou gato de cheshire)
 */
 
 int main(int argc, char *argv[]){
 
-  MyClass::debug();
+  Gato gato = Gato();
+  gato.miau();
 
   return 0;
 }

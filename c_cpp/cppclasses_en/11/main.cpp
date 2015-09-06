@@ -2,21 +2,17 @@
 #include <iostream>
 #include <string>
 
-#include "base.h"
-#include "derived.h"
+#include "myclass.h"
 
-// 11: Inheritance and polymorphism
+// 11: RAII
 
 /*
-Classes but not-so-basic
+Basic sample of RAII usage
 */
 
 int main(int argc, char *argv[]){
 
-  //Base *base = new Base(); // error: Base is abstract
-  Base *base  = new Derived();
-
-  base->poly_op();
+  MyClass myc_stack = MyClass();
 
   return 0;
 }

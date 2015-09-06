@@ -2,28 +2,19 @@
 #include <iostream>
 #include <string>
 
-#include "except.h"
+#include "myclass.h"
 
-// 14: Exceptions
+// 13: Operadores
 
 /*
-Como usar exceptions
+Sobrecarga de operadores, membros de classe
 */
-
-void raising_func(){
-
-  std::cout << "hello, i will throw" << std::endl;
-  throw Except("Gotcha", 21);
-
-}
 
 int main(int argc, char *argv[]){
 
-  try {
-    raising_func();
-  } catch (const Except &ex){
-    std::cout << "raised: " << ex.message << std::endl;
-  }
+  MyClass cat;
+  cat = cat + 10;
+  std::cout << "idade do gato " << cat.age << std::endl;
 
   return 0;
 }

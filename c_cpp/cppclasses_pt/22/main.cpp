@@ -1,19 +1,18 @@
 
 #include <iostream>
-#include "print_echo.h"
+#include "functor.h"
 
-// 22: Libraries
+// 21: Functors
 
 /*
-Bibliotecas estaticas
+Como usar object functions (functors)
 */
 
-int main(int agrc, char *argv[]){
+int main(int argc, char *argv[]){
 
-	std::cout << "test for echo" << std::endl;
-  print_echo();
+  auto r = Functor()(2, 1);
+  std::cout << "r: " << r << std::endl;
 
-	return 0;
-
+  return 0;
 }
 

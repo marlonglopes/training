@@ -3,8 +3,8 @@
 
 TESTAPPNAME=tester
 
-SRC= main.cpp myclass.cpp
-OBJ= main.o myclass.o
+SRC= main.cpp
+OBJ= main.o pass.o
 
 ARCH := $(shell getconf LONG_BIT)
 
@@ -20,8 +20,7 @@ INTFLAGS = \
 	-pedantic \
 	-Weffc++ \
 	-fPIC \
-	-pthread \
-	-std=c++11
+	-pthread
 POSTBUILD=
 #DEFINES= -D _DEBUG -D _LOG 
 endif
@@ -34,8 +33,7 @@ INTFLAGS = \
 	-pedantic \
 	-Weffc++ \
 	-fPIC \
-	-pthread \
-	-std=c++11
+	-pthread
 POSTBUILD= strip $(TESTAPPNAME)
 #DEFINES= -D _LOG 
 endif

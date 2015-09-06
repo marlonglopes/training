@@ -4,7 +4,7 @@
 TESTAPPNAME=tester
 
 SRC= main.cpp
-OBJ= main.o pass.o
+OBJ= main.o
 
 ARCH := $(shell getconf LONG_BIT)
 

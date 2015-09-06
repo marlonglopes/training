@@ -1,17 +1,16 @@
 
 #include <iostream>
-#include "functor.h"
+#include "myclass.h"
 
-// 21: Functors
+// 20: Static function
 
 /*
-How to use object functions (functors)
+Class member static functions
 */
 
 int main(int argc, char *argv[]){
 
-  auto r = Functor()(2, 1);
-  std::cout << "r: " << r << std::endl;
+  MyClass::debug();
 
   return 0;
 }

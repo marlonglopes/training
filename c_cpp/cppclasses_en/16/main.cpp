@@ -2,83 +2,79 @@
 #include <iostream>
 #include <string>
 
-#include <string.h>
+#include <vector>
+#include <stack>
+#include <queue>
+#include <deque>
+#include <map>
 
-// 16: Tools
-
-/*
-Linux development. How is it typically done.
-vim
-strace
-man
-gdb
-gcc/g++
-clang
-Makefile
-*/
+// 15: STL samples 
 
 /*
-vim
-o: new line underneath
-y and Y: yank
-hjkl: move around
-i: insert
-x: cut
-c: change
-ci": change inside quotes
-n: next
-ctrl+o: go back (works for all nav shortcuts)
-*: find next forward
-#: find next backwards
-%: bracket bounds
-dd: delete line
-dw: delete word
-.: repeat
-:%s/findwhat/replacewith/g
-v: visual
-p: paste
-A: append to the end of the line
-b: beginning of word
-e: end of word
-gg: beginning of file
-G: end of file
-u: undo
-ctrl+r: redo
-M: middle of screen (cursor)
-zz: middle of screen (screen?)
-/: find forward
-?: find backwards
-0: beginning of line
-^: first character in line
-f: find char in line
-ctrl+f: forward
-ctrl+b: backwards
->: ident
-<: unident
+Basic samples of STL containers
 */
-
-const extern char *the_correct_pw;
-
-bool validate_pass(const char *input, const char *answer){
-  if (strcmp(input, answer) == 0){
-    return true;
-  } else {
-    return false;
-  }
-}
 
 int main(int argc, char *argv[]){
 
-  std::cout << "Hello world." << std::endl;
+  // VECTOR
+  std::vector<std::string> vetstr;
+  vetstr.push_back("str1");
+  vetstr.push_back("str2");
+  vetstr.push_back("str3");
 
-  std::string inputpass;
-  std::cout << "Input your password and press enter." << std::endl;
-  std::cin >> inputpass;
+  for (std::vector<std::string>::const_iterator it = vetstr.begin(); it != vetstr.end(); it++){
+    std::cout << *it << std::endl;
+  }
 
-  if (validate_pass(inputpass.c_str(), the_correct_pw)){
-    std::cout << "Correct password entered." << std::endl;
-  } else {
-    std::cout << "Go to hell." << std::endl;
+ for (unsigned int i=0;i<vetstr.size(); i++){
+   std::cout << vetstr[i] << std::endl;
+ } 
+
+  // STACK
+  std::stack<int> staint;
+  staint.push(1);
+  staint.push(2);
+  staint.push(3);
+
+  while (staint.size()){
+    std::cout << "TOS: " << staint.top() << std::endl;
+    staint.pop();
+  }
+
+  // QUEUE
+  std::queue<std::string> questr;
+  questr.push("cat");
+  questr.push("dog");
+  questr.push("bird");
+  questr.push("cow");
+  questr.push("tiger");
+  questr.push("leopard");
+
+  while (questr.size()){
+    std::cout << questr.front() << std::endl;
+    std::cout << questr.back() << std::endl;
+    questr.pop();
+  }
+
+  // DEQUE
+  std::deque<int> deqint;
+  deqint.push_front(1);
+  deqint.push_back(10);
+  deqint.push_front(2);
+  deqint.push_back(20);
+
+  for (unsigned int i=0; i<deqint.size(); i++){
+    std::cout << deqint[i] << std::endl; 
+  }
+
+  // MAP
+  std::map<unsigned int, std::string> mapis;
+  mapis.insert(std::pair<unsigned int, std::string>(30, "square"));
+  mapis.insert(std::pair<unsigned int, std::string>(20, "rectangle"));
+  mapis[3] = "box";
+
+  for (std::map<unsigned int, std::string>::const_iterator it = mapis.begin(); it != mapis.end(); it++){
+    std::cout << it->first << ": " << it->second << std::endl;
   }
 
   return 0;
