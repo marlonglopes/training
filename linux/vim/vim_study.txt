@@ -40,6 +40,7 @@ gUU                             changes whole line into uppercase
 zz                              centers screen on cursor
 ZQ                              same as doing :q!
 cc                              change whole line. basically clears the line, puts the cursor at the indentation level (nope it does not clear the previous indent) and then goes into insert mode.
+gf                              opens file at cursor as another buffer (for example you've got your cursor atop a #include "thefile.h", type gf it opens!)
 
 6t7                             copies line 6 and pastes on line 7
 6t8                             moves line 6 to line 7
