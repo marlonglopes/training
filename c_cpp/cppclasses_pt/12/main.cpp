@@ -5,7 +5,7 @@
 #include "base.h"
 #include "derived.h"
 
-// 11: Herança e polimorfismo
+// 12: Herança e polimorfismo
 
 /*
 Classes básicas

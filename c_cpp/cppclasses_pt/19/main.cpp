@@ -2,7 +2,7 @@
 #include <iostream>
 #include "myclass.h"
 
-// 18: Op. overload, nonmember
+// 19: Op. overload, nonmember
 
 /*
 Sobrecarregando operadores, nonmembers

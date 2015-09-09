@@ -4,7 +4,7 @@
 
 #include "myclass.h"
 
-// 13: Operadores
+// 14: Operadores
 
 /*
 Sobrecarga de operadores, membros de classe

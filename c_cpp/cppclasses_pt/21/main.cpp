@@ -2,7 +2,7 @@
 #include <iostream>
 #include "myclass.h"
 
-// 20: Func. estatica
+// 21: Func. estatica
 
 /*
 Funcoes estáticas membros de classe

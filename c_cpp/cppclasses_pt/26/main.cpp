@@ -2,7 +2,7 @@
 #include <iostream>
 #include "exep.h"
 
-// 25: Libraries
+// 26: Libraries
 
 /*
 Bibliotecas dinamicas (DSOs)

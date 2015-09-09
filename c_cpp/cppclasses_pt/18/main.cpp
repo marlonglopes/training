@@ -4,7 +4,7 @@
 
 #include "myclass.h"
 
-// 17: Smart pointers
+// 18: Smart pointers
 
 /*
 Exemplo básico de uso de smart pointers

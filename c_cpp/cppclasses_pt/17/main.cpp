@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-// 16: Ferramentas
+// 17: Ferramentas
 
 /*
 Dev. em ambiente Unix. Como é típicamente feito.

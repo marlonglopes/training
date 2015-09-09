@@ -8,7 +8,7 @@
 #include <deque>
 #include <map>
 
-// 15: Exemplos de STL
+// 16: Exemplos de STL
 
 /*
 Exemplos basicos de containers STL

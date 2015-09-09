@@ -3,7 +3,7 @@
 
 #include "gato.h"
 
-// 19: Pimpl
+// 20: Pimpl
 
 /*
 Esconder definição de classe (usar ponteiro opaco, ou gato de cheshire)
