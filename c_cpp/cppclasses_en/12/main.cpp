@@ -5,7 +5,7 @@
 #include "base.h"
 #include "derived.h"
 
-// 11: Inheritance and polymorphism
+// 12: Inheritance and polymorphism
 
 /*
 Classes but not-so-basic

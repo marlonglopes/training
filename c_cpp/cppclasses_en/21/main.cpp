@@ -2,7 +2,7 @@
 #include <iostream>
 #include "myclass.h"
 
-// 20: Static function
+// 21: Static function
 
 /*
 Class member static functions

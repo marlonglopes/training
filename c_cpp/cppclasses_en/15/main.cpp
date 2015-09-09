@@ -4,7 +4,7 @@
 
 #include "except.h"
 
-// 14: Exceptions
+// 15: Exceptions
 
 /*
 How to use exceptions

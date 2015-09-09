@@ -3,7 +3,7 @@
 
 #include "cat.h"
 
-// 19: Pimpl
+// 20: Pimpl
 
 /*
 Hide class implementation (opaque "pointers", or Ceshire Cat)

@@ -2,7 +2,7 @@
 #include <iostream>
 #include "functor.h"
 
-// 21: Functors
+// 22: Functors
 
 /*
 How to use object functions (functors)
